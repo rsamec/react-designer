@@ -53,7 +53,10 @@ var MyModalTrigger = React.createClass({
         );
     },
     render: function() {
-        return <a href="javascript:;" role="button" onClick={this.handleClick}>View HTML</a>;
+        return (
+        <button type="button" className="btn btn-primary" onClick={this.handleClick}>
+            <span className="glyphicon glyphicon-fullscreen"></span>
+        </button>)
     }
 });
 

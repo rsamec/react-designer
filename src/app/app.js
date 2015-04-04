@@ -2,6 +2,7 @@ var React = require('react');
 
 //preview and container
 var Preview = require('./views/HtmlBootstrapRenderer');
+var PDFRenderer = require('./views/PDFRenderer');
 var Container = require('./widgets/Container');
 
 //editor components
@@ -16,6 +17,7 @@ var Modal = require('react-bootstrap').Modal;
 var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var MyModalTrigger = require('./components/MyModalTrigger');
 var Button = require('react-bootstrap').Button;
+var Panel = require('react-bootstrap').Panel;
 
 var TabPanel = require('react-tab-panel');
 
@@ -26,6 +28,8 @@ var Util = require('./components/Util');
 var emptyObjectSchema = {containers:[]};
 // Create a Freezer store
 var frozen = new Freezer(emptyObjectSchema);
+
+var SplitPane = require('./react-split-pane/SplitPane');
 
 
 var HtmlEditorModal = React.createClass({
@@ -97,8 +101,8 @@ var Workplace = React.createClass({
                     currentPropChanged={this.props.currentChanged}
                     current={this.props.current}
                     handleClick={handleClick}
-                    height="100%"
-                    width="100%"
+                    height="100vh"
+
                 />
             </div>
         );
@@ -161,20 +165,15 @@ var ToolbarActions = React.createClass({
 
         return (
             <div>
-                <div>
-                    <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
-                        <span className="glyphicon glyphicon-remove-sign"></span>
-                    </button>
-                    <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.up}>
-                        <span className="glyphicon glyphicon-arrow-up"></span>
-                    </button>
-                    <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.down}>
-                        <span className="glyphicon glyphicon-arrow-down"></span>
-                    </button>
-                </div>
-                <MyModalTrigger>
-                    <Preview data={this.props.store} />
-                </MyModalTrigger>
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
+                    <span className="glyphicon glyphicon-remove-sign"></span>
+                </button>
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.up}>
+                    <span className="glyphicon glyphicon-arrow-up"></span>
+                </button>
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.down}>
+                    <span className="glyphicon glyphicon-arrow-down"></span>
+                </button>
             </div>
         );
     }
@@ -190,7 +189,8 @@ var Designer =  React.createClass({
             storageKey:'print',
             storeHistory: [ this.props.store.get() ],
             currentStore: 0,
-            tabActiveIndex: 0
+            jsonShown:false,
+            toolboxShown:true
 
         };
     },
@@ -266,6 +266,22 @@ var Designer =  React.createClass({
             tabActiveIndex: index
         })
     },
+    switchWorkplace: function() {
+        this.setState({jsonShown: !this.state.jsonShown});
+    },
+    switchToolbox: function() {
+        this.setState({toolboxShown: !this.state.toolboxShown});
+    },
+    pdf:function() {
+
+        var fakeData = {Employee:{FirstName:'John'}};
+
+        var defaultDocument = PDFRenderer.transformToPdf(this.props.store.get(),fakeData);
+        hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
+            window.open(url);
+        });
+
+    },
     componentDidMount: function(){
         var me = this;
 
@@ -297,22 +313,30 @@ var Designer =  React.createClass({
             disabledRedo = this.state.currentStore == this.state.storeHistory.length - 1;
         var disabledSave = disabledUndo || this.state.storageKey===undefined;
 
+        var toogleVisibleState = function(show) {
+            var style= {}
+            if (!show) {
+                style.display = 'none'
+            }
+            return style;
+        }
+
         return (
             <div>
-                <div className="row">
-                    <div className="col-md-9">
-                        <Workplace store={store} current={this.state.currentValue} currentChanged={this.setCurrentProps} htmlEditor={HtmlEditorModal} />
-                    </div>
-
-                    <div className="col-md-3">
+                <SplitPane orientation="horizontal" minSize="80">
+                    <div>
                         <div>
-                        {this.state.storageKey}
+                            <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
+                                <span className="glyphicon glyphicon-transfer"></span>
+                            </button>
+                            &nbsp;&nbsp;
                             <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
                                 <span className="glyphicon glyphicon-arrow-left"></span>
                             </button>
                             <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
                                 <span className="glyphicon glyphicon-arrow-right"></span>
                             </button>
+                            &nbsp;&nbsp;
                             <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.save}>
                                 <span className="glyphicon glyphicon-floppy-disk"></span>
                             </button>
@@ -326,27 +350,43 @@ var Designer =  React.createClass({
                                     <span className="glyphicon glyphicon-floppy-save"></span>
                                 </button>
                             </ModalTrigger>
+                            &nbsp;&nbsp;
+                            <MyModalTrigger>
+                                <Preview data={store} />
+                            </MyModalTrigger>
+                            <button type="button" className="btn btn-primary" onClick={this.pdf}>
+                                <span className="glyphicon glyphicon-print"></span>
+                            </button>
                         </div>
-                        <ToolbarActions store={store} current={this.state.currentValue} />
-                        <TabPanel activeIndex={this.state.tabActiveIndex}
-                            onChange={this.handleTabChange}
-                            titleStyle={{padding: 10}}>
-                            <div title="Objects">
-                                <div>
+                        <div>
+                            <div style={toogleVisibleState(!this.state.jsonShown)}>
+                                <Workplace store={store} current={this.state.currentValue} currentChanged={this.setCurrentProps} htmlEditor={HtmlEditorModal}/>
+                            </div>
+                            <div style={toogleVisibleState(this.state.jsonShown)}>
+                                <PrettyJson json={store} />
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{'min-width':'300px'}}>
+                        <div>
+                            <div className='pull-right'>
+                            <button type="button" className="btn btn-primary" onClick={this.switchToolbox}>
+                                <span className="glyphicon glyphicon-transfer"></span>
+                            </button>
+                            </div>
+                            <div>
+                                <div style={toogleVisibleState(this.state.toolboxShown)}>
+                                    <ToolbarActions store={store} current={this.state.currentValue} />
                                     <ObjectBrowser nodes={store.containers} current={this.state.currentValue} currentChanged={this.setCurrentProps}  />
-
                                     <MyPropertyGrid current={this.state.currentValue} currentChanged={this.setCurrentProps} />
                                 </div>
+                                <div style={toogleVisibleState(!this.state.toolboxShown)}>
+                                    <ToolBox addCtrl={this.addNewCtrl} />
+                                </div>
                             </div>
-                            <div title="Toolbox">
-                                <ToolBox addCtrl={this.addNewCtrl} />
-                            </div>
-                            <div title="Json">
-                                <PrettyJson json={this.state.currentValue} />
-                            </div>
-                        </TabPanel>
+                        </div>
                     </div>
-                </div>
+                </SplitPane>
             </div>
         )
     }

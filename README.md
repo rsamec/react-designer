@@ -1,5 +1,10 @@
 # react-designer
 React designer is WYSIWYG enables to create dynamic documents.
+It is prototype for creating and designing content (dynamic documents, html, exact printings - pdfs).
+
+Work in progress. 
+
+Features
 
 +   directly manipulate the layout of a document without having to type or remember names of layout commands
 
