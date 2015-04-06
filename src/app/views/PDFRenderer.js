@@ -15,7 +15,8 @@ var PDFRenderer = {
                 for (var i in x){
                     var container = x[i];
                     container.style.top = heigth;
-                    heigth += container.style.height;
+                    var tempHeight =parseInt(container.style.height,10);
+                    heigth +=  tempHeight!==undefined?tempHeight:0;
                 }
             }
             return x;

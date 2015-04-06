@@ -4,7 +4,7 @@ var Freezer = require('freezer-js');
  JSON data to edit
  *****************/
 
-var json = {'json':[]};
+var json = {'json':[{}]};
 
 // Create a Freezer store
 var frozenStore = new Freezer( json);
@@ -120,6 +120,13 @@ var DocEditor = React.createClass({
                     storeHistory: storeHistory,
                     currentStore: nextIndex
                 });
+
+                //custom change event
+                var event = {
+                    stopPropagation:function(){},
+                    target:{value:updated.json}
+                }
+                me.props.onChange(event);
             }
             else {
                 // The change has been already triggered by the state
@@ -418,8 +425,9 @@ var AttributeCreator = React.createClass({
 });
 
 var JsonEditor = React.createClass({
+
     render: function(){
-        return(<DocEditor store={ frozenStore } original={ frozenStore.get() } />);
+        return(<DocEditor store={ frozenStore } original={ frozenStore.get() } onChange={this.props.onChange} />);
     }
 });
 

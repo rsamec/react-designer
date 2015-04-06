@@ -105,6 +105,7 @@ var MyPropertyGrid = React.createClass({
                 commonProps.push(
                     {name:'showFilter'});
                 commonProps.push({name:'showSettings'});
+                commonProps.push({name:'Binding'});
                 commonProps.push(
                     {name:'results',editor:JsonEditor});
 
@@ -127,7 +128,7 @@ var MyPropertyGrid = React.createClass({
         //path = path.map(function(prop){
         //    return prop.name
         //})
-        //console.log(prop.name + ' has a new value: "' + value + '". Full path is ' + path.join('/'))
+        console.log(prop.name + ' has a new value: "' + value + '". Full path is ' + path.join('/'))
         var current = this.props.current;
         var updated;
         if (path.length === 2){

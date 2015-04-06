@@ -56,12 +56,60 @@ var businessRules = {
         }
     }
 }
-
+var fakeData =  [
+    {
+        "id": 0,
+        "name": "John Smith",
+        "city": "Prague",
+        "state": "Hawaii",
+        "country": "Czech Repulic",
+        "company": "Ovolo",
+        "favoriteNumber": 7
+    },
+    {
+        "id": 1,
+        "name": "Karol Janme",
+        "city": "Kapowsin",
+        "state": "Hawaii",
+        "country": "United Kingdom",
+        "company": "Ovolo",
+        "favoriteNumber": 7
+    },
+    {
+        "id": 2,
+        "name": "Mayer Leonard",
+        "city": "Kapowsin",
+        "state": "Hawaii",
+        "country": "United Kingdom",
+        "company": "Ovolo",
+        "favoriteNumber": 7
+    },
+    {
+        "id": 3,
+        "name": "Aaaaa Bbbbbb",
+        "city": "Kapowsin",
+        "state": "Hawaii",
+        "country": "United Kingdom",
+        "company": "Ovolo",
+        "favoriteNumber": 7
+    },
+    {
+        "id": 4,
+        "name": "Mayer Leonard",
+        "city": "Kapowsin",
+        "state": "Hawaii",
+        "country": "United Kingdom",
+        "company": "Ovolo",
+        "favoriteNumber": 7
+    }
+];
 var HtmlBootstrapRenderer = React.createClass({
     mixins:[BindToMixin],
     getInitialState: function() {
         return {
-            data: {},
+            data: {
+                Hobbies:fakeData
+            },
             rules:new FormSchema.JsonSchemaRuleFactory(businessRules).CreateRule("Main")
         };
     },
@@ -94,7 +142,8 @@ var HtmlBootstrapRenderer = React.createClass({
                 for (var i in x){
                     var container = x[i];
                     container.style.top = heigth;
-                    heigth += container.style.height;
+                    var tempHeight =parseInt(container.style.height,10);
+                    heigth +=  tempHeight!==undefined?tempHeight:0;
                 }
             }
             return x;
@@ -128,16 +177,28 @@ var HtmlBootstrapRenderer = React.createClass({
     createComponent: function (box) {
         var widget =widgets[box.elementName];
         if (!!box.Binding){
-            box.valueLink = this.bindToState('data',box.Binding);
-            var error = new PathObjecBinder(this.result).getValue(box.Binding);
-            box.help = error.ErrorMessage;
-            box.bsStyle = error.HasErrors?'error':'';
-            if (box.elementName === "ValueBox") box.content = box.valueLink.value;
+            if (box.elementName === "ReactBootstrap.Input") {
+                box.valueLink = this.bindToState('data', box.Binding);
+                var error = new PathObjecBinder(this.result).getValue(box.Binding);
+                box.help = error.ErrorMessage;
+                box.bsStyle = error.HasErrors ? 'error' : '';
+            }
+            else if (box.elementName === "ValueBox") {
+                box.valueLink = this.bindToState('data', box.Binding);
+                box.content = box.valueLink.value;
+            }
+            else if (box.elementName === "React.Griddle"){
+                box.results = this.bindArrayToState('data', box.Binding).items.map(function(item){return item.value});
+            }
+            else{
+
+            }
         }
         if (widget === undefined){
             return React.DOM.span(null,"Component '" + box.elementName + "' is not register among widgets.")
         }
-        return React.createElement(widget,_.omit(box,'style'), box.content!== undefined?React.DOM.span(null, box.content):undefined);
+        var props = _.omit(box,'style');
+        return React.createElement(widget,props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
 
     },
     render: function () {
