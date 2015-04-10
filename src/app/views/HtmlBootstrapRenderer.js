@@ -1,29 +1,17 @@
 var React = require('react');
-var ReactBootstrap = require('react-bootstrap');
 var traverse = require('traverse');
+
+var WidgetFactory = require('../components/WidgetFactory');
 
 //binding
 var BindToMixin = require('react-binding');
+
 //business-rules-engine
 var FormSchema = require("business-rules-engine/commonjs/FormSchema");
 var Utils = require("business-rules-engine/commonjs/Utils");
-var PathObjecBinder = require('../components/PathObjectBinder');
+var PathObjecBinder = require('../utilities/pathObjectBinder');
 
-var widgets = {
-    "TextBoxInput": require('../widgets/TextBoxInput'),
-    "CheckBoxInput": require('../widgets/TextBoxInput'),
-    "TextBox": require('../widgets/TextBox'),
-    "ValueBox": require('../widgets/ValueBox'),
-    "Html":require('../widgets/HtmlRenderer'),
-    "TinyMceEditor":require('../widgets/HtmlRenderer'),
-    "React.Griddle":require('griddle-react')
-}
-
-var bootstrapWidgets =["Input","Button", "Panel","Glyphicon","Tooltip"];
-_.each(bootstrapWidgets,function(widgetName){
-    var name = "ReactBootstrap." + widgetName;
-    widgets[name] = ReactBootstrap[widgetName];
-});
+var widgets = WidgetFactory.getWidgets();
 
 var businessRules = {
     "Employee": {
@@ -177,7 +165,7 @@ var HtmlBootstrapRenderer = React.createClass({
     createComponent: function (box) {
         var widget =widgets[box.elementName];
         if (!!box.Binding){
-            if (box.elementName === "ReactBootstrap.Input") {
+            if (box.elementName === "ReactBootstrap.Input" || box.elementName === "TextBoxInput") {
                 box.valueLink = this.bindToState('data', box.Binding);
                 var error = new PathObjecBinder(this.result).getValue(box.Binding);
                 box.help = error.ErrorMessage;

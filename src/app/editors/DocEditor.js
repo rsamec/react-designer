@@ -1,13 +1,16 @@
 var React = require('react');
 var Freezer = require('freezer-js');
+var Bootstrap = require('react-bootstrap');
+var Modal = Bootstrap.Modal;
+var ModalTrigger = Bootstrap.ModalTrigger;
+var Button = Bootstrap.Button;
+
+var deepClone = require('../utilities/deepClone');
 /****************
  JSON data to edit
  *****************/
 
-var json = {'json':[{}]};
 
-// Create a Freezer store
-var frozenStore = new Freezer( json);
 
 
 /****************
@@ -121,12 +124,12 @@ var DocEditor = React.createClass({
                     currentStore: nextIndex
                 });
 
-                //custom change event
-                var event = {
-                    stopPropagation:function(){},
-                    target:{value:updated.json}
-                }
-                me.props.onChange(event);
+                ////custom change event
+                //var event = {
+                //    stopPropagation:function(){},
+                //    target:{value:updated.json}
+                //}
+                //me.props.onChange(event);
             }
             else {
                 // The change has been already triggered by the state
@@ -424,12 +427,87 @@ var AttributeCreator = React.createClass({
     }
 });
 
+var JsonDialogEditor = React.createClass({
+    ok:function(e){
+        this.props.confirm(this.frozenStore.get().toJS().json);
+        this.props.onRequestHide();
+    },
+    componentWillMount:function(){
+        var rawJson = deepClone(this.props.json!==undefined?this.props.json:{});
+        this.frozenStore= new Freezer({"json":rawJson})
+        console.log("JsonDialogEditor mounted");
+    },
+    render:function(){
+        return (<Modal bsStyle="primary" title="Color picker" animation={false}>
+            <div className="modal-body">
+                <DocEditor store={ this.frozenStore } original={ this.frozenStore.get() }/>)
+            </div>
+            <div className="modal-footer">
+                <Button onClick={this.ok}>OK</Button>
+                <Button onClick={this.props.onRequestHide}>Close</Button>
+            </div>
+        </Modal>)
+    }
+})
 var JsonEditor = React.createClass({
-
+    handleChange:function(value){
+        var wrapEvent = {
+            stopPropagation:function(){},
+            target:{value:value}
+        }
+        this.props.onChange(wrapEvent);
+    },
+    clear:function(){
+        this.handleChange({});
+    },
     render: function(){
-        return(<DocEditor store={ frozenStore } original={ frozenStore.get() } onChange={this.props.onChange} />);
+        var value = !!this.props.value?this.props.value:{};
+        return (<table>
+            <tr>
+                <td>
+                    <pre>{ JSON.stringify( value, null, '  ')}</pre>
+                </td>
+                <td>
+                    <ModalTrigger modal={<JsonDialogEditor json={value} confirm={this.handleChange} />}>
+                        <button type="button" className="btn btn-primary">
+                            <span className="glyphicon glyphicon-fullscreen"></span>
+                        </button>
+                    </ModalTrigger>
+                </td>
+            </tr>
+        </table>)
     }
 });
+
+//var JsonArrayEditor = React.createClass({
+//    handleChange:function(value){
+//        var wrapEvent = {
+//            stopPropagation:function(){},
+//            target:{value:[value]}
+//        }
+//        this.props.onChange(wrapEvent);
+//    },
+//    clear:function(){
+//        this.handleChange({});
+//    },
+//    render: function(){
+//        var value = this.props.value !== undefined && this.props.value[0] !== undefined?this.props.value[0]:{};
+//        return (<table>
+//            <tr>
+//                <td>
+//                    <pre>{ JSON.stringify(this.props.value, null, '  ')}</pre>
+//                </td>
+//                <td>
+//                    <ModalTrigger modal={<JsonDialogEditor json={value} confirm={this.handleChange} />}>
+//                        <button type="button" className="btn btn-primary">
+//                            <span className="glyphicon glyphicon-fullscreen"></span>
+//                        </button>
+//                    </ModalTrigger>
+//                </td>
+//            </tr>
+//        </table>)
+//    }
+//});
 
 
 module.exports = JsonEditor;

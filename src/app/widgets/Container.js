@@ -7,25 +7,11 @@ var React = require('react'),
     PropTypes = React.PropTypes,
     DragDropMixin = require('react-dnd').DragDropMixin,
     BindToMixin = require('react-binding'),
-    ResizableHandle=require('./../components/ResizableHandle'),
-    ReactBootstrap = require('react-bootstrap');
+    ResizableHandle=require('../components/ResizableHandle'),
+    WidgetFactory = require('../components/WidgetFactory');
 
 
-var widgets = {
-    "TextBoxInput": require('./TextBoxInput'),
-    "CheckBoxInput": require('./CheckBoxInput'),
-    "Html":require('./HtmlRenderer'),
-    "TextBox": require('./TextBox'),
-    "ValueBox": require('./ValueBox'),
-    "TinyMceEditor":require('./HtmlRenderer'),
-    "React.Griddle":require('griddle-react')
-}
-
-var bootstrapWidgets =["Input","Button", "Panel","Glyphicon","Tooltip"];
-_.each(bootstrapWidgets,function(widgetName){
-    var name = "ReactBootstrap." + widgetName;
-    widgets[name] = ReactBootstrap[widgetName];
-});
+var widgets =  WidgetFactory.getWidgets();
 
 var Container = React.createClass({
     mixins: [DragDropMixin, BindToMixin],
@@ -141,7 +127,7 @@ var Container = React.createClass({
         if (this.props.handleClick !== undefined) this.props.handleClick();
     },
     render: function () {
-        var containers = this.props.containers || [];
+        var containers = _.filter(this.props.containers || [],function(cont){return !!cont});
         var boxes = this.props.boxes || [];
         var handle = 30;
 
@@ -161,6 +147,7 @@ var Container = React.createClass({
             >
                 <div>
              {containers.map(function (item,index) {
+
                  var box = item;
                  var selected = box === this.props.current;
                  var key = box.name;

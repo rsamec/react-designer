@@ -1,15 +1,16 @@
 var React = require('react');
 
 //preview and container
-var Preview = require('./views/HtmlBootstrapRenderer');
+var HtmlInputRenderer = require('./views/HtmlBootstrapRenderer');
 var PDFRenderer = require('./views/PDFRenderer');
+var HtmlRenderer = require('./views/HtmlRenderer');
 var Container = require('./widgets/Container');
 
 //editor components
 var ToolBox = require('./components/ToolBox');
 var ObjectBrowser = require('./components/ObjectBrowser');
 var PrettyJson = require('./components/PrettyJson');
-var TinyMceEditor = require('./components/TinyMceEditor');
+var TinyMceEditor = require('./editors/TinyMceEditor');
 var MyPropertyGrid = require('./components/MyPropertyGrid');
 
 //bootstrap
@@ -23,7 +24,7 @@ var TabPanel = require('react-tab-panel');
 
 var traverse = require('traverse');
 var Freezer = require('freezer-js');
-var Util = require('./components/Util');
+var idGenerator = require('./utilities/idGenerator');
 
 var emptyObjectSchema = {containers:[]};
 // Create a Freezer store
@@ -66,21 +67,6 @@ var InputDialog = React.createClass({
                 </div>
                 <div className="modal-footer">
                     <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
-            </Modal>
-        );
-    }
-});
-
-var PreviewModal = React.createClass({
-    render: function() {
-        return (
-            <Modal bsStyle="primary" title="Modal heading" animation={false}>
-                <div className="modal-body modal-lg">
-                   <Preview data={this.props.data} />
-                </div>
-                <div className="modal-footer">
                     <Button onClick={this.props.onRequestHide}>Close</Button>
                 </div>
             </Modal>
@@ -194,6 +180,38 @@ var Designer =  React.createClass({
 
         };
     },
+    getDefaultProps:function(){
+      return {
+          fakeData: {
+              Employee: {FirstName: 'John', LastName: 'Smith'},
+              Hobbies: [
+                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                  {HobbyName: 'Reading', Frequency: 'Monthly'},
+                  {HobbyName: 'Cycling', Frequency: 'Daily'},
+                    {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                    {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                    {HobbyName: 'Reading', Frequency: 'Monthly'},
+                    {HobbyName: 'Cycling', Frequency: 'Daily'},
+                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                  {HobbyName: 'Reading', Frequency: 'Monthly'},
+                  {HobbyName: 'Cycling', Frequency: 'Daily'},
+                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                  {HobbyName: 'Reading', Frequency: 'Monthly'},
+                  {HobbyName: 'Cycling', Frequency: 'Daily'},
+                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                  {HobbyName: 'Reading', Frequency: 'Monthly'},
+                  {HobbyName: 'Cycling', Frequency: 'Daily'},
+                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                  {HobbyName: 'Reading', Frequency: 'Monthly'},
+                  {HobbyName: 'Cycling', Frequency: 'Daily'}]
+          }
+      };
+    },
     undo: function(){
         var nextIndex = this.state.currentStore - 1;
         this.props.store.set( this.state.storeHistory[ nextIndex ] );
@@ -233,10 +251,10 @@ var Designer =  React.createClass({
     addNewCtrl:function(elName){
         var selectedContainer = this.state.currentValue;
         if (selectedContainer === undefined) return;
-        if (elName === "Container") {
+        if (elName === "Container" || elName === "Repeater") {
             var defaultSection = {
-                name: "sec" + Util.uniqueId() ,
-                elementName: 'Container',
+                name: "sec" + idGenerator.uniqueId() ,
+                elementName: elName,
                 style: {
                     top: 0,
                     left: 0,
@@ -251,7 +269,7 @@ var Designer =  React.createClass({
         }
         else {
             var defaultBox = {
-                name: elName.substr(3) + Util.uniqueId(),
+                name: elName.substr(3) + idGenerator.uniqueId(),
                 elementName: elName,
                 style: {
                     top: 0,
@@ -272,11 +290,11 @@ var Designer =  React.createClass({
     switchToolbox: function() {
         this.setState({toolboxShown: !this.state.toolboxShown});
     },
-    pdf:function() {
+    previewPdf:function() {
 
         var fakeData = {Employee:{FirstName:'John'}};
 
-        var defaultDocument = PDFRenderer.transformToPdf(this.props.store.get(),fakeData);
+        var defaultDocument = PDFRenderer.transformToPdf(this.props.store.get(),this.props.fakeData);
         hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
             window.open(url);
         });
@@ -320,8 +338,8 @@ var Designer =  React.createClass({
             }
             return style;
         }
-
         return (
+
             <div>
                 <SplitPane orientation="horizontal" minSize="80">
                     <div>
@@ -351,10 +369,19 @@ var Designer =  React.createClass({
                                 </button>
                             </ModalTrigger>
                             &nbsp;&nbsp;
-                            <MyModalTrigger>
-                                <Preview data={store} />
+                            <MyModalTrigger modal={<HtmlInputRenderer data={store} />}>
+                                <button type="button" className="btn btn-primary">
+                                    <span className="glyphicon glyphicon-fullscreen"></span>
+                                </button>
                             </MyModalTrigger>
-                            <button type="button" className="btn btn-primary" onClick={this.pdf}>
+                            <MyModalTrigger modal={<HtmlRenderer schema={store} data={this.props.fakeData} />}>
+                                <button type="button" className="btn btn-primary">
+                                    <span className="glyphicon glyphicon-star"></span>
+                                </button>
+                            </MyModalTrigger>
+
+
+                            <button type="button" className="btn btn-primary" onClick={this.previewPdf}>
                                 <span className="glyphicon glyphicon-print"></span>
                             </button>
                         </div>

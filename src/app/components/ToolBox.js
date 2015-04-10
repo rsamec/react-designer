@@ -1,15 +1,11 @@
 var React = require('react');
-var TreeView = require('react-treeview');
+//var TreeView = require('react-treeview');
+var ReactBootstrap = require('react-bootstrap');
+var Accordion = ReactBootstrap.Accordion;
+var Panel = ReactBootstrap.Panel;
 
 var ToolBox = React.createClass({
     getDefaultProps:function(){
-        var bootstrapWidgets = ["Input","Button", "Panel","Glyphicon","Tooltip"];
-        var bootstrapControls = [];
-        _.each(bootstrapWidgets,function(widgetName){
-            var name = "ReactBootstrap." + widgetName;
-            bootstrapControls.push({'name':name, 'label': widgetName});
-        });
-
         return {
             dataSource: [
                 {
@@ -17,6 +13,7 @@ var ToolBox = React.createClass({
                     collapsed: false,
                     controls:[
                         {name: 'Container', label: 'Container'},
+                        {name: 'Repeater', label: 'Repeater'},
                     ]
                 },
                 {
@@ -28,26 +25,38 @@ var ToolBox = React.createClass({
                     ]
                 },
                 {
-                    type: 'Grids',
-                    collapsed: true,
-                    controls: [
-                        {name: 'React.Griddle', label: 'Griddle'}
-                    ]
-                },
-                {
-                    type: 'ReactBootstrap',
-                    collapsed: true,
-                    controls:bootstrapControls
-                },
-                {
                     type: 'Print',
                     collapsed: true,
                     controls: [
                         {name: 'TinyMceEditor', label: 'HtmlEditor'},
                         {name: 'TextBox', label: 'TextBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
+                        {name: 'ImageBox', label: 'ImageBox'},
                     ]
-                }
+                },
+                {
+                    type: 'ReactBootstrap',
+                    collapsed: true,
+                    controls:_.map(["Input","Button", "Panel","Glyphicon","Tooltip"],function(x){return {
+                        'name':"ReactBootstrap." + x, 'label': x}
+                    })
+                },
+                {
+                    type: 'Charts',
+                    collapsed: true,
+                    controls:_.map( ["Line","Bar","Radar","Polar","Pie","Doughnut"],function(x){return {
+                        'name':"ReactChartJs." + x, 'label': x}
+                    })
+                },
+                {
+                    type: 'Others',
+                    collapsed: true,
+                    controls: [
+                        {name: 'React.Griddle', label: 'Griddle'}
+                    ]
+                },
+
+
             ]
         }
     },
@@ -57,11 +66,10 @@ var ToolBox = React.createClass({
     render: function() {
         return (
             <div>
+                <Accordion>
             {this.props.dataSource.map(function(node, i) {
-                var type = node.type;
-                var label = <span className="node">{type}</span>;
                 return (
-                    <TreeView key={type + '|' + i} nodeLabel={label} defaultCollapsed={false}>
+                    <Panel header={node.type} eventKey={i}>
                       {node.controls.map(function(ctrl, j) {
                           return (
                               <button type="button" className="btn btn-primary" onClick={this.handleClick.bind(null,ctrl)} >
@@ -69,9 +77,10 @@ var ToolBox = React.createClass({
                               </button>
                           );
                       },this)}
-                    </TreeView>
+                    </Panel>
                 );
             }, this)}
+                </Accordion>
             </div>
         );
     }

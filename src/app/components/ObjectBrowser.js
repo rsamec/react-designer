@@ -25,6 +25,7 @@ var TreeNode = React.createClass({
         return (
             <div>
         {this.props.nodes.map(function (node, i) {
+//            if (node === null)  this.props.nodes.splice(0,1);// {elementName:"Container",name:"!!!"}
             var type = node.elementName;
             var selected = this.props.current === node;
             var cssClass = 'node';

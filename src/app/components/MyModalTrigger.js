@@ -1,5 +1,6 @@
-var React = require('react');
+var React = require('react/addons');
 var MyModal = require('./MyModal');
+var createChainedFunction = require('../utilities/createChainedFunction');
 
 var ReactLayeredComponentMixin = {
     componentWillUnmount: function() {
@@ -30,33 +31,25 @@ var ReactLayeredComponentMixin = {
 
 var MyModalTrigger = React.createClass({
     mixins: [ReactLayeredComponentMixin],
-    handleClick: function() {
+    toggle: function() {
         this.setState({shown: !this.state.shown});
     },
     getInitialState: function() {
-        return {shown: false, ticks: 0, modalShown: false};
-    },
-    componentDidMount: function() {
-        setInterval(this.tick, 1000);
-    },
-    tick: function() {
-        this.setState({ticks: this.state.ticks + 1});
+        return {shown: false, modalShown: false};
     },
     renderLayer: function() {
         if (!this.state.shown) {
             return <span />;
         }
         return (
-            <MyModal onRequestClose={this.handleClick}>
-                {this.props.children}
+            <MyModal onRequestClose={this.toggle}>
+                {this.props.modal}
             </MyModal>
         );
     },
     render: function() {
-        return (
-        <button type="button" className="btn btn-primary" onClick={this.handleClick}>
-            <span className="glyphicon glyphicon-fullscreen"></span>
-        </button>)
+        var child = React.Children.only(this.props.children);
+        return React.addons.cloneWithProps(child,{onClick: createChainedFunction(child.props.onClick, this.toggle)});
     }
 });
 

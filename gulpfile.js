@@ -5,13 +5,23 @@ var gulp = require('gulp'),
     connect = $.connectMulti,
     wiredep = require('wiredep').stream,
     devServer = connect(),
-    proServer = connect();
+    proServer = connect(),
+    babel = require("gulp-babel"),
+    babelify = require("babelify");
+
+
 
 gulp.task('connect-dev', devServer.server({
     root: ['src'],
     port: 8989,
     livereload: true
 }));
+
+gulp.task("babel", function () {
+    return gulp.src("src/app.js")
+        .pipe(babel())
+        .pipe(gulp.dest("dist"));
+});
 
 gulp.task('connect-pro', proServer.server({
     root: ['dist'],
@@ -116,11 +126,7 @@ gulp.task('browserify', ['lint'], function() {
                     tinymce: {
                         path: 'node_modules/tinymce/tinymce.js',
                         exports: 'tinymce'
-                    },
-                    //bytescout:{
-                    //    path:'src/bower_components/bytescoutpdfjs/bytescoutpdf1.12.134.js',
-                    //    exports: 'bytescout'
-                    //}
+                    }
                 }
             }))
             .on('prebundle', function(bundler) {

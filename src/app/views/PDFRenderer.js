@@ -1,48 +1,52 @@
 var React = require('react');
 var traverse = require('traverse');
-var PathObjecBinder = require('../components/PathObjectBinder');
+var transformToPages = require('../utilities/transformToPages');
+
+var PathObjecBinder = require('../utilities/pathObjectBinder');
 
 var PDFRenderer = {
     transformToPdf:function(schema,data){
+
         var binder = new PathObjecBinder(function(){return data;});
-        var clone = traverse(schema).map(function (x) {
-            return x;
-        });
-        //transform from relative to absolute
-        var containers = traverse(clone).map(function (x) {
-            if (this.key === "containers"){
-                var heigth =0;
-                for (var i in x){
-                    var container = x[i];
-                    container.style.top = heigth;
-                    var tempHeight =parseInt(container.style.height,10);
-                    heigth +=  tempHeight!==undefined?tempHeight:0;
-                }
-            }
-            return x;
-        });
+        var pages = transformToPages(schema,data);
 
         var pdf = {
             pages:[]
         };
         // add new page
-        var newPage = {
-            width:595,
-            height:842,
-            boxes:[]
-        };
-        pdf.pages.push(newPage);
 
-        var boxes = [];
+        var defaultFontOptions ={
+            "fontPath":"./resources/fonts/arial.ttf",
+            "size":10,
+            "color":"black"
+        }
         var rectOptions ={
             "type":"stroke",
             "color":"gray"
         }
-        var textOptions = {
-            "fontPath":"./resources/fonts/arial.ttf",
-            "size":10,
-            "color":"black"
-        };
+
+
+        var mapFontName = function(font){
+            if (font === undefined) return "arial";
+            if (font.bold && font.italic) return "arialbi";
+            if (font.bold) return "arial";
+            if (font.italic) return "ariali";
+            return "arial"
+        }
+        var mapFontOptions = function(font){
+
+            if (font === undefined) return defaultFontOptions;
+            //if (!!font) console.log("Font : './resources/fonts/" + mapFontName(font) + ".ttf'");
+            var color = defaultFontOptions.color;
+            if (!!font.color){
+                color =font.color[0]!="#"?font.color:parseInt(font.color.replace("#",""), 16);
+            }
+            return {
+                "fontPath": !!font? "./resources/fonts/" + mapFontName(font) + ".ttf":defaultFontOptions.fontPath,
+                "size":!!font.size?parseInt(font.size,10):defaultFontOptions.size,
+                "color":color
+            }
+        }
 
         var mapTextBox = function(el, size){
            return {
@@ -55,7 +59,7 @@ var PDFRenderer = {
                         {
                             type: "text",
                             text: [el.content],
-                            options: textOptions
+                            options: mapFontOptions(el.font)
                         }
                     ]
                 }
@@ -67,51 +71,57 @@ var PDFRenderer = {
                 left: size.left,
                 text: {
                     text: binder.getValue(el.Binding),
-                    options: textOptions
+                    options: mapFontOptions(el.font)
                 }
             }
         }
+        var externals = {};
 
-        //extract
-        var pages = traverse(containers).reduce(function (occ,x) {
-
-            if (this.key === "boxes"){
-                var parent = this.parent.node;
-                //console.log("style:" + node.style.top + " " + node.style.height + " " + node.style.left + " " + node.style.width);
-
-                for (var i in x) {
-                    var el = x[i];
-                    var top = parseInt(parent.style.top, 10) + parseInt(el.style.top, 10);
-                    var left = parseInt(parent.style.left, 10) + parseInt(el.style.left, 10);
-                    //TODO: !!!! temporarily - container width simulates boxes width
-                    var height = parseInt(parent.style.height, 10);
-                    var width = parseInt(parent.style.width, 10);
-
-                    if (isNaN(height)) height = 0;
-                    if (isNaN(width)) width = 0;
-
-                    var sizes = {
-                        top:842 - top,
-                        left:left,
-                        height:height,
-                        width:width
+        var mapImageBox = function(el, size){
+            externals[el.name] = el.url;
+            return  {
+                top: size.top,
+                left: size.left,
+                image: {
+                    external: el.name,
+                    transformation:{
+                        width: el.width * pixelPerPoint,
+                        height:el.height * pixelPerPoint
                     }
-
-                    var newBox = undefined;
-                    if (el.elementName === "TextBox" && el.content !== undefined){
-                        newBox = mapTextBox(el,sizes)
-                    }
-                    else if (el.elementName === "ValueBox" && !!el.Binding){
-                        newBox = mapValueBox(el,sizes);
-                    }
-
-                    if (newBox !== undefined)  boxes.push(newBox);
                 }
             }
-            return occ;
-        }, boxes);
+        }
+        var pixelPerPoint = 0.75;
+        var marginPoints =  21.6; //7,62 mm
+        var mapBox = function(node){
+            var sizes = {
+                top:842 - ((node.style.top * pixelPerPoint) +  marginPoints),
+                left:node.style.left * pixelPerPoint + marginPoints,
+                height:node.style.height * pixelPerPoint,
+                width:node.style.width * pixelPerPoint
+            };
+            var el = node.element;
+            if (el.elementName === "TextBox" && el.content !== undefined) return mapTextBox(el, sizes);
+            if (el.elementName === "ValueBox" && !!el.Binding) return mapValueBox(el,sizes);
+            if (el.elementName === "ImageBox" && el.url !== undefined) return mapImageBox(el,sizes);
 
-        newPage.boxes = boxes;
+            return;
+        }
+
+        //extract
+        var pdf = {
+            externals:externals,
+            pages: pages.map(function (page) {
+                return {
+                    width: 595,
+                    height: 842,
+                    boxes: _.filter(page.boxes.map(function (box) {
+                        return mapBox(box)
+                    }),function(item){return item !== undefined})
+                };
+            })
+        };
+
         return pdf;
     }
 };
