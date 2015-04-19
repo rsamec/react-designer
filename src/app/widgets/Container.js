@@ -108,17 +108,6 @@ var Container = React.createClass({
         if (widgets[box.elementName] === undefined){
             return React.DOM.span(null,"Component '" + box.elementName + "' is not register among widgets.")
         }
-
-        if (box.elementName === "TinyMceEditor") {
-            var selfCurrentSetter = this.props.currentPropChanged;
-            var contentSetter = function(content){
-                var updated = box.set({'content':content});
-                selfCurrentSetter(updated);
-                box = updated;
-            }
-            return React.createElement(widgets[box.elementName], {'tinyMceEditor':this.props.tinyMceEditor,'content':box.content, contentSetter:contentSetter});
-        }
-
         return React.createElement(widgets[box.elementName],_.omit(box,'style'), box.content!== undefined?React.DOM.span(null, box.content):undefined);
     },
     handleClick: function (e) {
@@ -132,10 +121,14 @@ var Container = React.createClass({
         var handle = 30;
 
         var size = {top:(this.props.height-handle), left: (this.props.width -handle)};
-        var cssClass = 'cContainer';
-        if (this.props.selected) cssClass += ' selected';
+        var cx = React.addons.classSet;
+        var classes = cx({
+            'cContainer': true,
+            'selected': this.props.selected,
+            'root': this.props.isRoot
+        });
         return (
-            <div className={cssClass} onClick={this.handleClick}  style={{
+            <div className={classes} onClick={this.handleClick}  style={{
                 left: this.props.left,
                 top: this.props.top,
                 height: this.props.height,
@@ -165,7 +158,6 @@ var Container = React.createClass({
                          height={box.style.height}
                          width={box.style.width}
                          position={box.style.position}
-                         tinyMceEditor={this.props.tinyMceEditor}
                          boxes={item.boxes}
                          containers={item.containers}
                          currentPropChanged={this.props.currentPropChanged}

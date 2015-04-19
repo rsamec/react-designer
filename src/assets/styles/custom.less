@@ -17,17 +17,16 @@
 .error{
     color:red;
 }
-.hobbyList{
-
-}
 
 .cWorkplace{
-    background-image: url("../../assets/images/grid.png");
-    background-repeat: repeat;
+//    background-image: url("../../assets/images/grid.png");
+//    background-repeat: repeat;
     border:solid 1px blue;
     width:100%;
     height:100%;
+    position: relative
 }
+
 .cContainer{
     min-height:20px;
     min-width:20px;
@@ -39,6 +38,13 @@
     border-width: 3px;
     border-color: red;
 }
+.cContainer.root {
+    background-image: url("../../assets/images/grid.png");
+    background-repeat: repeat;
+    min-height: 100vh;
+
+}
+
 .cBox {
     position: absolute;
     border: 1px dashed gray;
@@ -202,3 +208,16 @@ html, body {
     HEIGHT: 297mm;
     BACKGROUND-COLOR: white
 }
+.Tile {
+    border: 2px solid black;
+    height: 193px;
+    width: 246px;
+    position: relative;
+    float: left;
+    margin-left: 15px;
+    margin-top: 15px;
+    div {
+        position:relative;
+    }
+}
+

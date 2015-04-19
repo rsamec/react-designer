@@ -5,11 +5,10 @@
   color: red;
 }
 .cWorkplace {
-  background-image: url("../../assets/images/grid.png");
-  background-repeat: repeat;
   border: solid 1px blue;
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .cContainer {
   min-height: 20px;
@@ -21,6 +20,11 @@
 .cContainer.selected {
   border-width: 3px;
   border-color: red;
+}
+.cContainer.root {
+  background-image: url("../../assets/images/grid.png");
+  background-repeat: repeat;
+  min-height: 100vh;
 }
 .cBox {
   position: absolute;
@@ -174,4 +178,16 @@ body {
   WIDTH: 210mm;
   HEIGHT: 297mm;
   BACKGROUND-COLOR: #ffffff;
+}
+.Tile {
+  border: 2px solid black;
+  height: 193px;
+  width: 246px;
+  position: relative;
+  float: left;
+  margin-left: 15px;
+  margin-top: 15px;
+}
+.Tile div {
+  position: relative;
 }

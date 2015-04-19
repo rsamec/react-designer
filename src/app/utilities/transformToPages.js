@@ -1,9 +1,25 @@
+'use strict';
+
 var traverse = require('traverse');
 var deepClone = require('../utilities/deepClone');
 
 //binding
 var PathObjecBinder = require('./pathObjectBinder');
 
+/**
+ * This reduce containers objects (containers, repeaters) to boxes group by pages.
+ * This reduce object schema tree to flat boxes group by pages.
+ * The transformation has these steps
+ * -    transform relative positions to absolute positions (top, left)
+ * -    removes all content in hidden containers
+ * -    expands repeatable container (using repeater binding)
+ * -    group to pages
+ * -    apply data binding
+ *
+ * @param {object} schema - object schema tree
+ * @param {object} data - data context used for data binding
+ * @returns {object} schema to render -> pages with boxes with data-binded values
+ */
 function transformToPages(schema,data){
 
     var binder = new PathObjecBinder(function(){return data});
@@ -98,6 +114,18 @@ function transformToPages(schema,data){
         }
         return occ;
     }, pages);
+
+
+    //apply binding
+    _.each(pages,function(page){
+        _.each(page.boxes,function(node) {
+            var box = node.element;
+            if (!!box.Binding){
+                box.content = binder.getValue(box.Binding);
+            }
+        })
+    })
+
     return pages;
 }
 

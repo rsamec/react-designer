@@ -1,9 +1,13 @@
+'use strict';
+
 var React = require('react');
+var ColorPicker = require('react-color-picker');
+
+//bootstrap
 var Bootstrap = require('react-bootstrap');
 var Modal = Bootstrap.Modal;
 var ModalTrigger = Bootstrap.ModalTrigger;
 var Button = Bootstrap.Button;
-var ColorPicker = require('react-color-picker');
 
 var ColorPickerDialog = React.createClass({
      render: function() {

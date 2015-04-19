@@ -1,5 +1,8 @@
+'use strict';
+
 var React = require('react');
-//var TreeView = require('react-treeview');
+
+//bootstrap
 var ReactBootstrap = require('react-bootstrap');
 var Accordion = ReactBootstrap.Accordion;
 var Panel = ReactBootstrap.Panel;
@@ -28,7 +31,7 @@ var ToolBox = React.createClass({
                     type: 'Print',
                     collapsed: true,
                     controls: [
-                        {name: 'TinyMceEditor', label: 'HtmlEditor'},
+                        {name: 'HtmlEditor', label: 'HtmlEditor'},
                         {name: 'TextBox', label: 'TextBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
                         {name: 'ImageBox', label: 'ImageBox'},
@@ -46,7 +49,7 @@ var ToolBox = React.createClass({
                     collapsed: true,
                     controls:_.map( ["Line","Bar","Radar","Polar","Pie","Doughnut"],function(x){return {
                         'name':"ReactChartJs." + x, 'label': x}
-                    })
+                    }).concat(_.map(["LineChart","BarChart","AreaChart","Treemap","PieChart","ScatterChart","CandleStickChart"],function(x){return { 'name':"ReactD3." + x, 'label': x}}))
                 },
                 {
                     type: 'Others',

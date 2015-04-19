@@ -136,6 +136,12 @@ gulp.task('browserify', ['lint'], function() {
             .pipe($.size());
 });
 
+gulp.task('stylus', function () {
+    gulp.src('assets/styles/propertyGrid.styl')
+        .pipe(stylus())
+        .pipe(gulp.dest('./css/build'));
+});
+
 gulp.task('refresh', ['browserify'], function() {
     gulp.src('src/scripts/app.js')
         .pipe(devServer.reload());

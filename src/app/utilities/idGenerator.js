@@ -1,6 +1,4 @@
-/**
- * Created by rsamec on 1.3.2015.
- */
+'use strict';
 
 var IDGenerator = function() {
 

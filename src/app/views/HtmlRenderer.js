@@ -3,9 +3,6 @@ var transformToPages = require('../utilities/transformToPages');
 
 var WidgetFactory = require('../components/WidgetFactory');
 
-//binding
-var PathObjecBinder = require('../utilities/pathObjectBinder');
-
 var widgets = WidgetFactory.getWidgets();
 
 var HtmlPage = React.createClass({
@@ -21,22 +18,13 @@ var HtmlPage = React.createClass({
     }
 });
 var HtmlRenderer = React.createClass({
-
     createComponent: function (box) {
-        var selfData = this.props.data;
-        var binder = new PathObjecBinder(function(){return selfData;});
-
         var widget =widgets[box.elementName];
         if (widget === undefined){
             return React.DOM.span(null,"Component '" + box.elementName + "' is not register among widgets.")
         }
-        //apply binding
-        if (!!box.Binding){
-           box.content = binder.getValue(box.Binding);
-        }
         var props = _.omit(box,'style');
         return React.createElement(widget,props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
-
     },
     render: function () {
         var pages = transformToPages(this.props.schema,this.props.data);

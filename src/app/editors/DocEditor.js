@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var Freezer = require('freezer-js');
 var Bootstrap = require('react-bootstrap');
@@ -435,10 +437,9 @@ var JsonDialogEditor = React.createClass({
     componentWillMount:function(){
         var rawJson = deepClone(this.props.json!==undefined?this.props.json:{});
         this.frozenStore= new Freezer({"json":rawJson})
-        console.log("JsonDialogEditor mounted");
     },
     render:function(){
-        return (<Modal bsStyle="primary" title="Color picker" animation={false}>
+        return (<Modal bsStyle="primary" title="JSON editor" animation={false}>
             <div className="modal-body">
                 <DocEditor store={ this.frozenStore } original={ this.frozenStore.get() }/>)
             </div>
@@ -449,6 +450,35 @@ var JsonDialogEditor = React.createClass({
         </Modal>)
     }
 })
+var JsonDialogImport = React.createClass({
+    getInitialState:function(){
+        return {value:JSON.stringify(this.props.value,null,2)}
+    },
+    handleChange:function(e){
+      this.setState({value:e.target.value})
+    },
+    ok:function(){
+        this.props.handleChange(JSON.parse(this.state.value));
+        this.props.onRequestHide();
+    },
+    //componentWillMount:function(){
+    //    var rawJson = deepClone(this.props.json!==undefined?this.props.json:{});
+    //    this.frozenStore= new Freezer({"json":rawJson})
+    //},
+    render:function(){
+        var value = JSON.stringify(this.props.value);
+        return (<Modal bsStyle="primary" title="JSON importer" animation={false}>
+            <div className="modal-body">
+                <textarea rows="10" cols="70" value={this.state.value}  onChange={this.handleChange} />
+            </div>
+            <div className="modal-footer">
+                <Button onClick={this.ok}>OK</Button>
+                <Button onClick={this.props.onRequestHide}>Close</Button>
+            </div>
+        </Modal>)
+    }
+})
+
 var JsonEditor = React.createClass({
     handleChange:function(value){
         var wrapEvent = {
@@ -469,6 +499,11 @@ var JsonEditor = React.createClass({
                 </td>
                 <td>
                     <ModalTrigger modal={<JsonDialogEditor json={value} confirm={this.handleChange} />}>
+                        <button type="button" className="btn btn-primary">
+                            <span className="glyphicon glyphicon-fullscreen"></span>
+                        </button>
+                    </ModalTrigger>
+                    <ModalTrigger modal={<JsonDialogImport value={value} handleChange={this.handleChange} />}>
                         <button type="button" className="btn btn-primary">
                             <span className="glyphicon glyphicon-fullscreen"></span>
                         </button>

@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 
 //editors
@@ -6,10 +8,12 @@ var BoolEditor = require('../editors/BoolEditor');
 var JsonEditor = require('../editors/DocEditor');
 var colorEditor = require('../editors/ColorPickerEditor');
 var dropDownEditor = require('../editors/DropDownEditor');
+var htmlEditor = require('../editors/HtmlEditor');
 
 //widgets
 var ReactBootstrap = require('react-bootstrap');
 var ReactChartJs = require('react-chartjs');
+var rd3 = require('react-d3');
 
 var WidgetFactory = (function () {
 
@@ -18,12 +22,11 @@ var WidgetFactory = (function () {
         "CheckBoxInput": require('../widgets/TextBoxInput'),
         "TextBox": require('../widgets/TextBox'),
         "ValueBox": require('../widgets/ValueBox'),
-        "Html":require('../widgets/HtmlRenderer'),
+        "HtmlBox":require('../widgets/HtmlRenderer'),
         "TinyMceEditor":require('../widgets/HtmlRenderer'),
         "React.Griddle":require('griddle-react'),
         "ImageBox":require('../widgets/ImageBox')
     }
-
 
     var bootstrapWidgets =["Input","Button", "Panel","Glyphicon","Tooltip"];
     _.each(bootstrapWidgets,function(widgetName){
@@ -33,6 +36,10 @@ var WidgetFactory = (function () {
 
     _.each(["Line","Bar","Radar","Polar","Pie","Doughnut"], function(name){
         widgets["ReactChartJs." + name] = ReactChartJs[name];
+    });
+
+    _.each(["LineChart","BarChart","AreaChart","Treemap","PieChart","ScatterChart","CandleStickChart"], function(name){
+        widgets["ReactD3." + name] = rd3[name];
     });
 
     var getProperties = function() {
@@ -83,7 +90,14 @@ var WidgetFactory = (function () {
             "ReactChartJs.Polar":commonProps.concat([{name:'data',editor:JsonEditor},{name:'options',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor}]),
             "ReactChartJs.Pie":commonProps.concat([{name:'data',editor:JsonEditor},{name:'options',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor}]),
             "ReactChartJs.Doughnut":commonProps.concat([{name:'data',editor:JsonEditor},{name:'options',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor}]),
-            "TinyMceEditor":commonProps.concat([{name:'content'},{label:'Html'}]),
+            "ReactD3.LineChart":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "ReactD3.ScatterChart":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "ReactD3.BarChart":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "ReactD3.AreaChart":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "ReactD3.PieChart":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "ReactD3.Treemap":commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
+            "HtmlBox":commonProps.concat([{name:'content',label:'Html', editor:htmlEditor},{name:'columnCount',editor:numEditor}]),
+            "TinyMceEditor":commonProps.concat([{name:'content',label:'Html', editor:htmlEditor},{name:'columnCount',editor:numEditor}]),
             "React.Griddle":commonProps.concat([{name:'showFilter',editor: BoolEditor},{name:'showSettings',editor: BoolEditor},{name:'Binding'},{name:'results',editor:JsonEditor}]),
             "ReactBootstrap.Button":commonProps.concat([{name:'bsStyle'},{name:'bsSize'},{name:'content'}]),
             "ReactBootstrap.Input": commonProps.concat([{name:'type'},{name:'placeholder'},{name:'label'},{name:'help'},{name:'value'},{name:'Binding'}]),

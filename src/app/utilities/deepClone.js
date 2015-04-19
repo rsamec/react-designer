@@ -1,9 +1,11 @@
+'use strict';
+
 /**
  * Create a deep-copied clone of the provided plain object. Any nested objects or arrays will be cloned either.
  *
  * @param from - source object
  * @param to - target object
- * @returns {*}
+ * @returns deep-cloned object
  */
 function deepClone(from, to) {
     if (from == null || typeof from != "object") return from;

@@ -2,19 +2,16 @@ var React = require('react');
 var traverse = require('traverse');
 var transformToPages = require('../utilities/transformToPages');
 
-var PathObjecBinder = require('../utilities/pathObjectBinder');
-
 var PDFRenderer = {
     transformToPdf:function(schema,data){
 
-        var binder = new PathObjecBinder(function(){return data;});
         var pages = transformToPages(schema,data);
 
         var pdf = {
             pages:[]
         };
-        // add new page
 
+        // add new page
         var defaultFontOptions ={
             "fontPath":"./resources/fonts/arial.ttf",
             "size":10,
@@ -36,7 +33,7 @@ var PDFRenderer = {
         var mapFontOptions = function(font){
 
             if (font === undefined) return defaultFontOptions;
-            //if (!!font) console.log("Font : './resources/fonts/" + mapFontName(font) + ".ttf'");
+
             var color = defaultFontOptions.color;
             if (!!font.color){
                 color =font.color[0]!="#"?font.color:parseInt(font.color.replace("#",""), 16);
@@ -70,7 +67,7 @@ var PDFRenderer = {
                 top: size.top,
                 left: size.left,
                 text: {
-                    text: binder.getValue(el.Binding),
+                    text: el.content,
                     options: mapFontOptions(el.font)
                 }
             }

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Safe chained function
  *

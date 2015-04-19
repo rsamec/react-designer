@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 
 //preview and container
@@ -10,8 +12,8 @@ var Container = require('./widgets/Container');
 var ToolBox = require('./components/ToolBox');
 var ObjectBrowser = require('./components/ObjectBrowser');
 var PrettyJson = require('./components/PrettyJson');
-var TinyMceEditor = require('./editors/TinyMceEditor');
 var MyPropertyGrid = require('./components/MyPropertyGrid');
+var Tile = require('./components/Tile');
 
 //bootstrap
 var Modal = require('react-bootstrap').Modal;
@@ -19,12 +21,15 @@ var ModalTrigger = require('react-bootstrap').ModalTrigger;
 var MyModalTrigger = require('./components/MyModalTrigger');
 var Button = require('react-bootstrap').Button;
 var Panel = require('react-bootstrap').Panel;
+var DropdownButton = require('react-bootstrap').DropdownButton;
+var MenuItem = require('react-bootstrap').MenuItem;
 
-var TabPanel = require('react-tab-panel');
+
 
 var traverse = require('traverse');
 var Freezer = require('freezer-js');
 var idGenerator = require('./utilities/idGenerator');
+var transformToPages = require('./utilities/transformToPages');
 
 var emptyObjectSchema = {containers:[]};
 // Create a Freezer store
@@ -33,21 +38,7 @@ var frozen = new Freezer(emptyObjectSchema);
 var SplitPane = require('./react-split-pane/SplitPane');
 
 
-var HtmlEditorModal = React.createClass({
-    render: function() {
-        return (
-            <Modal bsStyle="primary" title="Modal heading" animation={false}>
-                <div className="modal-body">
-                    <TinyMceEditor {...this.props} />
-                </div>
-                <div className="modal-footer">
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
-            </Modal>
-        );
-    }
-});
-var InputDialog = React.createClass({
+var SaveAsDialog = React.createClass({
     getInitialState:function(){
         return {storageKey:this.props.storageKey};
     },
@@ -61,9 +52,102 @@ var InputDialog = React.createClass({
 
     render: function() {
         return (
-            <Modal bsStyle="primary" title="Modal heading" animation={false}>
+            <Modal bsStyle="primary" title="Rename document" animation={false}>
                 <div className="modal-body">
                     <input type="text" value={this.state.storageKey} onChange={this.onChange} />
+                </div>
+                <div className="modal-footer">
+                    <Button onClick={this.ok}>OK</Button>
+                    <Button onClick={this.props.onRequestHide}>Close</Button>
+                </div>
+            </Modal>
+        );
+    }
+});
+
+var LoadDialog = React.createClass({
+    getInitialState:function(){
+        return {storageKey:this.props.storageKey};
+    },
+    onChange:function(e){
+        this.setState({storageKey:e.target.value});
+    },
+    ok:function(e){
+        this.props.confirm(this.state.storageKey);
+        this.props.onRequestHide();
+    },
+
+    render: function() {
+       var keys = [];
+        for (var i=0;i !== localStorage.length;i++)
+        {
+            keys.push(localStorage.key(i));
+        };
+        var tiles = keys.map(function(key){return (
+            <Tile>{key}</Tile>
+        )});
+
+        return (
+            <Modal bsStyle="primary" title="Load document" animation={false}>
+                <div className="modal-body">
+                    <div>
+                        {tiles}
+                    </div>
+                </div>
+                <div className="modal-footer">
+                    <Button onClick={this.ok}>OK</Button>
+                    <Button onClick={this.props.onRequestHide}>Close</Button>
+                </div>
+            </Modal>
+        );
+    }
+});
+
+var FilePickerDialog = React.createClass({
+    getInitialState:function(){
+        return {storageKey:this.props.storageKey};
+    },
+    onChange:function(e) {
+
+        var files = e.target.files; // FileList object
+        var JsonObj;
+        // Loop through the FileList
+        for (var i = 0, f; f = files[i]; i++) {
+
+            // Only process image files.
+            if (!f.type.match('image.*')) {
+                continue;
+            }
+
+            var reader = new FileReader();
+
+            // Closure to capture the file information.
+            reader.onload = (function(theFile) {
+                return function(e) {
+                    // Render thumbnail.
+                    JsonObj = JSON.parse(e.target.result);
+                    console.log(JsonObj);
+                };
+            })(f);
+            // Read in the file as a data URL.
+            reader.readAsText(f);
+        }
+
+        this.setState({storageKey: e.target.value});
+    },
+    ok:function(e){
+        this.props.confirm(this.state.storageKey);
+        this.props.onRequestHide();
+    },
+
+    render: function() {
+
+        return (
+            <Modal bsStyle="primary" title="File picker document" animation={false}>
+                <div className="modal-body">
+                    <input type="file" onChange={this.onChange} />
+
+
                 </div>
                 <div className="modal-footer">
                     <Button onClick={this.ok}>OK</Button>
@@ -81,15 +165,14 @@ var Workplace = React.createClass({
         }.bind(this);
         return (
             <div className="cWorkplace">
-                <Container tinyMceEditor={this.props.htmlEditor}
-                    containers={this.props.store.containers}
-                    boxes={this.props.store.boxes}
-                    currentPropChanged={this.props.currentChanged}
-                    current={this.props.current}
-                    handleClick={handleClick}
-                    height="100vh"
-
-                />
+                    <Container
+                        containers={this.props.store.containers}
+                        boxes={this.props.store.boxes}
+                        currentPropChanged={this.props.currentChanged}
+                        current={this.props.current}
+                        handleClick={handleClick}
+                        isRoot={true}
+                    />
             </div>
         );
     }
@@ -172,7 +255,7 @@ var Designer =  React.createClass({
         // We create a state with all the history
         // and the index to the current store
         return {
-            storageKey:'print',
+            storageKey:'Untitled document',
             storeHistory: [ this.props.store.get() ],
             currentStore: 0,
             jsonShown:false,
@@ -188,27 +271,8 @@ var Designer =  React.createClass({
                   {HobbyName: 'Bandbington', Frequency: 'Daily'},
                   {HobbyName: 'Tennis', Frequency: 'Yearly'},
                   {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'},
-                    {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                    {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                    {HobbyName: 'Reading', Frequency: 'Monthly'},
-                    {HobbyName: 'Cycling', Frequency: 'Daily'},
-                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                  {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'},
-                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                  {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'},
-                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                  {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'},
-                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                  {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'}]
+                  {HobbyName: 'Cycling', Frequency: 'Daily'}
+                  ]
           }
       };
     },
@@ -240,10 +304,10 @@ var Designer =  React.createClass({
             });
     },
     loadDialog:function(){
-        return React.createElement(InputDialog,{confirm:this.load, storageKey:this.state.storageKey});
+        return React.createElement(LoadDialog,{confirm:this.load, storageKey:this.state.storageKey});
     },
     saveDialog:function(){
-        return React.createElement(InputDialog,{confirm:this.saveAs,storageKey:this.state.storageKey});
+        return React.createElement(SaveAsDialog,{confirm:this.saveAs,storageKey:this.state.storageKey});
     },
     setCurrentProps:function(currentValue){
         this.setState({currentValue:currentValue});
@@ -292,10 +356,19 @@ var Designer =  React.createClass({
     },
     previewPdf:function() {
 
-        var fakeData = {Employee:{FirstName:'John'}};
+        //var fakeData = {Employee:{FirstName:'John'}};
 
         var defaultDocument = PDFRenderer.transformToPdf(this.props.store.get(),this.props.fakeData);
         hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
+            window.open(url);
+        });
+
+    },
+    previewPdf2:function() {
+
+        var schema = this.props.store.get();
+        var pages = transformToPages(schema,this.props.fakeData);
+        pdfKitService.generatePDFDocument('http://localhost:3000', JSON.stringify(pages), function (url) {
             window.open(url);
         });
 
@@ -324,6 +397,20 @@ var Designer =  React.createClass({
                 // The change has been already triggered by the state, no need of re-render
             }
         });
+    },
+    handlePreview:function(e){
+        console.log(e);
+        if (e === "PdfHummus"){
+            this.previewPdf();
+        }else if (e === "PdfKit"){
+            this.previewPdf2();
+        }
+        else{
+
+        }
+    },
+    handleMenuClick:function(e) {
+        console.log(e);
     },
     render:function(){
         var store = this.props.store.get(),
@@ -363,11 +450,7 @@ var Designer =  React.createClass({
                                     <span className="glyphicon glyphicon-floppy-open"></span>
                                 </button>
                             </ModalTrigger>
-                            <ModalTrigger modal={this.saveDialog()}>
-                                <button disabled={ disabledUndo } type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-floppy-save"></span>
-                                </button>
-                            </ModalTrigger>
+
                             &nbsp;&nbsp;
                             <MyModalTrigger modal={<HtmlInputRenderer data={store} />}>
                                 <button type="button" className="btn btn-primary">
@@ -380,19 +463,27 @@ var Designer =  React.createClass({
                                 </button>
                             </MyModalTrigger>
 
+                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
+                                <Button bsStyle='link'>{this.state.storageKey}</Button>
+                            </ModalTrigger>
 
-                            <button type="button" className="btn btn-primary" onClick={this.previewPdf}>
-                                <span className="glyphicon glyphicon-print"></span>
-                            </button>
+                            <DropdownButton className='pull-right' bsStyle='primary' title="Preview" onSelect={this.handlePreview}>
+                                <MenuItem onClick={this.handleMenuClick} eventKey='Screen'>Screen</MenuItem>
+                                <MenuItem eventKey='Page'>Page</MenuItem>
+                                <MenuItem divider />
+                                <MenuItem eventKey='PdfHummus'>PDF - Hummus</MenuItem>
+                                <MenuItem eventKey='PdfKit'>PDF - PdfKit</MenuItem>
+                            </DropdownButton>
                         </div>
                         <div>
                             <div style={toogleVisibleState(!this.state.jsonShown)}>
-                                <Workplace store={store} current={this.state.currentValue} currentChanged={this.setCurrentProps} htmlEditor={HtmlEditorModal}/>
+                                <Workplace store={store} current={this.state.currentValue} currentChanged={this.setCurrentProps}/>
                             </div>
                             <div style={toogleVisibleState(this.state.jsonShown)}>
                                 <PrettyJson json={store} />
                             </div>
                         </div>
+
                     </div>
                     <div style={{'min-width':'300px'}}>
                         <div>

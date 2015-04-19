@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react/addons');
 var MyModal = require('./MyModal');
 var createChainedFunction = require('../utilities/createChainedFunction');

@@ -1,3 +1,5 @@
+'use strict';
+
 var React = require('react');
 var PropertyGrid = require('property-grid');
 var PathObjecBinder = require('./../utilities/pathObjectBinder');

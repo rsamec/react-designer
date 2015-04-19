@@ -1,6 +1,5 @@
-/**
- * Created by rsamec on 1.3.2015.
- */
+'use strict';
+
 module.exports = {
     BLOCK: 'block',
     IMAGE: 'image',

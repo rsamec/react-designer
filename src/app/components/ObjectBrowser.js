@@ -1,7 +1,7 @@
+'use strict';
+
 var React = require('react');
 var TreeView = require('react-treeview');
-
-
 
 var ObjectBrowser = React.createClass({
 
