@@ -31,13 +31,13 @@ var Container = React.createClass({
                 }
             });
             register(ItemTypes.RESIZABLE_HANDLE, {
-                dragSource: {
-                    beginDrag: function (component) {
-                        return {
-                            item: component.props
-                        };
-                    }
-                },
+                //dragSource: {
+                //    beginDrag: function (component) {
+                //        return {
+                //            item: component.props
+                //        };
+                //    }
+                //},
                 dropTarget: {
                     acceptDrop: function (component, item) {
 
@@ -45,14 +45,18 @@ var Container = React.createClass({
                             left = Math.round(item.left + 30 + delta.x),
                             top = Math.round(item.top + 30 +  delta.y);
 
-                       component.resizeContainer(item.parent, left, top).bind(this);
-
+                      component.resizeContainer(item.parent, left, top);
+                        //TODO: find solution to problem:
+                        // resize (larger) - drop is out of container -> the component is parent container -> OK
+                        // resize (smaller) - drop is in container -> the component is component itself -> does not work - workaround throw any error
+                        //var isParentComponent = component.props.parent === component.props.current.node;
+                        //if (isParentComponent)
+                        throw 'Resize container error - it is temporary error (sorry for this ugly workaround).';
                     }
                 }
             });
         }
     },
-
     moveBox: function (index, left, top) {
         var boxes = this.props.boxes;
         if (boxes === undefined) return;
@@ -70,16 +74,18 @@ var Container = React.createClass({
         style.width = width;
         style.height = height;
 
+        //var newStyle = {'style':{'top':container.top,'left':container.left,'width':width,'height':height, 'position':container.position}};
         var updated = container.set({'style':style});
         this.props.currentChanged(updated);
+        //currentChanged(updated);
 
     },
     createComponent: function (box) {
         if (widgets[box.elementName] === undefined){
             return React.DOM.span(null,'Component ' + box.elementName + ' is not register among widgets.');
         }
-        var props = _.omit(box,'style');
-        return React.createElement(widgets[box.elementName],box, box.content!== undefined?React.DOM.span(null, box.content):undefined);
+        var props = box.elementName==='ReactBootstrap.Glyphicon'?_.omit(box,'style'):box;
+        return React.createElement(widgets[box.elementName],props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
     },
     handleClick: function (e) {
         e.stopPropagation();
@@ -91,7 +97,7 @@ var Container = React.createClass({
         // it does not need it. This is a huge gain in performance.
         var current = this.props.current.node;
         var nextCurrent = nextProps.current.node;
-        return this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || (current!==undefined && nextCurrent !==undefined && current.name != nextCurrent.name);
+        return this.props.parent != nextProps.parent || this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || (current!==undefined && nextCurrent !==undefined && current.name != nextCurrent.name);
     },
     render: function () {
 

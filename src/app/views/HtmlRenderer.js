@@ -21,7 +21,7 @@ var HtmlRenderer = React.createClass({
         var widget =widgets[box.elementName];
         if (widget === undefined) return React.DOM.span(null,'Component ' + box.elementName + ' is not register among widgets.');
 
-        var props =  _.omit(box,'style');
+        var props =  box; //_.omit(box,'style');
         return React.createElement(widget,props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
     },
     render: function () {

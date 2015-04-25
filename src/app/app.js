@@ -5,7 +5,8 @@ var React = require('react');
 //preview and container
 var PdfHummusRenderer = require('./views/PdfHummusRenderer');
 var HtmlRenderer = require('./views/HtmlRenderer');
-var Container = require('./components/Container');
+
+var Freezer = require('freezer-js');
 
 //editor components
 var ToolBox = require('./components/ToolBox');
@@ -14,6 +15,10 @@ var PrettyJson = require('./components/PrettyJson');
 var ObjectPropertyGrid = require('./components/ObjectPropertyGrid');
 var Tile = require('./components/Tile');
 var ModalViewTrigger = require('./components/ModalViewTrigger');
+
+// components
+var Container = require('./components/Container');
+var WidgetFactory = require('./components/WidgetFactory');
 
 //bootstrap
 var bootstrap = require('react-bootstrap');
@@ -26,11 +31,11 @@ var MenuItem = bootstrap.MenuItem;
 var TabbedArea = bootstrap.TabbedArea;
 var TabPane = bootstrap.TabPane;
 
-
+//utilities
 var traverse = require('traverse');
-var Freezer = require('freezer-js');
 var transformToPages = require('./utilities/transformToPages');
 var deepClone = require('./utilities/deepClone');
+
 
 var emptyObjectSchema = {containers: []};
 // Create a Freezer store
@@ -385,8 +390,15 @@ var Designer = React.createClass({
             style: {
                 top: 0,
                 left: 0
-            },
-            content: 'Type your text'
+            }
+        }
+        //set default values
+        if (!isContainer) {
+            var widgetProps = WidgetFactory.getWidgetProperties(elName);
+            for (var index in widgetProps){
+                var widget = widgetProps[index];
+                if (widget.args!== undefined && widget.args.defaultValue !== undefined) defaultNewItem[widget.name] = widget.args.defaultValue;
+            }
         }
 
         var updated = items.push(defaultNewItem);

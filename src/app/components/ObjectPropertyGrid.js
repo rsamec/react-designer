@@ -18,6 +18,10 @@ var ObjectPropertyGrid = React.createClass({
             value = event.target.checked?true:false;
         }
 
+        if (prop.editor!== undefined && prop.editor.displayName === "NumberInputEditor"){
+            value = value!==undefined?parseInt(value,10):0;
+        }
+
 
         var current = this.props.current.node;
         var updated;

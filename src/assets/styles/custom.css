@@ -179,12 +179,14 @@ body {
 }
 .Tile {
   border: 2px solid black;
-  height: 93px;
-  width: 346px;
+  height: 30px;
+  width: 120px;
   position: relative;
   float: left;
   margin-left: 15px;
   margin-top: 15px;
+  text-align: center;
+  background-color: lightcyan;
 }
 .Tile div {
   position: relative;

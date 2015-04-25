@@ -25,7 +25,8 @@ var ToolBox = React.createClass({
                         {name: 'HtmlBox', label: 'HtmlEditor'},
                         {name: 'TextBox', label: 'TextBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
-                        {name: 'ImageBox', label: 'ImageBox'}
+                        {name: 'ImageBox', label: 'ImageBox'},
+                        {name: 'react-inlinesvg', label: 'SvgBox'}
                         //{name: 'Reacticon', label: 'Reacticon'},
                         //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
                     ]

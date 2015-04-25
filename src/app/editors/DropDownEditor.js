@@ -7,7 +7,7 @@ var DropDownEditor = React.createClass({
       this.props.onChange(e);
     },
     render: function () {
-        var optionNodes = this.props.options.map(function (option) {
+        var optionNodes = this.props.args.options.map(function (option) {
             return <option value={option.value}>{option.label}</option>;
         });
         return (
