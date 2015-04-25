@@ -2,14 +2,14 @@
 
 var React = require('react');
 var PropertyGrid = require('property-grid');
-var PathObjecBinder = require('./../utilities/pathObjectBinder');
+var pathObjecBinder = require('./../utilities/pathObjectBinder');
 var deepClone = require('../utilities/deepClone');
 var WidgetFactory = require('./WidgetFactory');
 
-var MyPropertyGrid = React.createClass({
+var ObjectPropertyGrid = React.createClass({
     currentProps:function(){
-        if (this.props.current=== undefined) return [];
-        return WidgetFactory.getWidgetProperties(this.props.current.elementName);
+        if (this.props.current.node=== undefined) return [];
+        return WidgetFactory.getWidgetProperties(this.props.current.node.elementName);
     },
     onPropertyValueChange: function(event, prop, value, path){
 
@@ -18,11 +18,13 @@ var MyPropertyGrid = React.createClass({
             value = event.target.checked?true:false;
         }
 
-        var current = this.props.current;
+
+        var current = this.props.current.node;
         var updated;
         if (path.length === 2){
+            //TODO: find better way how to update nested properties
             var cloned = deepClone(current);
-            var binder = new PathObjecBinder(function(){return cloned});
+            var binder = new pathObjecBinder(function(){return cloned});
             var joinedPath = path[0].name + "." + path[1].name;
             binder.setValue(joinedPath,value);
 
@@ -40,7 +42,7 @@ var MyPropertyGrid = React.createClass({
                     properties={this.currentProps()}
                     onChange={this.onPropertyValueChange}
                     autoUpdate={false}
-                    value={this.props.current}
+                    value={this.props.current.node}
                 >
                 </PropertyGrid>
             </div>
@@ -48,4 +50,4 @@ var MyPropertyGrid = React.createClass({
     }
 });
 
-module.exports = MyPropertyGrid;
+module.exports = ObjectPropertyGrid;

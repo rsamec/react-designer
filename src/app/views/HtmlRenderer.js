@@ -2,7 +2,6 @@ var React = require('react');
 var transformToPages = require('../utilities/transformToPages');
 
 var WidgetFactory = require('../components/WidgetFactory');
-
 var widgets = WidgetFactory.getWidgets();
 
 var HtmlPage = React.createClass({
@@ -20,10 +19,9 @@ var HtmlPage = React.createClass({
 var HtmlRenderer = React.createClass({
     createComponent: function (box) {
         var widget =widgets[box.elementName];
-        if (widget === undefined){
-            return React.DOM.span(null,"Component '" + box.elementName + "' is not register among widgets.")
-        }
-        var props = _.omit(box,'style');
+        if (widget === undefined) return React.DOM.span(null,'Component ' + box.elementName + ' is not register among widgets.');
+
+        var props =  _.omit(box,'style');
         return React.createElement(widget,props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
     },
     render: function () {

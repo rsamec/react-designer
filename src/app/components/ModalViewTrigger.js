@@ -1,7 +1,7 @@
 'use strict';
 
 var React = require('react/addons');
-var MyModal = require('./MyModal');
+var ModalView = require('./ModalView');
 var createChainedFunction = require('../utilities/createChainedFunction');
 
 var ReactLayeredComponentMixin = {
@@ -31,7 +31,7 @@ var ReactLayeredComponentMixin = {
     }
 };
 
-var MyModalTrigger = React.createClass({
+var ModalViewTrigger = React.createClass({
     mixins: [ReactLayeredComponentMixin],
     toggle: function() {
         this.setState({shown: !this.state.shown});
@@ -44,9 +44,9 @@ var MyModalTrigger = React.createClass({
             return <span />;
         }
         return (
-            <MyModal onRequestClose={this.toggle}>
+            <ModalView onRequestClose={this.toggle}>
                 {this.props.modal}
-            </MyModal>
+            </ModalView>
         );
     },
     render: function() {
@@ -55,4 +55,4 @@ var MyModalTrigger = React.createClass({
     }
 });
 
-module.exports = MyModalTrigger;
+module.exports = ModalViewTrigger;

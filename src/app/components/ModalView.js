@@ -2,7 +2,7 @@
 
 var React = require('react');
 
-var Modal = React.createClass({
+var ModalView = React.createClass({
     killClick: function(e) {
         // clicks on the content shouldn't close the modal
         e.stopPropagation();
@@ -24,4 +24,4 @@ var Modal = React.createClass({
     }
 });
 
-module.exports = Modal;
+module.exports = ModalView;

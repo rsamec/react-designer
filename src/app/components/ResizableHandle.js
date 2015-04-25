@@ -3,7 +3,7 @@
 var React = require('react'),
     ItemTypes = require('./ItemTypes'),
     PropTypes = React.PropTypes,
-   DragDropMixin =require('react-dnd').DragDropMixin,
+    DragDropMixin =require('react-dnd').DragDropMixin,
     DropEffects = require('react-dnd').DropEffects
 
 var ResizableHandle = React.createClass({

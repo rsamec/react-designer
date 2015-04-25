@@ -48,7 +48,7 @@ var TinyMceEditor = React.createClass({
             target_list: [],
             resize: false,
             height: 300,
-            toolbar: "undo redo | bold italic underline | link | cut copy paste | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code | styleselect,formatselect,fontsizeselect",
+            toolbar: "undo redo | bold italic underline | link | cut copy paste | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | code ",
             setup: function(editor) {
                 editor.on('change', function(e) {
                     props.onChange(editor.getContent({format : 'raw'}));
@@ -98,8 +98,8 @@ var HtmlEditor = React.createClass({
                     </td>
                     <td>
                         <ModalTrigger modal={<HtmlEditorDialog content={this.props.value} handleChange={this.handleChange} />}>
-                            <button type="button" className="btn btn-primary">
-                                <span className="glyphicon glyphicon-fullscreen"></span>
+                            <button type="button" className="btn btn-primary btn-xs" >
+                                <span className="glyphicon glyphicon-option-horizontal"></span>
                             </button>
                         </ModalTrigger>
                     </td>

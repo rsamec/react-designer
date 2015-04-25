@@ -2,7 +2,7 @@ var React = require('react');
 var traverse = require('traverse');
 var transformToPages = require('../utilities/transformToPages');
 
-var PDFRenderer = {
+var PdfHummusRenderer = {
     transformToPdf:function(schema,data){
 
         var pages = transformToPages(schema,data);
@@ -123,4 +123,4 @@ var PDFRenderer = {
     }
 };
 
-module.exports = PDFRenderer;
+module.exports = PdfHummusRenderer;

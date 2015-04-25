@@ -1,10 +1,11 @@
 'use strict';
 
+var React = require('react');
 var traverse = require('traverse');
 var deepClone = require('../utilities/deepClone');
 
 //binding
-var PathObjecBinder = require('./pathObjectBinder');
+var pathObjecBinder = require('./pathObjectBinder');
 
 /**
  * This reduce containers objects (containers, repeaters) to boxes group by pages.
@@ -22,7 +23,7 @@ var PathObjecBinder = require('./pathObjectBinder');
  */
 function transformToPages(schema,data){
 
-    var binder = new PathObjecBinder(function(){return data});
+    var binder = new pathObjecBinder(function(){return data});
 
     //visible
     var clone = traverse(schema).map(function (x) {

@@ -6,10 +6,7 @@ var gulp = require('gulp'),
     wiredep = require('wiredep').stream,
     devServer = connect(),
     proServer = connect(),
-    babel = require("gulp-babel"),
-    babelify = require("babelify");
-
-
+    babel = require("gulp-babel");
 
 gulp.task('connect-dev', devServer.server({
     root: ['src'],

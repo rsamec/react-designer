@@ -3,35 +3,36 @@
 var React = require('react');
 
 //preview and container
-var HtmlInputRenderer = require('./views/HtmlBootstrapRenderer');
-var PDFRenderer = require('./views/PDFRenderer');
+var PdfHummusRenderer = require('./views/PdfHummusRenderer');
 var HtmlRenderer = require('./views/HtmlRenderer');
-var Container = require('./widgets/Container');
+var Container = require('./components/Container');
 
 //editor components
 var ToolBox = require('./components/ToolBox');
 var ObjectBrowser = require('./components/ObjectBrowser');
 var PrettyJson = require('./components/PrettyJson');
-var MyPropertyGrid = require('./components/MyPropertyGrid');
+var ObjectPropertyGrid = require('./components/ObjectPropertyGrid');
 var Tile = require('./components/Tile');
+var ModalViewTrigger = require('./components/ModalViewTrigger');
 
 //bootstrap
-var Modal = require('react-bootstrap').Modal;
-var ModalTrigger = require('react-bootstrap').ModalTrigger;
-var MyModalTrigger = require('./components/MyModalTrigger');
-var Button = require('react-bootstrap').Button;
-var Panel = require('react-bootstrap').Panel;
-var DropdownButton = require('react-bootstrap').DropdownButton;
-var MenuItem = require('react-bootstrap').MenuItem;
-
+var bootstrap = require('react-bootstrap');
+var Modal = bootstrap.Modal;
+var ModalTrigger = bootstrap.ModalTrigger;
+var Button = bootstrap.Button;
+var Panel = bootstrap.Panel;
+var DropdownButton = bootstrap.DropdownButton;
+var MenuItem = bootstrap.MenuItem;
+var TabbedArea = bootstrap.TabbedArea;
+var TabPane = bootstrap.TabPane;
 
 
 var traverse = require('traverse');
 var Freezer = require('freezer-js');
-var idGenerator = require('./utilities/idGenerator');
 var transformToPages = require('./utilities/transformToPages');
+var deepClone = require('./utilities/deepClone');
 
-var emptyObjectSchema = {containers:[]};
+var emptyObjectSchema = {containers: []};
 // Create a Freezer store
 var frozen = new Freezer(emptyObjectSchema);
 
@@ -39,18 +40,18 @@ var SplitPane = require('./react-split-pane/SplitPane');
 
 
 var SaveAsDialog = React.createClass({
-    getInitialState:function(){
-        return {storageKey:this.props.storageKey};
+    getInitialState: function () {
+        return {storageKey: this.props.storageKey};
     },
-    onChange:function(e){
-        this.setState({storageKey:e.target.value});
+    onChange: function (e) {
+        this.setState({storageKey: e.target.value});
     },
-    ok:function(e){
+    ok: function (e) {
         this.props.confirm(this.state.storageKey);
         this.props.onRequestHide();
     },
 
-    render: function() {
+    render: function () {
         return (
             <Modal bsStyle="primary" title="Rename document" animation={false}>
                 <div className="modal-body">
@@ -66,26 +67,28 @@ var SaveAsDialog = React.createClass({
 });
 
 var LoadDialog = React.createClass({
-    getInitialState:function(){
-        return {storageKey:this.props.storageKey};
+    getInitialState: function () {
+        return {storageKey: this.props.storageKey};
     },
-    onChange:function(e){
-        this.setState({storageKey:e.target.value});
+    onChange: function (e) {
+        this.setState({storageKey: e});
     },
-    ok:function(e){
-        this.props.confirm(this.state.storageKey);
+    ok: function (e) {
+        this.props.confirm(e);
         this.props.onRequestHide();
     },
 
-    render: function() {
-       var keys = [];
-        for (var i=0;i !== localStorage.length;i++)
-        {
+    render: function () {
+        var keys = [];
+        for (var i = 0; i !== localStorage.length; i++) {
             keys.push(localStorage.key(i));
-        };
-        var tiles = keys.map(function(key){return (
-            <Tile>{key}</Tile>
-        )});
+        }
+        ;
+        var tiles = keys.map(function (key) {
+            return (
+                <Tile onClick={this.ok} eventKey={key}>{key}</Tile>
+            )
+        }, this);
 
         return (
             <Modal bsStyle="primary" title="Load document" animation={false}>
@@ -104,10 +107,10 @@ var LoadDialog = React.createClass({
 });
 
 var FilePickerDialog = React.createClass({
-    getInitialState:function(){
-        return {storageKey:this.props.storageKey};
+    getInitialState: function () {
+        return {storageKey: this.props.storageKey};
     },
-    onChange:function(e) {
+    onChange: function (e) {
 
         var files = e.target.files; // FileList object
         var JsonObj;
@@ -122,8 +125,8 @@ var FilePickerDialog = React.createClass({
             var reader = new FileReader();
 
             // Closure to capture the file information.
-            reader.onload = (function(theFile) {
-                return function(e) {
+            reader.onload = (function (theFile) {
+                return function (e) {
                     // Render thumbnail.
                     JsonObj = JSON.parse(e.target.result);
                     console.log(JsonObj);
@@ -135,12 +138,12 @@ var FilePickerDialog = React.createClass({
 
         this.setState({storageKey: e.target.value});
     },
-    ok:function(e){
+    ok: function (e) {
         this.props.confirm(this.state.storageKey);
         this.props.onRequestHide();
     },
 
-    render: function() {
+    render: function () {
 
         return (
             <Modal bsStyle="primary" title="File picker document" animation={false}>
@@ -159,89 +162,121 @@ var FilePickerDialog = React.createClass({
 });
 
 var Workplace = React.createClass({
-    render: function() {
+    render: function () {
         var handleClick = function () {
             if (this.props.currentChanged !== undefined) this.props.currentChanged(this.props.store);
         }.bind(this);
-        return (
-            <div className="cWorkplace">
-                    <Container
-                        containers={this.props.store.containers}
-                        boxes={this.props.store.boxes}
-                        currentPropChanged={this.props.currentChanged}
-                        current={this.props.current}
-                        handleClick={handleClick}
-                        isRoot={true}
-                    />
-            </div>
-        );
+        var empty = this.props.store.containers.length == 0;
+        var component;
+        if (empty) {
+            component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
+        }
+        else {
+            component =
+                <Container
+                    containers={this.props.store.containers}
+                    boxes={this.props.store.boxes}
+                    currentChanged={this.props.currentChanged}
+                    current={this.props.current}
+                    handleClick={handleClick}
+                    isRoot={true} />
+        }
+
+        return ( <div className="cWorkplace">{component}</div>);
     }
 });
 
 var ToolbarActions = React.createClass({
-    up:function(){
-        var store = this.props.store;
-        var items = store.containers;
-        var itemIndex = items.indexOf(this.props.current);
-        var element = items[itemIndex];
-        var toIndex = _.max([0,itemIndex -1]);
+    up: function () {
+        //var store = this.props.store;
+        var items = this.props.current.parentNode.containers;
+        var itemIndex = items.indexOf(this.props.current.node);
+        if (itemIndex === 0) return;
 
-        items.splice(itemIndex,1).splice(toIndex, 0, element);
-    },
-    down:function(){
-        var store = this.props.store;
-        var items = store.containers;
-        var itemIndex = items.indexOf(this.props.current);
         var element = items[itemIndex];
-        var toIndex = _.min([items.length,itemIndex +1]);
+        var toIndex = _.max([0, itemIndex - 1]);
 
-        items.splice(itemIndex,1).splice(toIndex, 0, element);
+        var updated = items.splice(itemIndex, 1).splice(toIndex, 0, element);
+        this.props.currentChanged(updated[toIndex]);
     },
-    removeCtrl:function(){
-        if (this.props.current === undefined) return;
-        var parent = this.findParent(this.props.store,this.props.current);
+    down: function () {
+        //var store = this.props.store;
+        var items = this.props.current.parentNode.containers;
+        var itemIndex = items.indexOf(this.props.current.node);
+        if (itemIndex === items.length - 1) return;
+
+        var element = items[itemIndex];
+        var toIndex = _.min([items.length, itemIndex + 1]);
+
+        var updated = items.splice(itemIndex, 1).splice(toIndex, 0, element);
+        this.props.currentChanged(updated[toIndex]);
+    },
+    removeCtrl: function () {
+        var current = this.props.current.node;
+        if (current === undefined) return;
+        var parent = this.props.current.parentNode;
         if (parent === undefined) return;
 
-        //try containers
-        if (parent.containers !== undefined) {
-            var index = parent.containers.indexOf(this.props.current);
-            if (index !== -1) {
-                parent.containers.splice(index, 1);
-                return;
-            }
+        var items = this.isContainer() ? parent.containers : parent.boxes;
+
+        //remove selected item
+        var index = items.indexOf(current);
+        var updated = items.splice(index, 1);
+
+        //set current
+        if (index < items.length) {
+            this.props.currentChanged(updated[index]);
         }
 
-        //try boxes
-        if (parent.boxes !== undefined) {
-            index = parent.boxes.indexOf(this.props.current);
-            if (index !== -1) {
-                parent.boxes.splice(index, 1);
-                return;
-            }
-        }
     },
-    findParent:function(tree,node){
-        var parents= traverse(tree).reduce(function (acc,x) {
-            if (this.node === node) {
-                acc.push(this.parent.parent.node);
-            }
-            return acc;
-        },[]);
-        return parents[0];
+    copy: function () {
+        var current = this.props.current.node;
+        if (current === undefined) return;
+        var parent = this.props.current.parentNode;
+        if (parent === undefined) return;
+
+        //clone
+        var clone = deepClone(current);
+        clone.name = "Copy " + clone.name;
+
+
+        var items = this.isContainer() ? parent.containers : parent.boxes;
+        //add new cloned of selected item
+        var updated = items.push(clone);
+
+        //set current
+        var index = items.indexOf(current);
+        this.props.currentChanged(updated[index]);
     },
-    render: function() {
-        var disabledCurrent = this.props.current === undefined;
+
+    isContainer: function () {
+        return this.props.current.node !== undefined && (this.props.current.node.elementName === "Container" || this.props.current.node.elementName === "Repeater")
+    },
+    render: function () {
+        var disabledCurrent = this.props.current.node === undefined || this.props.current.parentNode === undefined;
+        var items = this.props.current.parentNode !== undefined ? this.props.current.parentNode.containers : [];
+        var disabledMove = disabledCurrent || !this.isContainer() || items.lenght <= 1;
+
+        //if first item - > disable
+        var disabledUp = disabledMove || items.indexOf(this.props.current.node) === 0;
+        //if last item -> disable
+        var disabledDown = disabledMove || items.indexOf(this.props.current.node) === items.length - 1;
 
         return (
             <div>
-                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
-                    <span className="glyphicon glyphicon-remove-sign"></span>
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.copy}>
+                    <span className="glyphicon glyphicon-copy"></span>
                 </button>
-                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.up}>
+            &nbsp;&nbsp;
+                <button disabled={ disabledUp } type="button" className="btn btn-primary" onClick={this.up}>
                     <span className="glyphicon glyphicon-arrow-up"></span>
                 </button>
-                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.down}>
+                <button disabled={ disabledDown } type="button" className="btn btn-primary" onClick={this.down}>
                     <span className="glyphicon glyphicon-arrow-down"></span>
+                </button>
+            &nbsp;&nbsp;
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
+                    <span className="glyphicon glyphicon-remove-sign"></span>
                 </button>
             </div>
         );
@@ -250,142 +285,157 @@ var ToolbarActions = React.createClass({
 
 
 //Designer - top editor
-var Designer =  React.createClass({
-    getInitialState: function(){
+var Designer = React.createClass({
+    getInitialState: function () {
         // We create a state with all the history
         // and the index to the current store
+        var store = this.props.store.get();
         return {
-            storageKey:'Untitled document',
-            storeHistory: [ this.props.store.get() ],
+            storageKey: 'Untitled document',
+            storeHistory: [store],
             currentStore: 0,
-            jsonShown:false,
-            toolboxShown:true
-
+            jsonShown: false,
+            current: {
+                node: store
+            }
         };
     },
-    getDefaultProps:function(){
-      return {
-          fakeData: {
-              Employee: {FirstName: 'John', LastName: 'Smith'},
-              Hobbies: [
-                  {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                  {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                  {HobbyName: 'Reading', Frequency: 'Monthly'},
-                  {HobbyName: 'Cycling', Frequency: 'Daily'}
-                  ]
-          }
-      };
+    getDefaultProps: function () {
+        return {
+            fakeData: {
+                Employee: {FirstName: 'John', LastName: 'Smith'},
+                Hobbies: [
+                    {HobbyName: 'Bandbington', Frequency: 'Daily'},
+                    {HobbyName: 'Tennis', Frequency: 'Yearly'},
+                    {HobbyName: 'Reading', Frequency: 'Monthly'},
+                    {HobbyName: 'Cycling', Frequency: 'Daily'}
+                ]
+            }
+        };
     },
-    undo: function(){
+    undo: function () {
         var nextIndex = this.state.currentStore - 1;
-        this.props.store.set( this.state.storeHistory[ nextIndex ] );
-        this.setState({ currentStore: nextIndex });
+        this.props.store.set(this.state.storeHistory[nextIndex]);
+        this.setState({currentStore: nextIndex});
     },
-    redo: function(){
+    redo: function () {
         var nextIndex = this.state.currentStore + 1;
-        this.props.store.set( this.state.storeHistory[ nextIndex ] );
-        this.setState({ currentStore: nextIndex });
+        this.props.store.set(this.state.storeHistory[nextIndex]);
+        this.setState({currentStore: nextIndex});
     },
-    save:function(){
+    save: function () {
         localStorage.setItem(this.state.storageKey, JSON.stringify(this.props.store.get().toJS()))
     },
-    saveAs:function(key) {
+    saveAs: function (key) {
         console.log("Save" + key);
         localStorage.setItem(key, JSON.stringify(this.props.store.get().toJS()))
-        this.setState({storageKey:key});
+        this.setState({storageKey: key});
     },
-    load:function(key){
+    load: function (key) {
         console.log("Load" + key);
-        this.props.store.get().containers.reset((JSON.parse(localStorage.getItem(key))|| emptyObjectSchema).containers);
+        var store = this.props.store.get();
+        store.containers.reset((JSON.parse(localStorage.getItem(key)) || emptyObjectSchema).containers);
         this.setState({
-                storeHistory: [ this.props.store.get() ],
-                currentStore: 0,
-                storageKey: key
-            });
+            storeHistory: [store],
+            currentStore: 0,
+            storageKey: key
+
+        });
+        this.currentChanged(store);
     },
-    loadDialog:function(){
-        return React.createElement(LoadDialog,{confirm:this.load, storageKey:this.state.storageKey});
+    loadDialog: function () {
+        return React.createElement(LoadDialog, {confirm: this.load, storageKey: this.state.storageKey});
     },
-    saveDialog:function(){
-        return React.createElement(SaveAsDialog,{confirm:this.saveAs,storageKey:this.state.storageKey});
+    saveDialog: function () {
+        return React.createElement(SaveAsDialog, {confirm: this.saveAs, storageKey: this.state.storageKey});
     },
-    setCurrentProps:function(currentValue){
-        this.setState({currentValue:currentValue});
-    },
-    addNewCtrl:function(elName){
-        var selectedContainer = this.state.currentValue;
-        if (selectedContainer === undefined) return;
-        if (elName === "Container" || elName === "Repeater") {
-            var defaultSection = {
-                name: "sec" + idGenerator.uniqueId() ,
-                elementName: elName,
-                style: {
-                    top: 0,
-                    left: 0,
-                    height: 200,
-                    width: 800,
-                    position: 'relative'
-                },
-                boxes: [],
-                containers: []
-            };
-            selectedContainer.containers.push(defaultSection);
-        }
-        else {
-            var defaultBox = {
-                name: elName.substr(3) + idGenerator.uniqueId(),
-                elementName: elName,
-                style: {
-                    top: 0,
-                    left: 0
+    currentChanged: function (currentNode) {
+        var parent = currentNode.__.parents;
+        var parentNode = parent.length !== 0 ? parent[0].__.parents[0] : undefined;
+        this.setState({
+                current: {
+                    node: currentNode,
+                    parentNode: parentNode
                 }
-            };
-            selectedContainer.boxes.push(defaultBox);
-        }
+            }
+        );
     },
-    handleTabChange: function(index){
+    addNewCtrl: function (elName) {
+        var current = this.state.current.node;
+        if (current === undefined) return;
+
+        var isContainer = (elName === "Container" || elName === "Repeater");
+        var items = isContainer ? current.containers : current.boxes;
+        var defaultNewItem = isContainer ? {
+            name: "container",
+            elementName: elName,
+            style: {
+                top: 0,
+                left: 0,
+                height: 200,
+                width: 800,
+                position: 'relative'
+            },
+            boxes: [],
+            containers: []
+        }
+            : {
+            name: elName,
+            elementName: elName,
+            style: {
+                top: 0,
+                left: 0
+            },
+            content: 'Type your text'
+        }
+
+        var updated = items.push(defaultNewItem);
+        this.currentChanged(updated[updated.length - 1]);
+    },
+    handleTabChange: function (index) {
         this.setState({
             tabActiveIndex: index
         })
     },
-    switchWorkplace: function() {
+    switchWorkplace: function () {
         this.setState({jsonShown: !this.state.jsonShown});
     },
-    switchToolbox: function() {
-        this.setState({toolboxShown: !this.state.toolboxShown});
+    handlePdfPreview: function (e) {
+        if (e === "PdfHummus") {
+            this.previewPdfHummus();
+        } else if (e === "PdfKit") {
+            this.previewPdfKit();
+        }
+        else {
+
+        }
     },
-    previewPdf:function() {
-
-        //var fakeData = {Employee:{FirstName:'John'}};
-
-        var defaultDocument = PDFRenderer.transformToPdf(this.props.store.get(),this.props.fakeData);
+    previewPdfHummus: function () {
+        var defaultDocument = PdfHummusRenderer.transformToPdf(this.props.store.get(), this.props.fakeData);
         hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
             window.open(url);
         });
-
     },
-    previewPdf2:function() {
-
+    previewPdfKit: function () {
         var schema = this.props.store.get();
-        var pages = transformToPages(schema,this.props.fakeData);
+        var pages = transformToPages(schema, this.props.fakeData);
         pdfKitService.generatePDFDocument('http://localhost:3000', JSON.stringify(pages), function (url) {
             window.open(url);
         });
-
     },
-    componentDidMount: function(){
+    componentDidMount: function () {
         var me = this;
 
         // We are going to update the props every time the store changes
-        this.props.store.on('update', function( updated ){
+        this.props.store.on('update', function (updated) {
 
             var storeHistory, nextIndex;
             // Check if this state has not been set by the history
-            if( updated != me.state.storeHistory[ me.state.currentStore ] ){
+            if (updated != me.state.storeHistory[me.state.currentStore]) {
 
                 nextIndex = me.state.currentStore + 1;
-                storeHistory = me.state.storeHistory.slice( 0, nextIndex );
-                storeHistory.push( updated );
+                storeHistory = me.state.storeHistory.slice(0, nextIndex);
+                storeHistory.push(updated);
 
                 // Set the state will re-render our component
                 me.setState({
@@ -398,28 +448,15 @@ var Designer =  React.createClass({
             }
         });
     },
-    handlePreview:function(e){
-        console.log(e);
-        if (e === "PdfHummus"){
-            this.previewPdf();
-        }else if (e === "PdfKit"){
-            this.previewPdf2();
-        }
-        else{
+    render: function () {
 
-        }
-    },
-    handleMenuClick:function(e) {
-        console.log(e);
-    },
-    render:function(){
         var store = this.props.store.get(),
             disabledUndo = !this.state.currentStore,
             disabledRedo = this.state.currentStore == this.state.storeHistory.length - 1;
-        var disabledSave = disabledUndo || this.state.storageKey===undefined;
+        var disabledSave = disabledUndo || this.state.storageKey === undefined;
 
-        var toogleVisibleState = function(show) {
-            var style= {}
+        var toogleVisibleState = function (show) {
+            var style = {}
             if (!show) {
                 style.display = 'none'
             }
@@ -428,20 +465,20 @@ var Designer =  React.createClass({
         return (
 
             <div>
-                <SplitPane orientation="horizontal" minSize="80">
+                <SplitPane orientation="horizontal">
                     <div>
                         <div>
                             <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
                                 <span className="glyphicon glyphicon-transfer"></span>
                             </button>
-                            &nbsp;&nbsp;
+                        &nbsp;&nbsp;
                             <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
                                 <span className="glyphicon glyphicon-arrow-left"></span>
                             </button>
                             <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
                                 <span className="glyphicon glyphicon-arrow-right"></span>
                             </button>
-                            &nbsp;&nbsp;
+                        &nbsp;&nbsp;
                             <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.save}>
                                 <span className="glyphicon glyphicon-floppy-disk"></span>
                             </button>
@@ -451,33 +488,29 @@ var Designer =  React.createClass({
                                 </button>
                             </ModalTrigger>
 
-                            &nbsp;&nbsp;
-                            <MyModalTrigger modal={<HtmlInputRenderer data={store} />}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-fullscreen"></span>
-                                </button>
-                            </MyModalTrigger>
-                            <MyModalTrigger modal={<HtmlRenderer schema={store} data={this.props.fakeData} />}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-star"></span>
-                                </button>
-                            </MyModalTrigger>
+                        &nbsp;&nbsp;
+
 
                             <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
                                 <Button bsStyle='link'>{this.state.storageKey}</Button>
                             </ModalTrigger>
 
-                            <DropdownButton className='pull-right' bsStyle='primary' title="Preview" onSelect={this.handlePreview}>
-                                <MenuItem onClick={this.handleMenuClick} eventKey='Screen'>Screen</MenuItem>
-                                <MenuItem eventKey='Page'>Page</MenuItem>
-                                <MenuItem divider />
-                                <MenuItem eventKey='PdfHummus'>PDF - Hummus</MenuItem>
-                                <MenuItem eventKey='PdfKit'>PDF - PdfKit</MenuItem>
-                            </DropdownButton>
+                            <div className="pull-right">
+                                <DropdownButton bsStyle='primary' title="PDF" onSelect={this.handlePdfPreview}>
+                                    <MenuItem eventKey='PdfKit'>PdfKit</MenuItem>
+                                    <MenuItem eventKey='PdfHummus'>Hummus</MenuItem>
+                                </DropdownButton>
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                <ModalViewTrigger  modal={<HtmlRenderer schema={store} data={this.props.fakeData} />}>
+                                    <button type="button" className="btn btn-primary">
+                                        <span className="glyphicon glyphicon-fullscreen"></span>
+                                    </button>
+                                </ModalViewTrigger>
+                            </div>
                         </div>
                         <div>
                             <div style={toogleVisibleState(!this.state.jsonShown)}>
-                                <Workplace store={store} current={this.state.currentValue} currentChanged={this.setCurrentProps}/>
+                                <Workplace store={store} current={this.state.current} currentChanged={this.currentChanged}/>
                             </div>
                             <div style={toogleVisibleState(this.state.jsonShown)}>
                                 <PrettyJson json={store} />
@@ -485,24 +518,27 @@ var Designer =  React.createClass({
                         </div>
 
                     </div>
-                    <div style={{'min-width':'300px'}}>
-                        <div>
-                            <div className='pull-right'>
-                            <button type="button" className="btn btn-primary" onClick={this.switchToolbox}>
-                                <span className="glyphicon glyphicon-transfer"></span>
-                            </button>
+                    <div style={{'minWidth': 300}}>
+                        <SplitPane orientation="vertical">
+                            <div>
+                                <div className='topRightFixed'>
+                                    <ToolbarActions store={store} current={this.state.current}  currentChanged={this.currentChanged} />
+                                </div>
+                                <div className='topRight'>
+                                    <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged} />
+                                </div>
                             </div>
                             <div>
-                                <div style={toogleVisibleState(this.state.toolboxShown)}>
-                                    <ToolbarActions store={store} current={this.state.currentValue} />
-                                    <ObjectBrowser nodes={store.containers} current={this.state.currentValue} currentChanged={this.setCurrentProps}  />
-                                    <MyPropertyGrid current={this.state.currentValue} currentChanged={this.setCurrentProps} />
-                                </div>
-                                <div style={toogleVisibleState(!this.state.toolboxShown)}>
-                                    <ToolBox addCtrl={this.addNewCtrl} />
-                                </div>
+                                <TabbedArea defaultActiveKey={2}>
+                                    <TabPane eventKey={1} tab='Tree'>
+                                        <ObjectBrowser nodes={store.containers} current={this.state.current} currentChanged={this.currentChanged}  />
+                                    </TabPane>
+                                    <TabPane eventKey={2} tab='Pallete'>
+                                        <ToolBox addCtrl={this.addNewCtrl} />
+                                    </TabPane>
+                                </TabbedArea>
                             </div>
-                        </div>
+                        </SplitPane>
                     </div>
                 </SplitPane>
             </div>

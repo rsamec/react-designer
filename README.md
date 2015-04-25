@@ -10,18 +10,30 @@ Features
 
 Designer parts
 
+Designer
++   WorkplaceToolbar
 +   Workplace
-+   MainToolbar
-+   ObjectToolbar
-+   Toolbox
-+   PropertyGrid
-    +   DropDownEditor
-    +   NumberInputEditor
-    +   JsonEditor
-    +   HtmlEditor - TinyMceEditor
-+   ObjectBrowser
+    +   Container
+    +   Box
+        +   CheckBoxInput
+        +   ImageBox
+        +   TextBox
+        +   TextBoxInput
+        +   ValueBox
 +   JsonViewer
-+   JsonEditor
++   ObjectToolbar
++   ObjectBrowser - tree of objects
++   PropertyGrid
++   Palette - components toolbox
++   Modal
++   Editors
+    +   BoolEditor
+    +   ColorPickerEditor
+    +   JsonEditor
+    +   DropDownEditor
+    +   HtmlEditor - TinyMceEditor
+    +   NumberInputEditor
+
 
 
 Available publishers
@@ -58,3 +70,20 @@ $ gulp development
 ```
 $ gulp production
 ```
+
+
+## Roadmap
+
+
++   add export/import json feature
++   add renderer examples
++   add api examples
++   decouple data layer
++   performance issues
+
++   support css positioning schemas - absolute, relative, normal flow
++   improve current editors + add json editor
++   PDF
+    +   better support html fragments -> to pdf (using html parser) - consider using pdfmake
++   consider support for continues saving
++   support for svg - rendering on server

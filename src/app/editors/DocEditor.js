@@ -52,9 +52,8 @@ var typeDefaultValues = {
  * @return {ReactComponent}  A react component to edit the attribute.
  */
 var createAttribute = function( value, original, parent, key ){
-    var type = guessType( value );
-    className = StringAttribute
-    ;
+    var type = guessType( value ),
+    className = StringAttribute;
 
     if( type == 'object' )
         className = ObjectAttribute;
@@ -498,14 +497,9 @@ var JsonEditor = React.createClass({
                     <pre>{ JSON.stringify( value, null, '  ')}</pre>
                 </td>
                 <td>
-                    <ModalTrigger modal={<JsonDialogEditor json={value} confirm={this.handleChange} />}>
-                        <button type="button" className="btn btn-primary">
-                            <span className="glyphicon glyphicon-fullscreen"></span>
-                        </button>
-                    </ModalTrigger>
                     <ModalTrigger modal={<JsonDialogImport value={value} handleChange={this.handleChange} />}>
-                        <button type="button" className="btn btn-primary">
-                            <span className="glyphicon glyphicon-fullscreen"></span>
+                        <button type="button" className="btn btn-primary btn-xs" >
+                            <span className="glyphicon glyphicon-option-horizontal"></span>
                         </button>
                     </ModalTrigger>
                 </td>

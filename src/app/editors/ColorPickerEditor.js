@@ -43,8 +43,8 @@ var ColorPickerEditor = React.createClass({
                         </td>
                         <td>
                             <ModalTrigger modal={<ColorPickerDialog color={color} handleChange={this.handleChange} />}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-fullscreen"></span>
+                                <button type="button" className="btn btn-primary btn-xs" >
+                                    <span className="glyphicon glyphicon-option-horizontal"></span>
                                 </button>
                             </ModalTrigger>
                         </td>

@@ -6,9 +6,6 @@
 }
 .cWorkplace {
   border: solid 1px blue;
-  width: 100%;
-  height: 100%;
-  position: relative;
 }
 .cContainer {
   min-height: 20px;
@@ -20,6 +17,10 @@
 .cContainer.selected {
   border-width: 3px;
   border-color: red;
+}
+.cContainer.parentSelected {
+  border-width: 3px;
+  border-color: deeppink;
 }
 .cContainer.root {
   background-image: url("../../assets/images/grid.png");
@@ -150,10 +151,7 @@ body {
   display: none;
 }
 .ModalContent {
-  box-sizing: content-box;
   position: absolute;
-  width: 90%;
-  height: 90%;
   margin: 20px;
   padding: 22.5px 30px;
   background-color: white;
@@ -181,8 +179,8 @@ body {
 }
 .Tile {
   border: 2px solid black;
-  height: 193px;
-  width: 246px;
+  height: 93px;
+  width: 346px;
   position: relative;
   float: left;
   margin-left: 15px;
@@ -190,4 +188,22 @@ body {
 }
 .Tile div {
   position: relative;
+}
+.emptyWorkplace {
+  height: 100%;
+}
+pre {
+  background-color: ghostwhite;
+  border: 1px solid silver;
+  padding: 10px 20px;
+  margin: 20px;
+}
+.json-key {
+  color: brown;
+}
+.json-value {
+  color: navy;
+}
+.json-string {
+  color: olive;
 }
