@@ -10,6 +10,7 @@
     "react-color-picker": "^2.1.5",
     "react-d3": "^0.3.1",
     "react-dnd": "^0.9.3",
+    "react-inlinesvg": "^0.4.0",
     "react-tap-event-plugin": "^0.1.4",
     "react-treeview": "^0.3.11",
     "react-vendor-prefix": "0.0.1",
