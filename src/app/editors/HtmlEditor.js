@@ -94,7 +94,7 @@ var HtmlEditor = React.createClass({
             <table>
                 <tr>
                     <td>
-                        <input value={this.props.value} onChange={this.props.onChange}/>
+                        <input className='editor' value={this.props.value} onChange={this.props.onChange}/>
                     </td>
                     <td>
                         <ModalTrigger modal={<HtmlEditorDialog content={this.props.value} handleChange={this.handleChange} />}>

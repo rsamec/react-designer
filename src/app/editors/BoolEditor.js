@@ -6,7 +6,7 @@ var BoolEditor = React.createClass({
   render: function () {
         var checked = this.props.value?true:false;
         return (
-            <input type='checkbox' checked={checked} onChange={this.props.onChange} />
+            <input className='editor' type='checkbox' checked={checked} onChange={this.props.onChange} />
         )
     }
 });

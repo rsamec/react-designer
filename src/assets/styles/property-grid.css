@@ -293,7 +293,8 @@ html.u-app body * {
   border-top: 0px;
 }
 .property-grid .name {
-  background: #d2d7ff;
+  background: #3782c4;
+  color: #fff;
   white-space: nowrap;
 }
 .property-grid .value {

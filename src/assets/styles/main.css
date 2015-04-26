@@ -209,3 +209,6 @@ pre {
 .json-string {
   color: olive;
 }
+input[type='checkbox'] .editor {
+  height: 16px;
+}

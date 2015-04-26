@@ -11,7 +11,7 @@ var DropDownEditor = React.createClass({
             return <option value={option.value}>{option.label}</option>;
         });
         return (
-            <select value={this.props.value} onChange={this.handleChange}>
+            <select className='editor' value={this.props.value} onChange={this.handleChange}>
                 {optionNodes}
             </select>
         )
