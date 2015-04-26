@@ -113,43 +113,50 @@ var LoadDialog = React.createClass({
 
 var FilePickerDialog = React.createClass({
     getInitialState: function () {
-        return {storageKey: this.props.storageKey};
+        return {
+            storageKey: this.props.storageKey
+        };
     },
     onChange: function (e) {
 
         var files = e.target.files; // FileList object
-        var JsonObj;
+
         // Loop through the FileList
         for (var i = 0, f; f = files[i]; i++) {
 
+            var parts = f.name.split(".");
+            var fileName = parts[0];
             // Only process image files.
-            if (!f.type.match('image.*')) {
+            if (parts[1] != 'json') {
                 continue;
             }
 
             var reader = new FileReader();
 
+            var self = this;
             // Closure to capture the file information.
             reader.onload = (function (theFile) {
                 return function (e) {
                     // Render thumbnail.
-                    JsonObj = JSON.parse(e.target.result);
-                    console.log(JsonObj);
+                    var objectSchema = JSON.parse(e.target.result);
+
+                    self.setState({
+                        storageKey:fileName,
+                        objectSchema:objectSchema
+                    });
                 };
             })(f);
             // Read in the file as a data URL.
             reader.readAsText(f);
         }
 
-        this.setState({storageKey: e.target.value});
+
     },
     ok: function (e) {
-        this.props.confirm(this.state.storageKey);
+        if (this.state.objectSchema !== undefined) this.props.confirm(this.state.objectSchema, this.state.storageKey);
         this.props.onRequestHide();
     },
-
     render: function () {
-
         return (
             <Modal bsStyle="primary" title="File picker document" animation={false}>
                 <div className="modal-body">
@@ -270,18 +277,18 @@ var ToolbarActions = React.createClass({
         return (
             <div>
                 <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.copy}>
-                    <span className="glyphicon glyphicon-copy"></span>
+                    <span className="glyphicon glyphicon-copy" title="copy element"></span>
                 </button>
             &nbsp;&nbsp;
                 <button disabled={ disabledUp } type="button" className="btn btn-primary" onClick={this.up}>
-                    <span className="glyphicon glyphicon-arrow-up"></span>
+                    <span className="glyphicon glyphicon-arrow-up" title="move up"></span>
                 </button>
                 <button disabled={ disabledDown } type="button" className="btn btn-primary" onClick={this.down}>
-                    <span className="glyphicon glyphicon-arrow-down"></span>
+                    <span className="glyphicon glyphicon-arrow-down" title="move down"></span>
                 </button>
             &nbsp;&nbsp;
                 <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
-                    <span className="glyphicon glyphicon-remove-sign"></span>
+                    <span className="glyphicon glyphicon-remove-sign" title="delete element"></span>
                 </button>
             </div>
         );
@@ -328,6 +335,10 @@ var Designer = React.createClass({
         this.props.store.set(this.state.storeHistory[nextIndex]);
         this.setState({currentStore: nextIndex});
     },
+    reset: function () {
+        localStorage.removeItem(this.state.storageKey);
+        this.loadEx(emptyObjectSchema,this.state.storageKey);
+    },
     save: function () {
         localStorage.setItem(this.state.storageKey, JSON.stringify(this.props.store.get().toJS()))
     },
@@ -337,9 +348,11 @@ var Designer = React.createClass({
         this.setState({storageKey: key});
     },
     load: function (key) {
-        console.log("Load" + key);
+        this.loadEx(JSON.parse(localStorage.getItem(key)) || emptyObjectSchema, key)
+    },
+    loadEx:function(objectSchema,key){
         var store = this.props.store.get();
-        store.containers.reset((JSON.parse(localStorage.getItem(key)) || emptyObjectSchema).containers);
+        store.containers.reset(objectSchema.containers);
         this.setState({
             storeHistory: [store],
             currentStore: 0,
@@ -353,6 +366,9 @@ var Designer = React.createClass({
     },
     saveDialog: function () {
         return React.createElement(SaveAsDialog, {confirm: this.saveAs, storageKey: this.state.storageKey});
+    },
+    importDialog: function () {
+        return React.createElement(FilePickerDialog, {confirm: this.loadEx, storageKey: this.state.storageKey});
     },
     currentChanged: function (currentNode) {
         var parent = currentNode.__.parents;
@@ -395,9 +411,9 @@ var Designer = React.createClass({
         //set default values
         if (!isContainer) {
             var widgetProps = WidgetFactory.getWidgetProperties(elName);
-            for (var index in widgetProps){
+            for (var index in widgetProps) {
                 var widget = widgetProps[index];
-                if (widget.args!== undefined && widget.args.defaultValue !== undefined) defaultNewItem[widget.name] = widget.args.defaultValue;
+                if (widget.args !== undefined && widget.args.defaultValue !== undefined) defaultNewItem[widget.name] = widget.args.defaultValue;
             }
         }
 
@@ -474,37 +490,51 @@ var Designer = React.createClass({
             }
             return style;
         }
+        var exportSchema = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.toJS(),null,2));
+        var exportSchemaName = this.state.storageKey + ".json";
         return (
-
             <div>
                 <SplitPane orientation="horizontal">
                     <div>
                         <div>
                             <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
-                                <span className="glyphicon glyphicon-transfer"></span>
+                                <span className="glyphicon glyphicon-transfer" title="toogle source and preview"></span>
                             </button>
                         &nbsp;&nbsp;
                             <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
-                                <span className="glyphicon glyphicon-arrow-left"></span>
+                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
                             </button>
                             <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
-                                <span className="glyphicon glyphicon-arrow-right"></span>
+                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
                             </button>
                         &nbsp;&nbsp;
                             <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.save}>
-                                <span className="glyphicon glyphicon-floppy-disk"></span>
+                                <span className="glyphicon glyphicon-floppy-disk" title="save"></span>
                             </button>
                             <ModalTrigger modal={this.loadDialog()}>
                                 <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-floppy-open"></span>
+                                    <span className="glyphicon glyphicon-floppy-open" title="open"></span>
                                 </button>
                             </ModalTrigger>
-
+                            <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.reset}>
+                                <span className="glyphicon glyphicon-floppy-remove" title="reset document"></span>
+                            </button>
+                        &nbsp;&nbsp;
+                            <ModalTrigger modal={this.importDialog()}>
+                                <button type="button" className="btn btn-primary">
+                                    <span className="glyphicon glyphicon-import" title="import"></span>
+                                </button>
+                            </ModalTrigger>
+                            <a href={exportSchema} download={exportSchemaName}>
+                                <button type="button" className="btn btn-primary">
+                                    <span className="glyphicon glyphicon-export" title="export"></span>
+                                </button>
+                            </a>
                         &nbsp;&nbsp;
 
 
                             <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
-                                <Button bsStyle='link'>{this.state.storageKey}</Button>
+                                <Button bsStyle='link' title="save">{this.state.storageKey}</Button>
                             </ModalTrigger>
 
                             <div className="pull-right">

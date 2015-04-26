@@ -74,10 +74,9 @@ gulp.task('scripts', ['lint'], function() {
             .pipe($.browserify({
                 transform: ['reactify'],
                 extensions: ['.jsx'],
-                insertGlobals : true,
                 shim: {
                     tinymce: {
-                        path: 'node_modules/tinymce/tinymce.min.js',
+                        path: 'node_modules/tinymce/tinymce.js',
                         exports: 'tinymce'
                     }
                 }

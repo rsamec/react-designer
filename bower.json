@@ -5,9 +5,7 @@
     "Roman Samec <roman.samec2@gmail.com>"
   ],
   "dependencies": {
-    "bootstrap": "~3.3.4",
     "tinymce": "~4.1.9",
-    "underscore": "~1.8.3",
-    "react-color-picker": "~2.1.5"
+    "underscore": "~1.8.3"
   }
 }
