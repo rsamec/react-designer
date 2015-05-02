@@ -1,0 +1,73 @@
+.transition (@value1,@value2:X,...) { @value: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`; -webkit-transition: @value; -moz-transition: @value; -ms-transition: @value; -o-transition: @value; transition: @value; }
+.transform (@value1,@value2:X,...) { @value: ~`"@{arguments}".replace(/[\[\]]|\,\sX/g, '')`; transform:@value; -ms-transform:@value; -webkit-transform:@value; -o-transform:@value; -moz-transform:@value; }
+.transform-style(@style:preserve-3d) { transform-style:@style; -webkit-transform-style:@style; -moz-transform-style:@style; -ms-transform-style:@style; }
+.backface-visibility-hidden { backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+.perspective(@amount: 1000px) { perspective:@amount; -webkit-perspective:@amount; -moz-perspective:@amount; -ms-perspective:@amount; }
+.tile { color:white; padding:15px; box-sizing:border-box; -moz-box-sizing:border-box; }
+
+.flipper-container {
+    float:left;
+    width:250px;
+    height:250px;
+    margin-right:15px;
+    display:block; .perspective;
+
+    span {
+        color:white;
+    }
+
+    >div.flipper {
+        float:left;
+        width:100%;
+        height:100%;
+        position:relative;
+        .transform-style(preserve-3d);
+
+        .front, .back {
+            float:left;
+            display:block;
+            width:100%;
+            height:100%;
+            .backface-visibility-hidden;
+            position:absolute;
+            top:0;
+            left:0;
+            .transform-style(preserve-3d);
+            .transition(-webkit-transform ease 500ms);
+            .transition(transform ease 500ms);
+        }
+
+        .front {
+            z-index:2;
+            background:#19489E;
+
+            /* front tile styles go here! */
+        }
+
+        .back {
+            background:#9E1919;
+
+            /* back tile styles go here! */
+        }
+    }
+}
+
+.flipper-container.horizontal {
+    .front { .transform(rotateY(0deg)); }
+    .back { .transform(rotateY(-180deg)); }
+
+    div.flipper.flipped {
+        .front { .transform(rotateY(180deg)); }
+        .back { .transform(rotateY(0deg)); }
+    }
+}
+
+.flipper-container.vertical {
+    .front { .transform(rotateX(0deg)); }
+    .back { .transform(rotateX(-180deg)); }
+
+    div.flipper.flipped {
+        .front { .transform(rotateX(180deg)); }
+        .back { .transform(rotateX(0deg)); }
+    }
+}

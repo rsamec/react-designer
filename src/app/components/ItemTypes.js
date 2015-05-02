@@ -5,5 +5,6 @@ module.exports = {
     IMAGE: 'image',
     BOX:'box',
     CONTAINER:'container',
-    RESIZABLE_HANDLE:'resize'
+    RESIZABLE_HANDLE:'resize',
+    TREE_NODE:'treeNode'
 };

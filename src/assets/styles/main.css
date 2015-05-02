@@ -212,3 +212,144 @@ pre {
 input[type='checkbox'] .editor {
   height: 16px;
 }
+.backface-visibility-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.tile {
+  color: white;
+  padding: 15px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.flipper-container {
+  float: left;
+  width: 250px;
+  height: 250px;
+  margin-right: 15px;
+  display: block;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -ms-perspective: 1000px;
+}
+.flipper-container span {
+  color: white;
+}
+.flipper-container > div.flipper {
+  float: left;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+}
+.flipper-container > div.flipper .front,
+.flipper-container > div.flipper .back {
+  float: left;
+  display: block;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform ease 500ms;
+  -moz-transition: -webkit-transform ease 500ms;
+  -ms-transition: -webkit-transform ease 500ms;
+  -o-transition: -webkit-transform ease 500ms;
+  transition: -webkit-transform ease 500ms;
+  -webkit-transition: transform ease 500ms;
+  -moz-transition: transform ease 500ms;
+  -ms-transition: transform ease 500ms;
+  -o-transition: transform ease 500ms;
+  transition: transform ease 500ms;
+}
+.flipper-container > div.flipper .front {
+  z-index: 2;
+  background: #19489E;
+  /* front tile styles go here! */
+}
+.flipper-container > div.flipper .back {
+  background: #9E1919;
+  /* back tile styles go here! */
+}
+.flipper-container.horizontal .front {
+  transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+}
+.flipper-container.horizontal .back {
+  transform: rotateY(-180deg);
+  -ms-transform: rotateY(-180deg);
+  -webkit-transform: rotateY(-180deg);
+  -o-transform: rotateY(-180deg);
+  -moz-transform: rotateY(-180deg);
+}
+.flipper-container.horizontal div.flipper.flipped .front {
+  transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+.flipper-container.horizontal div.flipper.flipped .back {
+  transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+}
+.flipper-container.vertical .front {
+  transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+}
+.flipper-container.vertical .back {
+  transform: rotateX(-180deg);
+  -ms-transform: rotateX(-180deg);
+  -webkit-transform: rotateX(-180deg);
+  -o-transform: rotateX(-180deg);
+  -moz-transform: rotateX(-180deg);
+}
+.flipper-container.vertical div.flipper.flipped .front {
+  transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg);
+  -webkit-transform: rotateX(180deg);
+  -o-transform: rotateX(180deg);
+  -moz-transform: rotateX(180deg);
+}
+.flipper-container.vertical div.flipper.flipped .back {
+  transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+}
+.node {
+  cursor: pointer;
+}
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+.node text {
+  font: 10px sans-serif;
+}
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}

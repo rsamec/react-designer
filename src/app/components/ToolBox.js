@@ -24,8 +24,11 @@ var ToolBox = React.createClass({
                         {name: 'CheckBoxInput', label: 'CheckBoxInput'},
                         {name: 'HtmlBox', label: 'HtmlEditor'},
                         {name: 'TextBox', label: 'TextBox'},
+                        {name: 'JSXBox', label: 'JSXBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
                         {name: 'ImageBox', label: 'ImageBox'},
+                        {name: 'Flipper', label: 'Flipper'},
+                        {name: 'CollapsibleTree', label: 'CollapsibleTree'},
                         {name: 'react-inlinesvg', label: 'SvgBox'}
                         //{name: 'Reacticon', label: 'Reacticon'},
                         //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
@@ -34,7 +37,7 @@ var ToolBox = React.createClass({
                 {
                     type: 'Bootstrap',
                     collapsed: true,
-                    controls:_.map(['Input','Button', 'Panel','Glyphicon','Tooltip'],function(x){return {
+                    controls:_.map(['Input','Button', 'Panel','Glyphicon','Tooltip','Alert','Label'],function(x){return {
                         'name':'ReactBootstrap.' + x, 'label': x}
                     })
                 },

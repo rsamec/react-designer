@@ -394,7 +394,7 @@ var Designer = React.createClass({
                 top: 0,
                 left: 0,
                 height: 200,
-                width: 800,
+                width: 740,
                 position: 'relative'
             },
             boxes: [],
@@ -573,7 +573,7 @@ var Designer = React.createClass({
                             <div>
                                 <TabbedArea defaultActiveKey={2}>
                                     <TabPane eventKey={1} tab='Tree'>
-                                        <ObjectBrowser nodes={store.containers} current={this.state.current} currentChanged={this.currentChanged}  />
+                                        <ObjectBrowser rootNode={store} current={this.state.current} currentChanged={this.currentChanged}  />
                                     </TabPane>
                                     <TabPane eventKey={2} tab='Pallete'>
                                         <ToolBox addCtrl={this.addNewCtrl} />
