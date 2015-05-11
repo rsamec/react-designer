@@ -6,6 +6,8 @@ var pathObjecBinder = require('./../utilities/pathObjectBinder');
 var deepClone = require('../utilities/deepClone');
 var WidgetFactory = require('./WidgetFactory');
 
+
+
 var ObjectPropertyGrid = React.createClass({
     currentProps:function(){
         if (this.props.current.node=== undefined) return [];

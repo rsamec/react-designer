@@ -37,12 +37,24 @@ var transformToPages = require('./utilities/transformToPages');
 var deepClone = require('./utilities/deepClone');
 
 
-var emptyObjectSchema = {containers: []};
+var emptyObjectSchema = {
+    elementName:'ObjectSchema',
+    name:'rootContainer',
+    containers: [],
+    data: {
+        Employee: {FirstName: 'John', LastName: 'Smith'},
+        Hobbies: [
+            {HobbyName: 'Bandbington', Frequency: 'Daily'},
+            {HobbyName: 'Tennis', Frequency: 'Yearly'},
+            {HobbyName: 'Reading', Frequency: 'Monthly'},
+            {HobbyName: 'Cycling', Frequency: 'Daily'}
+        ]
+    }
+};
 // Create a Freezer store
-var frozen = new Freezer(emptyObjectSchema);
+var frozen = new Freezer({schema:emptyObjectSchema});
 
 var SplitPane = require('./react-split-pane/SplitPane');
-
 
 var SaveAsDialog = React.createClass({
     getInitialState: function () {
@@ -176,23 +188,23 @@ var FilePickerDialog = React.createClass({
 var Workplace = React.createClass({
     render: function () {
         var handleClick = function () {
-            if (this.props.currentChanged !== undefined) this.props.currentChanged(this.props.store);
+            if (this.props.currentChanged !== undefined) this.props.currentChanged(this.props.schema);
         }.bind(this);
-        var empty = this.props.store.containers.length == 0;
+        var empty = this.props.schema.containers.length == 0;
         var component;
-        if (empty) {
-            component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
-        }
-        else {
+        //if (empty) {
+        //    component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
+        //}
+        //else {
             component =
                 <Container
-                    containers={this.props.store.containers}
-                    boxes={this.props.store.boxes}
+                    containers={this.props.schema.containers}
+                    boxes={this.props.schema.boxes}
                     currentChanged={this.props.currentChanged}
                     current={this.props.current}
                     handleClick={handleClick}
                     isRoot={true} />
-        }
+        //}
 
         return ( <div className="cWorkplace">{component}</div>);
     }
@@ -200,7 +212,6 @@ var Workplace = React.createClass({
 
 var ToolbarActions = React.createClass({
     up: function () {
-        //var store = this.props.store;
         var items = this.props.current.parentNode.containers;
         var itemIndex = items.indexOf(this.props.current.node);
         if (itemIndex === 0) return;
@@ -212,7 +223,6 @@ var ToolbarActions = React.createClass({
         this.props.currentChanged(updated[toIndex]);
     },
     down: function () {
-        //var store = this.props.store;
         var items = this.props.current.parentNode.containers;
         var itemIndex = items.indexOf(this.props.current.node);
         if (itemIndex === items.length - 1) return;
@@ -308,20 +318,7 @@ var Designer = React.createClass({
             currentStore: 0,
             jsonShown: false,
             current: {
-                node: store
-            }
-        };
-    },
-    getDefaultProps: function () {
-        return {
-            fakeData: {
-                Employee: {FirstName: 'John', LastName: 'Smith'},
-                Hobbies: [
-                    {HobbyName: 'Bandbington', Frequency: 'Daily'},
-                    {HobbyName: 'Tennis', Frequency: 'Yearly'},
-                    {HobbyName: 'Reading', Frequency: 'Monthly'},
-                    {HobbyName: 'Cycling', Frequency: 'Daily'}
-                ]
+                node: store.schema
             }
         };
     },
@@ -335,32 +332,39 @@ var Designer = React.createClass({
         this.props.store.set(this.state.storeHistory[nextIndex]);
         this.setState({currentStore: nextIndex});
     },
-    reset: function () {
-        localStorage.removeItem(this.state.storageKey);
-        this.loadEx(emptyObjectSchema,this.state.storageKey);
+    schema: function(){
+        return this.props.store.get().schema;
     },
-    save: function () {
-        localStorage.setItem(this.state.storageKey, JSON.stringify(this.props.store.get().toJS()))
+    schemaToJson:function(){
+        return JSON.stringify(this.props.store.get().toJS().schema);
     },
-    saveAs: function (key) {
-        console.log("Save" + key);
-        localStorage.setItem(key, JSON.stringify(this.props.store.get().toJS()))
-        this.setState({storageKey: key});
-    },
-    load: function (key) {
-        this.loadEx(JSON.parse(localStorage.getItem(key)) || emptyObjectSchema, key)
-    },
-    loadEx:function(objectSchema,key){
+    loadObjectSchema:function(objectSchema,key){
         var store = this.props.store.get();
-        store.containers.reset(objectSchema.containers);
+        var updated = store.schema.reset(objectSchema);
         this.setState({
             storeHistory: [store],
             currentStore: 0,
             storageKey: key
 
         });
-        this.currentChanged(store);
+        this.currentChanged(updated);
     },
+
+    reset: function () {
+        localStorage.removeItem(this.state.storageKey);
+        this.loadObjectSchema(emptyObjectSchema,this.state.storageKey);
+    },
+    save: function () {
+        localStorage.setItem(this.state.storageKey, this.schemaToJson());
+    },
+    saveAs: function (key) {
+        localStorage.setItem(key, this.schemaToJson())
+        this.setState({storageKey: key});
+    },
+    load: function (key) {
+        this.loadObjectSchema(JSON.parse(localStorage.getItem(key)) || emptyObjectSchema, key)
+    },
+
     loadDialog: function () {
         return React.createElement(LoadDialog, {confirm: this.load, storageKey: this.state.storageKey});
     },
@@ -368,7 +372,7 @@ var Designer = React.createClass({
         return React.createElement(SaveAsDialog, {confirm: this.saveAs, storageKey: this.state.storageKey});
     },
     importDialog: function () {
-        return React.createElement(FilePickerDialog, {confirm: this.loadEx, storageKey: this.state.storageKey});
+        return React.createElement(FilePickerDialog, {confirm: this.loadObjectSchema, storageKey: this.state.storageKey});
     },
     currentChanged: function (currentNode) {
         var parent = currentNode.__.parents;
@@ -439,16 +443,17 @@ var Designer = React.createClass({
         }
     },
     previewPdfHummus: function () {
-        var defaultDocument = PdfHummusRenderer.transformToPdf(this.props.store.get(), this.props.fakeData);
+        var schema = this.schema();
+        var defaultDocument = PdfHummusRenderer.transformToPdf(schema, schema.data);
         hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
             window.open(url);
         });
     },
     previewPdfKit: function () {
-        var schema = this.props.store.get();
-        var pages = transformToPages(schema, this.props.fakeData);
+        var schema = this.schema();
+        var pages = transformToPages(schema,schema.data);
         pdfKitService.generatePDFDocument('http://localhost:3000', JSON.stringify(pages), function (url) {
-            window.open(url);
+            window.open(url);3
         });
     },
     componentDidMount: function () {
@@ -478,7 +483,7 @@ var Designer = React.createClass({
     },
     render: function () {
 
-        var store = this.props.store.get(),
+        var schema = this.schema(),
             disabledUndo = !this.state.currentStore,
             disabledRedo = this.state.currentStore == this.state.storeHistory.length - 1;
         var disabledSave = disabledUndo || this.state.storageKey === undefined;
@@ -490,7 +495,7 @@ var Designer = React.createClass({
             }
             return style;
         }
-        var exportSchema = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(store.toJS(),null,2));
+        var exportSchema = "data:text/json;charset=utf-8," + encodeURIComponent(this.schemaToJson());
         var exportSchemaName = this.state.storageKey + ".json";
         return (
             <div>
@@ -543,7 +548,7 @@ var Designer = React.createClass({
                                     <MenuItem eventKey='PdfHummus'>Hummus</MenuItem>
                                 </DropdownButton>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                <ModalViewTrigger  modal={<HtmlRenderer schema={store} data={this.props.fakeData} />}>
+                                <ModalViewTrigger  modal={<HtmlRenderer schema={schema} data={schema.data} />}>
                                     <button type="button" className="btn btn-primary">
                                         <span className="glyphicon glyphicon-fullscreen"></span>
                                     </button>
@@ -552,10 +557,10 @@ var Designer = React.createClass({
                         </div>
                         <div>
                             <div style={toogleVisibleState(!this.state.jsonShown)}>
-                                <Workplace store={store} current={this.state.current} currentChanged={this.currentChanged}/>
+                                <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged}/>
                             </div>
                             <div style={toogleVisibleState(this.state.jsonShown)}>
-                                <PrettyJson json={store} />
+                                <PrettyJson json={schema} />
                             </div>
                         </div>
 
@@ -564,16 +569,17 @@ var Designer = React.createClass({
                         <SplitPane orientation="vertical">
                             <div>
                                 <div className='topRightFixed'>
-                                    <ToolbarActions store={store} current={this.state.current}  currentChanged={this.currentChanged} />
+                                    <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
                                 </div>
                                 <div className='topRight'>
+
                                     <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged} />
                                 </div>
                             </div>
                             <div>
                                 <TabbedArea defaultActiveKey={2}>
                                     <TabPane eventKey={1} tab='Tree'>
-                                        <ObjectBrowser rootNode={store} current={this.state.current} currentChanged={this.currentChanged}  />
+                                        <ObjectBrowser rootNode={schema} current={this.state.current} currentChanged={this.currentChanged}  />
                                     </TabPane>
                                     <TabPane eventKey={2} tab='Pallete'>
                                         <ToolBox addCtrl={this.addNewCtrl} />
@@ -584,7 +590,7 @@ var Designer = React.createClass({
                     </div>
                 </SplitPane>
             </div>
-        )
+            )
     }
 });
 

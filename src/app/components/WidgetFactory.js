@@ -88,6 +88,7 @@ var WidgetFactory = (function () {
         var content = {name:'content',args:{defaultValue:'type your content'}};
         var bsSize = {name:'bsSize',editor:dropDownEditor, args:{options:bsSizes.map(function(g){ return {value:g,label:g}}),defaultValue:'medium'}}
         return {
+            'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor}],
             'Container':commonPropsSizes,
             'Repeater':commonPropsSizes.concat([{name:'Binding'}]),
             'CheckBoxInput':commonProps.concat([{name: 'checked',label: 'DefaultChecked', editor:numEditor},{name:'label', args:{defaultValue:'Label'}},{name:'Binding'}]),

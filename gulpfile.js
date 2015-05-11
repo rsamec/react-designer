@@ -1,24 +1,22 @@
 'use strict';
 
 var gulp = require('gulp'),
+    stripDebug = require('gulp-strip-debug'),
+    gulpif = require('gulp-if'),
     $ = require('gulp-load-plugins')(),
+    browserify = require('browserify'),
+    watchify = require('watchify'),
+    source = require('vinyl-source-stream'),
     connect = $.connectMulti,
     wiredep = require('wiredep').stream,
     devServer = connect(),
-    proServer = connect(),
-    babel = require("gulp-babel");
+    proServer = connect();
 
 gulp.task('connect-dev', devServer.server({
     root: ['src'],
     port: 8989,
     livereload: true
 }));
-
-gulp.task("babel", function () {
-    return gulp.src("src/app.js")
-        .pipe(babel())
-        .pipe(gulp.dest("dist"));
-});
 
 gulp.task('connect-pro', proServer.server({
     root: ['dist'],
@@ -28,13 +26,13 @@ gulp.task('connect-pro', proServer.server({
 
 gulp.task('clean', function() {
     return gulp.src(['dist'], {read: false})
-            .pipe($.rimraf());
+        .pipe($.rimraf());
 });
 
 gulp.task('lint', function() {
     return gulp.src(['src/app/*.js', 'src/app/**/*.js'])
-            .pipe($.jshint('.jshintrc'))
-            .pipe($.jshint.reporter('jshint-stylish'));
+        .pipe($.jshint('.jshintrc'))
+        .pipe($.jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('robots', function() {
@@ -62,44 +60,57 @@ gulp.task('images', function() {
         .pipe(gulp.dest('dist/assets/images'));
 });
 
-gulp.task('styles', function() {
+gulp.task('styles', ['compass'], function() {
     gulp.src('src/assets/styles/*.css')
         .pipe(gulp.dest('dist/assets/styles'));
+});
+
+gulp.task('compass', function() {
+    return gulp.src('src/assets/sass/*.scss')
+        .pipe($.compass({
+            sass: 'src/assets/sass',
+            css: 'src/assets/styles'
+        }))
+        .pipe($.minifyCss())
+        .pipe(gulp.dest('src/assets/styles'))
 });
 
 gulp.task('base', ['robots', 'static', 'config', 'fonts', 'images', 'styles']);
 
 gulp.task('scripts', ['lint'], function() {
-    return gulp.src(['src/app/app.js'])
-            .pipe($.browserify({
-                transform: ['reactify'],
-                extensions: ['.jsx'],
-                shim: {
-                    tinymce: {
-                        path: 'node_modules/tinymce/tinymce.js',
-                        exports: 'tinymce'
-                    }
-                }
-            }))
-            .on('prebundle', function(bundler) {
-                bundler.require('react');
-            })
-            .pipe(gulp.dest('dist/scripts/'))
-            .pipe($.size());
+    var bundler = browserify({
+        entries: ['./src/app/app.js'],
+        transform: ['babelify'],
+        extensions: ['.jsx'],
+        debug: true,
+        cache: {},
+        packageCache: {},
+        fullPaths: true
+    });
+    var watcher = watchify(bundler);
+    return watcher
+        .on('prebundle', function(bundler) {
+            bundler.require('react');
+        })
+        .bundle()
+        .pipe(source('app.js'))
+        .pipe(gulp.dest('./dist/scripts/'));
 });
 
 gulp.task('html', ['base', 'scripts'], function() {
     var assets = $.useref.assets();
     return gulp.src('src/*.html')
-            .pipe(assets)
-            .pipe(assets.restore())
-            .pipe($.useref())
-            .pipe(gulp.dest('dist'))
-            .pipe($.size());
+        .pipe(assets)
+        .pipe(gulpif('*.css', $.minifyCss()))
+        .pipe(assets.restore())
+        .pipe($.useref())
+        .pipe(gulp.dest('dist'))
+        .pipe($.size());
 });
 
 gulp.task('compress', ['html'], function() {
     gulp.src(['dist/scripts/app.js', 'dist/scripts/vendor.js'])
+        .pipe(stripDebug())
         .pipe($.uglify())
         .pipe(gulp.dest('dist/scripts/'));
 });
@@ -113,29 +124,32 @@ gulp.task('wiredep', function() {
         .pipe(gulp.dest('src'));
 });
 
-gulp.task('browserify', ['lint'], function() {
-    return gulp.src(['src/app/app.js'])
-            .pipe($.browserify({
-                transform: ['reactify'],
-                extensions: ['.jsx'],
-                shim: {
-                    tinymce: {
-                        path: 'node_modules/tinymce/tinymce.js',
-                        exports: 'tinymce'
-                    }
-                }
-            }))
-            .on('prebundle', function(bundler) {
-                bundler.require('react');
-            })
-            .pipe(gulp.dest('src/scripts/'))
-            .pipe($.size());
-});
-
-gulp.task('stylus', function () {
-    gulp.src('assets/styles/propertyGrid.styl')
-        .pipe(stylus())
-        .pipe(gulp.dest('./css/build'));
+gulp.task('browserify', function() {
+    var bundler = browserify({
+        entries: ['./src/app/app.js'],
+        transform: ['babelify'],
+        extensions: ['.jsx'],
+        debug: true,
+        cache: {},
+        packageCache: {},
+        fullPaths: true
+    });
+    var watcher = watchify(bundler);
+    return watcher
+        .on('prebundle', function(bundler) {
+            bundler.require('react');
+        })
+        .on('update', function() {
+            var updateStart = Date.now();
+            console.log('Updating!');
+            watcher.bundle()
+                .pipe(source('app.js'))
+                .pipe(gulp.dest('./src/scripts/'));
+            console.log('Updated!', (Date.now()-updateStart)+'ms');
+        })
+        .bundle()
+        .pipe(source('app.js'))
+        .pipe(gulp.dest('./src/scripts/'));
 });
 
 gulp.task('refresh', ['browserify'], function() {
@@ -152,14 +166,15 @@ gulp.task('watch', ['connect-dev'], function() {
         'src/app/**/*.js'
     ], function(event) {
         return gulp.src(event.path)
-                .pipe(devServer.reload());
+            .pipe(devServer.reload());
     });
 
+    gulp.watch(['src/assets/sass/*.scss'], ['compass']);
     gulp.watch(['src/app/*.js', 'src/app/**/*.js'], ['refresh']);
     gulp.watch('bower.json', ['wiredep']);
 });
 
-gulp.task('development', ['browserify'], function() {
+gulp.task('dev', ['browserify'], function() {
     gulp.start('watch');
 });
 
@@ -167,6 +182,16 @@ gulp.task('build', ['compress'], function() {
     gulp.start('connect-pro');
 });
 
-gulp.task('production', ['clean'], function() {
+gulp.task('pro', ['clean'], function() {
     gulp.start('build');
+});
+
+gulp.task('deploy', ['compress'], function() {
+    gulp.doneCallback = function(err) {
+        process.exit(err ? 1:0);
+    }
+});
+
+gulp.task('production', ['clean'], function() {
+    gulp.start('deploy');
 });
