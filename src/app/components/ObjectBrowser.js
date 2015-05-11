@@ -190,7 +190,7 @@ var TreeNode = React.createClass({
 
                 <TreeView key={type + '|' + i} nodeLabel={label} defaultCollapsed={true}>
                     <TreeNode key={node.name + '|' + i} node={node} current={this.props.current} currentChanged={this.props.currentChanged} filterText={this.props.filterText} executeAction={this.props.executeAction} />
-                      {boxes.map(function (box, i) {
+                      {boxes.map(function (box, j) {
 
                           var onDragStart1 = function(e) {
                               console.log('drag started');
@@ -211,7 +211,7 @@ var TreeNode = React.createClass({
                               'node': true,
                               'selected': this.props.current.node === box
                           });
-                          return (<div draggable="true"  onDragStart = {onDragStart1} className={classes} onClick={this.handleClick.bind(null,box)} >{box.name}</div>);
+                          return (<div draggable="true"  onDragStart = {onDragStart1} className={classes} onClick={this.handleClick.bind(null,box)} key={box.name + j}>{box.name}</div>);
                       },this)}
 
                 </TreeView>

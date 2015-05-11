@@ -14,8 +14,8 @@ var ModalView = React.createClass({
         this.props.onRequestClose();
     },
     render: function() {
-        return this.transferPropsTo(
-            <div className="ModalBackdrop" onClick={this.handleBackdropClick}>
+        return (
+            <div {...this.props} className="ModalBackdrop" onClick={this.handleBackdropClick}>
                 <div className="ModalContent" onClick={this.killClick}>
                     {this.props.children}
                 </div>

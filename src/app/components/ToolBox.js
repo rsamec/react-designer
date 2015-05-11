@@ -69,11 +69,11 @@ var ToolBox = React.createClass({
                 <Accordion defaultActiveKey={0}>
             {this.props.dataSource.map(function(node, i) {
                 return (
-                    <Panel header={header(node.type,node.controls.length)} eventKey={i} bsStyle='primary'>
+                    <Panel header={header(node.type,node.controls.length)} eventKey={i} key={name + i} bsStyle='primary'>
                         <ListGroup fill>
                       {node.controls.map(function(ctrl, j) {
                           return (
-                              <ListGroupItem>
+                              <ListGroupItem  key={ctrl.name}>
                                   <Button bsStyle='link' onClick={this.handleClick.bind(null,ctrl)} >
                                       <span>{ctrl.label}</span>
                                   </Button>
