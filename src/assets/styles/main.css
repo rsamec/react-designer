@@ -5,7 +5,7 @@
   color: red;
 }
 .cWorkplace {
-  border: solid 1px blue;
+  border: solid 0px blue;
 }
 .cContainer {
   min-height: 20px;
@@ -191,6 +191,19 @@ body {
 .Tile div {
   position: relative;
 }
+.toolbarHeader {
+  position: fixed;
+  padding: 5px;
+  z-index: 1000;
+  background-color: white;
+}
+.toolbarContent {
+  position: relative;
+  top: 50px;
+}
+.propertyGrid {
+  border: solid 1px #808080;
+}
 .emptyWorkplace {
   height: 100%;
 }
@@ -352,4 +365,52 @@ input[type='checkbox'] .editor {
   fill: none;
   stroke: #ccc;
   stroke-width: 1.5px;
+}
+.mfb-component--tl {
+  animation: fromTop 1s 1;
+  -webkit-animation: fromTop 1s 1;
+}
+.mfb-component--tr {
+  animation: fromTop 1.3s 1;
+  -webkit-animation: fromTop 1.3s 1;
+}
+.mfb-component--br {
+  animation: fromBottom 1.6s 1;
+  -webkit-animation: fromBottom 1.6s 1;
+}
+.mfb-component--bl {
+  animation: fromBottom 1.9s 1;
+  -webkit-animation: fromBottom 1.9s 1;
+}
+@keyframes fromBottom {
+  0% {
+    transform: translateY(250px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@keyframes fromTop {
+  0% {
+    transform: translateY(-250px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@-webkit-keyframes fromBottom {
+  0% {
+    transform: translateY(250px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+@-webkit-keyframes fromTop {
+  0% {
+    transform: translateY(-250px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }

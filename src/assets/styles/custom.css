@@ -5,7 +5,7 @@
   color: red;
 }
 .cWorkplace {
-  border: solid 1px blue;
+  border: solid 0px blue;
 }
 .cContainer {
   min-height: 20px;
@@ -190,6 +190,19 @@ body {
 }
 .Tile div {
   position: relative;
+}
+.toolbarHeader {
+  position: fixed;
+  padding: 5px;
+  z-index: 1000;
+  background-color: white;
+}
+.toolbarContent {
+  position: relative;
+  top: 50px;
+}
+.propertyGrid {
+  border: solid 1px #808080;
 }
 .emptyWorkplace {
   height: 100%;

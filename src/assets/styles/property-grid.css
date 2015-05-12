@@ -257,7 +257,6 @@ html.u-app body * {
   padding-top: 0px;
   padding-bottom: 0px;
   width: 100%;
-  height: 100%;
 }
 .property-grid .property-composite.collapsed .children {
   display: none;
@@ -284,7 +283,7 @@ html.u-app body * {
 }
 .property-grid .property .name,
 .property-grid .property .value {
-  height: 22px;
+  height: 24px;
   vertical-align: middle;
   border-top: 1px solid #808080;
 }
@@ -293,8 +292,8 @@ html.u-app body * {
   border-top: 0px;
 }
 .property-grid .name {
-  background: #3782c4;
-  color: #fff;
+  background: #fff;
+  color: #e40a5d;
   white-space: nowrap;
 }
 .property-grid .value {

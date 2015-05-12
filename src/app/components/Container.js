@@ -5,10 +5,11 @@ var React = require('react'),
     ItemTypes = require('./ItemTypes'),
     DragDropMixin = require('react-dnd').DragDropMixin,
     Box = require('./Box'),
-    ResizableHandle=require('./ResizableHandle'),
+    ResizableHandle = require('./ResizableHandle'),
+    If = require('./If'),
     WidgetFactory = require('./WidgetFactory');
 
-var widgets =  WidgetFactory.getWidgets();
+var widgets = WidgetFactory.getWidgets();
 
 var Container = React.createClass({
     mixins: [DragDropMixin],
@@ -23,8 +24,8 @@ var Container = React.createClass({
                 dropTarget: {
                     acceptDrop: function (component, item) {
                         var delta = context.getCurrentOffsetDelta(),
-                            left = Math.round(isNaN(item.left)?0:parseInt(item.left,10) + delta.x),
-                            top = Math.round(isNaN(item.top)?0:parseInt(item.top,10) + delta.y);
+                            left = Math.round(isNaN(item.left) ? 0 : parseInt(item.left, 10) + delta.x),
+                            top = Math.round(isNaN(item.top) ? 0 : parseInt(item.top, 10) + delta.y);
 
                         component.moveBox(item.index, left, top);
                     }
@@ -43,9 +44,9 @@ var Container = React.createClass({
 
                         var delta = context.getCurrentOffsetDelta(),
                             left = Math.round(item.left + 30 + delta.x),
-                            top = Math.round(item.top + 30 +  delta.y);
+                            top = Math.round(item.top + 30 + delta.y);
 
-                      component.resizeContainer(item.parent, left, top);
+                        component.resizeContainer(item.parent, left, top);
                         //TODO: find solution to problem:
                         // resize (larger) - drop is out of container -> the component is parent container -> OK
                         // resize (smaller) - drop is in container -> the component is component itself -> does not work - workaround throw any error
@@ -63,10 +64,10 @@ var Container = React.createClass({
         var box = boxes[index];
         if (box === undefined) return;
 
-        var updated = box.set({'style':{'top':top,'left':left}});
+        var updated = box.set({'style': {'top': top, 'left': left}});
         this.props.currentChanged(updated);
     },
-    resizeContainer:function(container,width,height){
+    resizeContainer: function (container, width, height) {
         if (container === undefined) return;
 
         //TODO: use merge instead of clone
@@ -75,29 +76,29 @@ var Container = React.createClass({
         style.height = height;
 
         //var newStyle = {'style':{'top':container.top,'left':container.left,'width':width,'height':height, 'position':container.position}};
-        var updated = container.set({'style':style});
+        var updated = container.set({'style': style});
         this.props.currentChanged(updated);
         //currentChanged(updated);
 
     },
     createComponent: function (box) {
-        if (widgets[box.elementName] === undefined){
-            return React.DOM.span(null,'Component ' + box.elementName + ' is not register among widgets.');
+        if (widgets[box.elementName] === undefined) {
+            return React.DOM.span(null, 'Component ' + box.elementName + ' is not register among widgets.');
         }
-        var props = box.elementName==='ReactBootstrap.Glyphicon'?_.omit(box,'style'):box;
-        return React.createElement(widgets[box.elementName],props, box.content!== undefined?React.DOM.span(null, box.content):undefined);
+        var props = box.elementName === 'ReactBootstrap.Glyphicon' ? _.omit(box, 'style') : box;
+        return React.createElement(widgets[box.elementName], props, box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
         e.stopPropagation();
         if (this.props.handleClick !== undefined) this.props.handleClick();
     },
-    shouldComponentUpdate: function( nextProps ){
+    shouldComponentUpdate: function (nextProps) {
 
         // The comparison is fast, and we won't render the component if
         // it does not need it. This is a huge gain in performance.
         var current = this.props.current.node;
         var nextCurrent = nextProps.current.node;
-        return this.props.parent != nextProps.parent || this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || (current!==undefined && nextCurrent !==undefined && current.name != nextCurrent.name);
+        return this.props.parent != nextProps.parent || this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || (current !== undefined && nextCurrent !== undefined && current.name != nextCurrent.name);
     },
     render: function () {
 
@@ -109,7 +110,7 @@ var Container = React.createClass({
         var classes = cx({
             'cContainer': true,
             'selected': this.props.selected,
-            'parentSelected':this.props.parentSelected,
+            'parentSelected': this.props.parentSelected,
             'root': this.props.isRoot
         });
 
@@ -123,15 +124,15 @@ var Container = React.createClass({
 
         //resize handle position
         var handle = 30;
-        var resizeHandlePosition = {top:(this.props.height-handle), left: (this.props.width -handle)};
+        var resizeHandlePosition = {top: (this.props.height - handle), left: (this.props.width - handle)};
 
 
         return (
             <div className={classes} style={styles} onClick={this.handleClick}
-            {...this.dropTargetFor(ItemTypes.BOX,ItemTypes.RESIZABLE_HANDLE)}
+            {...this.dropTargetFor(ItemTypes.BOX, ItemTypes.RESIZABLE_HANDLE)}
             >
                 <div>
-             {containers.map(function (container,index) {
+             {containers.map(function (container, index) {
 
                  var selected = container === this.props.current.node;
                  var parentSelected = container === this.props.current.parentNode;
@@ -141,8 +142,8 @@ var Container = React.createClass({
                      if (this.props.currentChanged !== undefined) this.props.currentChanged(container);
                  }.bind(this);
 
-                 var left = container.style.left===undefined?0:parseInt(container.style.left,10);
-                 var top = container.style.top===undefined?0:parseInt(container.style.top,10);
+                 var left = container.style.left === undefined ? 0 : parseInt(container.style.left, 10);
+                 var top = container.style.top === undefined ? 0 : parseInt(container.style.top, 10);
                  return (
                      <Container key={key}
                          index={index}
@@ -174,8 +175,8 @@ var Container = React.createClass({
                     }.bind(this);
 
                     var boxComponent = this.createComponent(box, key);
-                    var left = box.style.left===undefined?0:parseInt(box.style.left,10);
-                    var top = box.style.top===undefined?0:parseInt(box.style.top,10);
+                    var left = box.style.left === undefined ? 0 : parseInt(box.style.left, 10);
+                    var top = box.style.top === undefined ? 0 : parseInt(box.style.top, 10);
                     return (
                         <Box key={key}
                             index={index}
@@ -189,8 +190,10 @@ var Container = React.createClass({
                     );
                 }, this)
                     }
-                    </div>
-                <ResizableHandle left={resizeHandlePosition.left} top={resizeHandlePosition.top} parent={this.props.parent} />
+                </div>
+                <If test={this.props.isRoot?false:true}>
+                    <ResizableHandle left={resizeHandlePosition.left} top={resizeHandlePosition.top} parent={this.props.parent} />
+                </If>
             </div>
         );
     }

@@ -21,7 +21,7 @@
 .cWorkplace{
 //    background-image: url("../../assets/images/grid.png");
 //    background-repeat: repeat;
-    border:solid 1px blue;
+    border:solid 0px blue;
 
 }
 
@@ -224,16 +224,22 @@ html, body {
         position:relative;
     }
 }
-.topRightFixed{
-    //position: fixed;
+.toolbarHeader{
+    position: fixed;
+    padding: 5px;
+    z-index: 1000;
+    background-color: white;
 }
-.topRight{
-    //top:34px;
+.toolbarContent{
+    position: relative;
+    top:50px;
+}
+.propertyGrid{
+    border: solid 1px gray
 }
 .emptyWorkplace{
     height: 100%;
 }
-
 pre {
     background-color: ghostwhite;
     border: 1px solid silver;

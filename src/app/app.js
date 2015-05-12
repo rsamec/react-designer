@@ -14,6 +14,7 @@ var ObjectBrowser = require('./components/ObjectBrowser');
 var PrettyJson = require('./components/PrettyJson');
 var ObjectPropertyGrid = require('./components/ObjectPropertyGrid');
 var Tile = require('./components/Tile');
+var If = require('./components/If');
 var ModalViewTrigger = require('./components/ModalViewTrigger');
 
 // components
@@ -36,23 +37,27 @@ var traverse = require('traverse');
 var transformToPages = require('./utilities/transformToPages');
 var deepClone = require('./utilities/deepClone');
 
+var Menu = require('react-mfb').Menu;
+var MainButton = require('react-mfb').MainButton;
+var ChildButton = require('react-mfb').ChildButton;
+
 
 var emptyObjectSchema = {
-    elementName:'ObjectSchema',
-    name:'rootContainer',
+    elementName: 'ObjectSchema',
+    name: 'rootContainer',
     containers: [],
     data: {
-        Employee: {FirstName: 'John', LastName: 'Smith'},
-        Hobbies: [
-            {HobbyName: 'Bandbington', Frequency: 'Daily'},
-            {HobbyName: 'Tennis', Frequency: 'Yearly'},
-            {HobbyName: 'Reading', Frequency: 'Monthly'},
-            {HobbyName: 'Cycling', Frequency: 'Daily'}
-        ]
+        //Employee: {FirstName: 'John', LastName: 'Smith'},
+        //Hobbies: [
+        //    {HobbyName: 'Bandbington', Frequency: 'Daily'},
+        //    {HobbyName: 'Tennis', Frequency: 'Yearly'},
+        //    {HobbyName: 'Reading', Frequency: 'Monthly'},
+        //    {HobbyName: 'Cycling', Frequency: 'Daily'}
+        //]
     }
 };
 // Create a Freezer store
-var frozen = new Freezer({schema:emptyObjectSchema});
+var frozen = new Freezer({schema: emptyObjectSchema});
 
 var SplitPane = require('./react-split-pane/SplitPane');
 
@@ -153,8 +158,8 @@ var FilePickerDialog = React.createClass({
                     var objectSchema = JSON.parse(e.target.result);
 
                     self.setState({
-                        storageKey:fileName,
-                        objectSchema:objectSchema
+                        storageKey: fileName,
+                        objectSchema: objectSchema
                     });
                 };
             })(f);
@@ -196,14 +201,14 @@ var Workplace = React.createClass({
         //    component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
         //}
         //else {
-            component =
-                <Container
-                    containers={this.props.schema.containers}
-                    boxes={this.props.schema.boxes}
-                    currentChanged={this.props.currentChanged}
-                    current={this.props.current}
-                    handleClick={handleClick}
-                    isRoot={true} />
+        component =
+            <Container
+                containers={this.props.schema.containers}
+                boxes={this.props.schema.boxes}
+                currentChanged={this.props.currentChanged}
+                current={this.props.current}
+                handleClick={handleClick}
+                isRoot={true} />
         //}
 
         return ( <div className="cWorkplace">{component}</div>);
@@ -313,7 +318,7 @@ var Designer = React.createClass({
         // and the index to the current store
         var store = this.props.store.get();
         return {
-            storageKey: 'Untitled document',
+            storageKey: 'Untitled',
             storeHistory: [store],
             currentStore: 0,
             jsonShown: false,
@@ -332,34 +337,37 @@ var Designer = React.createClass({
         this.props.store.set(this.state.storeHistory[nextIndex]);
         this.setState({currentStore: nextIndex});
     },
-    schema: function(){
+    schema: function () {
         return this.props.store.get().schema;
     },
-    schemaToJson:function(){
+    schemaToJson: function () {
         return JSON.stringify(this.props.store.get().toJS().schema);
     },
-    loadObjectSchema:function(objectSchema,key){
+    loadObjectSchema: function (objectSchema, key) {
         var store = this.props.store.get();
         var updated = store.schema.reset(objectSchema);
-        this.setState({
-            storeHistory: [store],
-            currentStore: 0,
-            storageKey: key
-
-        });
         this.currentChanged(updated);
+        this.setState({storageKey: key});
+        this.clearHistory();
     },
-
+    clearHistory:function(){
+        this.setState({
+            storeHistory: [this.props.store.get()],
+            currentStore: 0
+        });
+    },
     reset: function () {
         localStorage.removeItem(this.state.storageKey);
-        this.loadObjectSchema(emptyObjectSchema,this.state.storageKey);
+        this.loadObjectSchema(emptyObjectSchema, this.state.storageKey);
     },
     save: function () {
         localStorage.setItem(this.state.storageKey, this.schemaToJson());
+        this.clearHistory();
     },
     saveAs: function (key) {
         localStorage.setItem(key, this.schemaToJson())
         this.setState({storageKey: key});
+        this.clearHistory();
     },
     load: function (key) {
         this.loadObjectSchema(JSON.parse(localStorage.getItem(key)) || emptyObjectSchema, key)
@@ -372,7 +380,10 @@ var Designer = React.createClass({
         return React.createElement(SaveAsDialog, {confirm: this.saveAs, storageKey: this.state.storageKey});
     },
     importDialog: function () {
-        return React.createElement(FilePickerDialog, {confirm: this.loadObjectSchema, storageKey: this.state.storageKey});
+        return React.createElement(FilePickerDialog, {
+            confirm: this.loadObjectSchema,
+            storageKey: this.state.storageKey
+        });
     },
     currentChanged: function (currentNode) {
         var parent = currentNode.__.parents;
@@ -451,9 +462,10 @@ var Designer = React.createClass({
     },
     previewPdfKit: function () {
         var schema = this.schema();
-        var pages = transformToPages(schema,schema.data);
+        var pages = transformToPages(schema, schema.data);
         pdfKitService.generatePDFDocument('http://localhost:3000', JSON.stringify(pages), function (url) {
-            window.open(url);3
+            window.open(url);
+            3
         });
     },
     componentDidMount: function () {
@@ -482,6 +494,10 @@ var Designer = React.createClass({
         });
     },
     render: function () {
+        // demo defaults
+        var effect = 'zoomin',
+            pos = 'br',
+            method = 'hover';
 
         var schema = this.schema(),
             disabledUndo = !this.state.currentStore,
@@ -497,100 +513,106 @@ var Designer = React.createClass({
         }
         var exportSchema = "data:text/json;charset=utf-8," + encodeURIComponent(this.schemaToJson());
         var exportSchemaName = this.state.storageKey + ".json";
+        var displaySchemaName = this.state.storageKey
+        if (!disabledUndo) displaySchemaName += ' *';
         return (
             <div>
-                <SplitPane orientation="horizontal">
+                <Menu effect={effect} method={method} position={pos}>
+                    <MainButton iconResting="ion-plus-round" iconActive="ion-close-round" />
+
+                    <ModalTrigger modal={this.loadDialog()}>
+                        <ChildButton
+                            icon="ion-social-octocat"
+                            label="Open"
+                        />
+                    </ModalTrigger>
+                    <ChildButton
+                        onClick={this.save}
+                        icon="ion-social-github"
+                        label="Save"
+                    />
+                    <ModalViewTrigger  modal={<HtmlRenderer schema={schema} data={schema.data} />}>
+                        <ChildButton
+                            icon="ion-social-octocat"
+                            label="Preview"
+                        />
+                    </ModalViewTrigger>
+                </Menu>
+                <SplitPane orientation="horizontal" defaultSize="70vw">
                     <div>
-                        <div>
-                            <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
-                                <span className="glyphicon glyphicon-transfer" title="toogle source and preview"></span>
-                            </button>
-                        &nbsp;&nbsp;
-                            <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
-                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
-                            </button>
-                            <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
-                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
-                            </button>
-                        &nbsp;&nbsp;
-                            <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.save}>
-                                <span className="glyphicon glyphicon-floppy-disk" title="save"></span>
-                            </button>
-                            <ModalTrigger modal={this.loadDialog()}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-floppy-open" title="open"></span>
-                                </button>
-                            </ModalTrigger>
-                            <button disabled={ disabledSave } type="button" className="btn btn-primary" onClick={this.reset}>
-                                <span className="glyphicon glyphicon-floppy-remove" title="reset document"></span>
-                            </button>
-                        &nbsp;&nbsp;
-                            <ModalTrigger modal={this.importDialog()}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-import" title="import"></span>
-                                </button>
-                            </ModalTrigger>
-                            <a href={exportSchema} download={exportSchemaName}>
-                                <button type="button" className="btn btn-primary">
-                                    <span className="glyphicon glyphicon-export" title="export"></span>
-                                </button>
-                            </a>
-                        &nbsp;&nbsp;
-
-
-                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
-                                <Button bsStyle='link' title="save">{this.state.storageKey}</Button>
-                            </ModalTrigger>
-
-                            <div className="pull-right">
-                                <DropdownButton bsStyle='primary' title="PDF" onSelect={this.handlePdfPreview}>
-                                    <MenuItem eventKey='PdfKit'>PdfKit</MenuItem>
-                                    <MenuItem eventKey='PdfHummus'>Hummus</MenuItem>
-                                </DropdownButton>
-                            &nbsp;&nbsp;&nbsp;&nbsp;
-                                <ModalViewTrigger  modal={<HtmlRenderer schema={schema} data={schema.data} />}>
-                                    <button type="button" className="btn btn-primary">
-                                        <span className="glyphicon glyphicon-fullscreen"></span>
-                                    </button>
-                                </ModalViewTrigger>
-                            </div>
+                        <div style={toogleVisibleState(!this.state.jsonShown)}>
+                            <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged}/>
                         </div>
-                        <div>
-                            <div style={toogleVisibleState(!this.state.jsonShown)}>
-                                <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged}/>
-                            </div>
-                            <div style={toogleVisibleState(this.state.jsonShown)}>
-                                <PrettyJson json={schema} />
-                            </div>
+                        <div style={toogleVisibleState(this.state.jsonShown)}>
+                            <PrettyJson json={schema} />
                         </div>
 
                     </div>
                     <div style={{'minWidth': 300}}>
-                        <SplitPane orientation="vertical">
-                            <div>
-                                <div className='topRightFixed'>
-                                    <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
-                                </div>
-                                <div className='topRight'>
+                        <div className='toolbarHeader'>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
+                                                <Button bsStyle='link' title="save">
+                                                    {displaySchemaName}
+                                                </Button>
+                                            </ModalTrigger>
 
+                                            <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
+                                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
+                                            </button>
+                                            <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
+                                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
+                                            </button>
+                                            &nbsp;&nbsp;
+                                            <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
+                                                <span className="glyphicon glyphicon-transfer" title="toogle source and preview"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div className='toolbarContent'>
+                            <SplitPane orientation="vertical">
+                                <div className='propertyGrid'>
                                     <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged} />
                                 </div>
-                            </div>
-                            <div>
-                                <TabbedArea defaultActiveKey={2}>
-                                    <TabPane eventKey={1} tab='Tree'>
-                                        <ObjectBrowser rootNode={schema} current={this.state.current} currentChanged={this.currentChanged}  />
-                                    </TabPane>
-                                    <TabPane eventKey={2} tab='Pallete'>
-                                        <ToolBox addCtrl={this.addNewCtrl} />
-                                    </TabPane>
-                                </TabbedArea>
-                            </div>
-                        </SplitPane>
+                                <div>
+                                    <TabbedArea defaultActiveKey={2}>
+                                        <TabPane eventKey={1} tab='Tree'>
+                                            <ObjectBrowser rootNode={schema} current={this.state.current} currentChanged={this.currentChanged}  />
+                                        </TabPane>
+                                        <TabPane eventKey={2} tab='Pallete'>
+                                            <ToolBox addCtrl={this.addNewCtrl} />
+                                        </TabPane>
+                                        <TabPane eventKey={3} tab='Examples'>
+                                            <div>
+                                                <ModalTrigger modal={this.importDialog()}>
+                                                    <button type="button" className="btn btn-primary">
+                                                        <span className="glyphicon glyphicon-import" title="import"></span>
+                                                    </button>
+                                                </ModalTrigger>
+                                                <a href={exportSchema} download={exportSchemaName}>
+                                                    <button type="button" className="btn btn-primary">
+                                                        <span className="glyphicon glyphicon-export" title="export"></span>
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </TabPane>
+                                    </TabbedArea>
+                                </div>
+                            </SplitPane>
+                        </div>
                     </div>
                 </SplitPane>
             </div>
-            )
+        )
     }
 });
 

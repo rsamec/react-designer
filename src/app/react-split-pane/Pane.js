@@ -30,12 +30,13 @@ var Pane = _React2['default'].createClass({
             outline: 'none',
             overflow: 'auto'
         };
-        if (this.state.size) {
+        if (this.state.size || this.props.defaultSize) {
+            var size = this.state.size || this.props.defaultSize;
             if (orientation === 'vertical') {
-                style.height = this.state.size;
+                style.height =size;
                 style.display = 'flex';
             } else {
-                style.width = this.state.size;
+                style.width = size;
             }
             style.flex = 'none';
         }

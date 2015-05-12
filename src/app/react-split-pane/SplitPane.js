@@ -138,7 +138,7 @@ var SplitPane = _React2['default'].createClass({
         var child1 = children[1];
         elements.push(_React2['default'].createElement(
             _Pane2['default'],
-            { ref: 'pane1', key: 'pane1', orientation: orientation },
+            { ref: 'pane1', key: 'pane1', orientation: orientation, defaultSize:this.props.defaultSize},
             child0
         ));
         elements.push(_React2['default'].createElement(_Resizer2['default'], { ref: 'resizer', key: 'resizer', down: this.down, orientation: orientation }));
