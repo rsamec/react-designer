@@ -16,6 +16,7 @@ var ReactBootstrap = require('react-bootstrap');
 var rd3 = require('react-d3');
 var Griddle = require('griddle-react');
 
+
 var WidgetFactory = (function () {
 
     var widgets = {
@@ -31,7 +32,8 @@ var WidgetFactory = (function () {
         'TinyMceEditor':require('../widgets/HtmlRenderer'),
 
         'React.Griddle':Griddle,
-        'react-inlinesvg':require('react-inlinesvg')
+        'react-inlinesvg':require('react-inlinesvg'),
+        'react-3d-carousel':require('react-3d-carousel')
         //'SnapSvgBox':require('../widgets/SnapSvgBox')
         //'Reacticon':Reacticon
     }
@@ -89,7 +91,7 @@ var WidgetFactory = (function () {
         var bsSize = {name:'bsSize',editor:dropDownEditor, args:{options:bsSizes.map(function(g){ return {value:g,label:g}}),defaultValue:'medium'}}
         return {
             'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor}],
-            'Container':commonPropsSizes,
+            'Container':commonPropsSizes.concat([{name:'Visibility'}]),
             'Repeater':commonPropsSizes.concat([{name:'Binding'}]),
             'CheckBoxInput':commonProps.concat([{name: 'checked',label: 'DefaultChecked', editor:numEditor},{name:'label', args:{defaultValue:'Label'}},{name:'Binding'}]),
             'TextBoxInput': commonProps.concat([{name:'value',label:'DefaultValue'},{name:'label',args:{defaultValue:'Label'}},{name:'Binding'}]),
@@ -116,8 +118,8 @@ var WidgetFactory = (function () {
             'ReactBootstrap.Alert':commonProps.concat([bsStyle,content]),
             'ReactBootstrap.Label':commonProps.concat([bsStyle, bsSize,content]),
             'ReactBootstrap.Tooltip':commonProps.concat([{name:'placement', editor:dropDownEditor,args:{options:placement.map(function(x) {return {value:x,label:x}})}}, {name:'positionLeft',editor:numEditor}, {name:'positionTop',editor:numEditor}, {name:'arrowOffsetLeft',editor:numEditor},{name:'arrowOffsetTop',editor:numEditor},{name:'content'}]),
-            'react-inlinesvg':commonProps.concat([{name: 'src',args:{defaultValue:'http://upload.wikimedia.org/wikipedia/commons/8/8a/Bicycle_diagram-en.svg'}}])
-            //'SnapSvgBox':commonPropsSizes.concat([{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'headline'},{name:'htmlRibbonText'},{name:'cssRibbonText'},{name:'jsRibbonText'}]),
+            'react-inlinesvg':commonProps.concat([{name: 'src',args:{defaultValue:'http://upload.wikimedia.org/wikipedia/commons/8/8a/Bicycle_diagram-en.svg'}}]),
+            'react-3d-carousel':commonProps.concat([{name:'width', editor:numEditor, args:{defaultValue:200}},{name:'images',editor:JsonEditor,args:{defaultValue:[]}},{name:'duration', editor:numEditor, args:{defaultValue:250}},{name:'layout',editor:dropDownEditor, args:{options:['prism','classic'].map(function(g){ return {value:g,label:g}}),defaultValue:'prism'}}])//'SnapSvgBox':commonPropsSizes.concat([{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'headline'},{name:'htmlRibbonText'},{name:'cssRibbonText'},{name:'jsRibbonText'}]),
             //'Reacticon':commonProps.concat([{name: 'height', editor:numEditor},{name: 'width', editor:numEditor},{name: 'type', editor:dropDownEditor,options:typeOptions.map(function(g){ return {value:g,label:g}})},{name:'label'}, {name: 'bgColor', editor:colorEditor}, {name: 'primaryColor', editor:colorEditor},{name: 'strokeColor', editor:colorEditor},{name:'animate', editor:BoolEditor},{name:'progress', editor:BoolEditor},{name:'isProcessing', editor:BoolEditor}]),
         }
     }

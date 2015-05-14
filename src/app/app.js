@@ -522,21 +522,27 @@ var Designer = React.createClass({
 
                     <ModalTrigger modal={this.loadDialog()}>
                         <ChildButton
-                            icon="ion-social-octocat"
+                            icon="ion-ios-upload"
                             label="Open"
                         />
                     </ModalTrigger>
                     <ChildButton
                         onClick={this.save}
-                        icon="ion-social-github"
+                        icon="ion-ios-download"
                         label="Save"
                     />
                     <ModalViewTrigger  modal={<HtmlRenderer schema={schema} data={schema.data} />}>
                         <ChildButton
-                            icon="ion-social-octocat"
+                            icon="ion-social-html5"
                             label="Preview"
                         />
                     </ModalViewTrigger>
+                    <ChildButton
+                        onClick={this.previewPdfKit}
+                        icon="ion-printer"
+                        label="Generate PDF"
+                    />
+
                 </Menu>
                 <SplitPane orientation="horizontal" defaultSize="70vw">
                     <div>

@@ -30,6 +30,7 @@ var pathObjectBinder = (function () {
         return last != -1 ? path.substring(last + 1, path.length) : path;
     };
     pathObjectBinder.prototype.string_to_ref = function (obj, string) {
+        if (obj === undefined) return undefined;
         var parts = string.split('.');
 
         //find square brackets (array-syntax]
@@ -52,4 +53,4 @@ var pathObjectBinder = (function () {
     };
     return pathObjectBinder;
 })();
-module.exports = pathObjectBinder; 
+module.exports = pathObjectBinder;

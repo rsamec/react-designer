@@ -29,7 +29,8 @@ var ToolBox = React.createClass({
                         {name: 'ImageBox', label: 'ImageBox'},
                         {name: 'Flipper', label: 'Flipper'},
                         {name: 'CollapsibleTree', label: 'CollapsibleTree'},
-                        {name: 'react-inlinesvg', label: 'SvgBox'}
+                        {name: 'react-inlinesvg', label: 'SvgBox'},
+                        {name: 'react-3d-carousel', label: 'Carousel 3D'}
                         //{name: 'Reacticon', label: 'Reacticon'},
                         //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
                     ]

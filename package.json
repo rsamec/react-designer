@@ -9,6 +9,7 @@
     "functionally": "~0.x.x",
     "griddle-react": "^0.2.12",
     "property-grid": "^2.1.0",
+    "react-3d-carousel": "0.0.5",
     "react-binding": "^0.5.0",
     "react-bootstrap": "^0.21.2",
     "react-code-mirror": "^3.0.4",
