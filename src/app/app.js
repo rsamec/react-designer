@@ -36,6 +36,8 @@ var TabPane = bootstrap.TabPane;
 var traverse = require('traverse');
 var transformToPages = require('./utilities/transformToPages');
 var deepClone = require('./utilities/deepClone');
+//binding
+var pathObjecBinder = require('./utilities/pathObjectBinder');
 
 var Menu = require('react-mfb').Menu;
 var MainButton = require('react-mfb').MainButton;
@@ -197,6 +199,8 @@ var Workplace = React.createClass({
         }.bind(this);
         var empty = this.props.schema.containers.length == 0;
         var component;
+        var data = this.props.schema.data;
+        var dataBinder = new pathObjecBinder(function(){return data});
         //if (empty) {
         //    component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
         //}
@@ -208,7 +212,8 @@ var Workplace = React.createClass({
                 currentChanged={this.props.currentChanged}
                 current={this.props.current}
                 handleClick={handleClick}
-                isRoot={true} />
+                isRoot={true}
+                dataBinder={dataBinder} />
         //}
 
         return ( <div className="cWorkplace">{component}</div>);
@@ -515,6 +520,8 @@ var Designer = React.createClass({
         var exportSchemaName = this.state.storageKey + ".json";
         var displaySchemaName = this.state.storageKey
         if (!disabledUndo) displaySchemaName += ' *';
+
+
         return (
             <div>
                 <Menu effect={effect} method={method} position={pos}>

@@ -30,7 +30,7 @@ var HtmlEditorDialog = React.createClass({
                         config={{
                             menubar: false,
                             height:300,
-                            plugins: 'autolink link image lists',
+                            plugins: 'autolink link image lists code',
                             toolbar: 'bold italic underline | link | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code'
                         }}
                         onChange={this.handleEditorChange}

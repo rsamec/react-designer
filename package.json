@@ -18,6 +18,7 @@
     "react-dnd": "^0.9.3",
     "react-inlinesvg": "^0.4.0",
     "react-mfb": "^0.2.0",
+    "react-pivot": "^1.10.1",
     "react-tap-event-plugin": "^0.1.4",
     "react-tinymce": "^0.1.0",
     "react-treeview": "^0.3.12",

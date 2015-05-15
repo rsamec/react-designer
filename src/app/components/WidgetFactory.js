@@ -35,7 +35,8 @@ var WidgetFactory = (function () {
 
         'React.Griddle':Griddle,
         'react-inlinesvg':require('react-inlinesvg'),
-        'react-3d-carousel':require('react-3d-carousel')
+        'react-3d-carousel':require('react-3d-carousel'),
+        'react-pivot':require('../widgets/PivotTable')
         //'SnapSvgBox':require('../widgets/SnapSvgBox')
         //'Reacticon':Reacticon
     }
@@ -143,8 +144,8 @@ var WidgetFactory = (function () {
             'Shapes.Circle':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('r',25)]).concat(shapeProps),
             'Shapes.Ellipse':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('rx',25), numEditorFce('ry',15)]).concat(shapeProps),
             'Shapes.Line':commonPropsSizes.concat([numEditorFce('x1',25), numEditorFce('y1',25),numEditorFce('x2',75), numEditorFce('y2',75)]).concat(shapeProps),
-            'Shapes.Polyline':commonPropsSizes.concat([{name:'points', args:{defaultValue:'25,25 25,75 50,75 50,50 75,25'}}]).concat(shapeProps)
-
+            'Shapes.Polyline':commonPropsSizes.concat([{name:'points', args:{defaultValue:'25,25 25,75 50,75 50,50 75,25'}}]).concat(shapeProps),
+            'react-pivot':commonProps.concat([bindEditorFce('rows'),bindEditorFce('dimensions'),{name:'reduce',editor: codeMirrorEditor},{name:'calculations',editor: codeMirrorEditor},{name:'nPaginateRows',editor: numEditor,args:{defaultValue:10}}])
             //'Reacticon':commonProps.concat([{name: 'height', editor:numEditor},{name: 'width', editor:numEditor},{name: 'type', editor:dropDownEditor,options:typeOptions.map(function(g){ return {value:g,label:g}})},{name:'label'}, {name: 'bgColor', editor:colorEditor}, {name: 'primaryColor', editor:colorEditor},{name: 'strokeColor', editor:colorEditor},{name:'animate', editor:BoolEditor},{name:'progress', editor:BoolEditor},{name:'isProcessing', editor:BoolEditor}]),
         }
     }

@@ -85,7 +85,7 @@ var Container = React.createClass({
         if (widgets[box.elementName] === undefined) {
             return React.DOM.span(null, 'Component ' + box.elementName + ' is not register among widgets.');
         }
-        var props = box.elementName === 'ReactBootstrap.Glyphicon' ? _.omit(box, 'style') : box;
+        var props = box.elementName === 'ReactBootstrap.Glyphicon' ? _.omit(box, 'style') : _.extend({"dataBinder":this.props.dataBinder},box);
         return React.createElement(widgets[box.elementName], props, box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
@@ -160,6 +160,8 @@ var Container = React.createClass({
                          parent={container}
                          parentSelected={parentSelected}
                          selected={selected}
+                         dataBinder={this.props.dataBinder}
+
                      />
                  );
              }, this)
