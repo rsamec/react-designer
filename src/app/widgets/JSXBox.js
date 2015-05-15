@@ -17,6 +17,7 @@ var JSXBox = React.createClass({
             ).code;
 
             //compiled content
+            var props = this.props;
             return eval(code);
         }
         catch(err){

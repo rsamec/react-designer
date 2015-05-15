@@ -2,11 +2,9 @@
 
 var React = require('react');
 var PropertyGrid = require('property-grid');
-var pathObjecBinder = require('./../utilities/pathObjectBinder');
+var pathObjecBinder = require('../utilities/pathObjectBinder');
 var deepClone = require('../utilities/deepClone');
 var WidgetFactory = require('./WidgetFactory');
-
-
 
 var ObjectPropertyGrid = React.createClass({
     currentProps:function(){
@@ -14,7 +12,7 @@ var ObjectPropertyGrid = React.createClass({
         return WidgetFactory.getWidgetProperties(this.props.current.node.elementName);
     },
     onPropertyValueChange: function(event, prop, value, path){
-
+        if (prop.name === undefined) return;
         //console.log(prop.name + ' has a new value: "' + value + '". Full path is ' + path.join('/'))
         if (prop.editor!== undefined && prop.editor.displayName === "BoolEditor"){
             value = event.target.checked?true:false;
@@ -24,10 +22,9 @@ var ObjectPropertyGrid = React.createClass({
             value = value!==undefined?parseInt(value,10):0;
         }
 
-
         var current = this.props.current.node;
         var updated;
-        if (path.length === 2){
+        if (_.isArray(path) && path.length === 2){
             //TODO: find better way how to update nested properties
             var cloned = deepClone(current);
             var binder = new pathObjecBinder(function(){return cloned});

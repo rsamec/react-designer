@@ -27,13 +27,15 @@ var ToolBox = React.createClass({
                         {name: 'JSXBox', label: 'JSXBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
                         {name: 'ImageBox', label: 'ImageBox'},
-                        {name: 'Flipper', label: 'Flipper'},
-                        {name: 'CollapsibleTree', label: 'CollapsibleTree'},
-                        {name: 'react-inlinesvg', label: 'SvgBox'},
-                        {name: 'react-3d-carousel', label: 'Carousel 3D'}
-                        //{name: 'Reacticon', label: 'Reacticon'},
-                        //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
+
                     ]
+                },
+                {
+                    type: 'Shapes',
+                    collapsed: true,
+                    controls:_.map(['Rectangle','Circle', 'Ellipse','Line','Polyline'],function(x){return {
+                        'name':'Shapes.' + x, 'label': x}
+                    })
                 },
                 {
                     type: 'Bootstrap',
@@ -48,10 +50,16 @@ var ToolBox = React.createClass({
                     controls:_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}})
                 },
                 {
-                    type: 'Grids',
+                    type: 'Extras',
                     collapsed: true,
                     controls: [
-                        {name: 'React.Griddle', label: 'Griddle'}
+                        {name: 'React.Griddle', label: 'Griddle'},
+                        {name: 'Flipper', label: 'Flipper'},
+                        {name: 'CollapsibleTree', label: 'CollapsibleTree'},
+                        {name: 'react-inlinesvg', label: 'SvgBox'},
+                        {name: 'react-3d-carousel', label: 'Carousel 3D'}
+                        //{name: 'Reacticon', label: 'Reacticon'},
+                        //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
                     ]
                 },
             ]

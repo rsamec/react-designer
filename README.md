@@ -5,6 +5,9 @@ React designer is WYSIWYG editor for **easy content creation** (dynamic document
 It is prototype and work in progress. It is a simple content editor.
 It can be useful for rapid application prototyping (sketch your application skeleton by drawing your screens, compose it with basic widgets and describe its functionality with useful hints).
 
+## Demo
+
+[DEMO](http://hand-formvalidation.rhcloud.com/)
 
 ## Features - (work in progress)
 
@@ -32,13 +35,15 @@ It can be useful for rapid application prototyping (sketch your application skel
 +   usable for big documents - careful designed to use react performance
     +   we won't render the component if it doesn't need it
     +   simple comparison is fast because of using immutable data structure
++   simple document description (json) that enables to easy map to react component and its properties     
 
 ## Object schema format
 
-Object schema format is description of document. It is a simple object tree that uses json format.
+Object schema format is complete description of document. It is a simple object tree that consists of containers that are invisible components and boxes (visible components, widgets).
 
 
-```js
+```json
+
 { 
  "name": "rootContainer",
  "elementName": "ObjectSchema",
@@ -56,12 +61,13 @@ Object schema format is description of document. It is a simple object tree that
       "containers": [ ] }
     ]
 }
+
 ```
 
 You can see 2 collections (arrays) of objects
 
-    + containers - collection of children
-    + boxes - collection of widgets
++   containers - collection of children
++   boxes - collection of widgets
 
 The object schema tree is composed using __containers__ property as collection of children.
 The boxes on the other hand is a leaf collection that can not have other children.
@@ -77,7 +83,7 @@ Obligatory object properties
 
 All other properties are optional and are typically specific for widgets as widget's options.
 
-# React elements and components
+### React elements and components
 
 Typically widget object is a react component with props as component's options.
 
@@ -85,7 +91,7 @@ To render in react is super simple
 
 ```js
     createComponent: function (box) {
-        var widget =widgets[__box.elementName__];
+        var widget =widgets[box.elementName];
         if (widget === undefined) return React.DOM.span(null,'Component ' + box.elementName + ' is not register among widgets.');
 
         return React.createElement(widget,box, box.content!== undefined?React.DOM.span(null, box.content):undefined);
@@ -105,7 +111,7 @@ To render in react is super simple
 ```
 
 
-## Designer components
+# Designer components
 
 react-designer consists of these parts
 
@@ -138,9 +144,9 @@ Right panel
     +   HtmlEditor - TinyMceEditor
     +   NumberInputEditor
 
-Workplace consists of containers that are invisible elements and boxes (visible components, widgets). 
 
-## Content publishing 
+
+# Content publishing 
  
 There are many ways how you can publish content created in react-designer.
 
@@ -166,6 +172,7 @@ Feel free to write your own content publisher - see list of some ideas.
 
 Flipper - credits to [https://www.codementor.io/reactjs/tutorial/building-a-flipper-using-react-js-and-less-css]
 CollapsibleTree - credits to [http://bl.ocks.org/mbostock/4339083]
+...
 
 
 # Get started
@@ -189,7 +196,7 @@ $ gulp pro
 ```
 
 
-## Road map
+# Road map
 
 Long run
 
@@ -218,3 +225,7 @@ Coming soon
     +   recheck - should component update
     +   parse property values (parseInt,etc.) - to many places - remove defensive programming favor contract by design
 +   consider support for continues saving
+
+# Licence
+
+MIT

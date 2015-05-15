@@ -8,6 +8,7 @@ var ModalTrigger = Bootstrap.ModalTrigger;
 var Button = Bootstrap.Button;
 
 var deepClone = require('../utilities/deepClone');
+var TruncateString = require('../components/TruncateString');
 /****************
  JSON data to edit
  *****************/
@@ -491,10 +492,11 @@ var JsonEditor = React.createClass({
     },
     render: function(){
         var value = !!this.props.value?this.props.value:{};
+        //var truncatedValue = value !== undefined ? truncate(JSON.stringify(value),25):undefined;
         return (<table>
             <tr>
                 <td>
-                    <pre>{ JSON.stringify( value, null, '  ')}</pre>
+                    <TruncateString value={JSON.stringify(value)} />
                 </td>
                 <td>
                     <ModalTrigger modal={<JsonDialogImport value={value} handleChange={this.handleChange} />}>

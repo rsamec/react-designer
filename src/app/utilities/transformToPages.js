@@ -38,15 +38,15 @@ function transformToPages(schema,data){
 
     //step -> remove invisible sections (containers)
     traverse(clonedSchema).forEach(function (x) {
-        if (!!x && x.elementName === CONTAINER_NAME && !!x.Visibility && !dataBinder.getValue(x.Visibility)) {
+        if (!!x && x.elementName === CONTAINER_NAME && !!x.Visibility && !!x.Visibility.Path && !dataBinder.getValue(x.Visibility.Path)) {
             this.delete();
         }
     });
 
     //step -> process repeatable sections (containers) - for each row - deep clone row template
     traverse(clonedSchema).forEach(function (x) {
-        if (!!x && x.elementName === REPEATER_CONTAINER_NAME && !!x.Binding) {
-            var dataObj = dataBinder.getValue(x.Binding);
+        if (!!x && x.elementName === REPEATER_CONTAINER_NAME && !!x.Binding && !!x.Binding.Path) {
+            var dataObj = dataBinder.getValue(x.Binding.Path);
             if (!!dataObj) {
 
                 //for each row - deep clone row template
@@ -58,8 +58,9 @@ function transformToPages(schema,data){
                     //apply binding using square brackets notation
                     traverse(clonedRow).forEach(function (y) {
                         //TODO: simple solution for demonstration purposes
-                        if (this.key === "Binding"){
-                            this.update(x.Binding + "[" + i + "]." + y);
+                        if (this.key === "Path"){
+                            var rowExpression = x.Binding.Path + "[" + i + "]." + y;
+                            this.update(rowExpression);
                         }
                     });
 
@@ -101,12 +102,12 @@ function transformToPages(schema,data){
         }
 
         //expand container height if childrenHeight is greater than node height - typically for repeated containers
-        computedHeight = _.max([nodeHeight,childrenHeight]);
+        computedHeight = _.max([nodeHeight,childrenHeight]) +  nodeTop;
         //var tmp =  node.style!==undefined?node.style.top:'--';
         //console.log(node.name + ":" + height + "->" + top + ", " + tmp);
 
         //compute next top
-        globalTop += computedHeight-childrenHeight;
+        globalTop += (computedHeight-childrenHeight);
         //return computed height of container
         return computedHeight;
     };
@@ -161,9 +162,13 @@ function transformToPages(schema,data){
     _.each(pages,function(page){
         _.each(page.boxes,function(node) {
             var box = node.element;
-            if (!!box.Binding){
-                //one-way binding
-                box.content = dataBinder.getValue(box.Binding);
+            for (var propName in box){
+                var prop = box[propName];
+                //TODO: better test - it is a binding object?
+                if (_.isObject(prop) && !!prop.Path){
+                    //one-way binding
+                    box[propName] = dataBinder.getValue(prop.Path);
+                }
             }
         })
     })
