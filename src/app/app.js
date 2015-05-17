@@ -16,6 +16,7 @@ var ObjectPropertyGrid = require('./components/ObjectPropertyGrid');
 var Tile = require('./components/Tile');
 var If = require('./components/If');
 var ModalViewTrigger = require('./components/ModalViewTrigger');
+var ExampleList = require('./components/ExampleList');
 
 // components
 var Container = require('./components/Container');
@@ -42,7 +43,6 @@ var pathObjecBinder = require('./utilities/pathObjectBinder');
 var Menu = require('react-mfb').Menu;
 var MainButton = require('react-mfb').MainButton;
 var ChildButton = require('react-mfb').ChildButton;
-
 
 var emptyObjectSchema = {
     elementName: 'ObjectSchema',
@@ -461,6 +461,7 @@ var Designer = React.createClass({
     previewPdfHummus: function () {
         var schema = this.schema();
         var defaultDocument = PdfHummusRenderer.transformToPdf(schema, schema.data);
+
         hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
             window.open(url);
         });
@@ -468,9 +469,10 @@ var Designer = React.createClass({
     previewPdfKit: function () {
         var schema = this.schema();
         var pages = transformToPages(schema, schema.data);
-        pdfKitService.generatePDFDocument('http://localhost:3000', JSON.stringify(pages), function (url) {
+        //var url = true?'http://localhost:3000':'';
+
+        pdfKitService.generatePDFDocument('http://hand-formvalidation.rhcloud.com', JSON.stringify(pages), function (url) {
             window.open(url);
-            3
         });
     },
     componentDidMount: function () {
@@ -606,6 +608,7 @@ var Designer = React.createClass({
                                         </TabPane>
                                         <TabPane eventKey={3} tab='Examples'>
                                             <div>
+                                                <ExampleList loadSchema={this.loadObjectSchema} />
                                                 <ModalTrigger modal={this.importDialog()}>
                                                     <button type="button" className="btn btn-primary">
                                                         <span className="glyphicon glyphicon-import" title="import"></span>

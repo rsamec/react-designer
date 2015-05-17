@@ -22,7 +22,8 @@
     "react-tap-event-plugin": "^0.1.4",
     "react-tinymce": "^0.1.0",
     "react-treeview": "^0.3.12",
-    "react-vendor-prefix": "0.0.1"
+    "react-vendor-prefix": "0.0.1",
+    "superagent": "^1.2.0"
   },
   "devDependencies": {
     "gulp": "~3.8.8",

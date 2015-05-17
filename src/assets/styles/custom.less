@@ -259,3 +259,52 @@ pre {
 input[type='checkbox'] .editor {
     height: 16px;
 }
+
+body {
+//    &[start] {
+           //counter-reset: list-item 1;
+//            counter-increment: item -1;
+//        }
+}
+.nestedList {
+
+        //counter-reset: item 3;
+        //counter-increment: list-item - 2
+}
+
+ol {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    &:not([start]){
+        counter-reset: item;
+    }
+
+
+}
+
+ol > li {
+    display: table;
+    counter-increment: item;
+    margin-bottom: 0.6em;
+}
+
+ol > li:before {
+    content: counters(item, ".") ". ";
+    display: table-cell;
+    padding-right: 0.6em;
+}
+
+li ol > li {
+    margin: 0;
+}
+
+li ol > li:before {
+    content: counters(item, ".") " ";
+}
+
+//ol li {display:block;} /* hide original list counter */
+//ol > li:first-child {counter-reset: item;} /* reset counter */
+//ol > li {counter-increment: item; position: relative;} /* increment counter */
+//ol > li:before {content:counters(item, ".") ". "; position: absolute; margin-right: 100%; right: 10px;} /* print counter */

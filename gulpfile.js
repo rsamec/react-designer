@@ -51,8 +51,13 @@ gulp.task('config', function() {
 });
 
 gulp.task('fonts', function() {
-    gulp.src('src/bower_components/bootstrap/dist/fonts/*')
+    gulp.src('src/assets/fonts/*')
         .pipe(gulp.dest('dist/assets/fonts'));
+});
+
+gulp.task('examples', function() {
+    gulp.src('src/assets/examples/*')
+        .pipe(gulp.dest('dist/assets/examples'));
 });
 
 gulp.task('images', function() {
@@ -75,7 +80,7 @@ gulp.task('compass', function() {
         .pipe(gulp.dest('src/assets/styles'))
 });
 
-gulp.task('base', ['robots', 'static', 'config', 'fonts', 'images', 'styles']);
+gulp.task('base', ['robots', 'static', 'config', 'fonts','examples', 'images', 'styles']);
 
 gulp.task('scripts', ['lint'], function() {
     var bundler = browserify({

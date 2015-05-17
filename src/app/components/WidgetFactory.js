@@ -127,7 +127,7 @@ var WidgetFactory = (function () {
             'ReactD3.AreaChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
             'ReactD3.PieChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
             'ReactD3.Treemap':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'HtmlBox':commonProps.concat([{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'columnCount',editor:numEditor}]),
+            'HtmlBox':commonProps.concat([{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'columnCount',editor:numEditor},{name:'counterReset',editor:numEditor}]),
             'TinyMceEditor':commonProps.concat([{name:'content',label:'Html', editor:htmlEditor},{name:'columnCount',editor:numEditor}]),
             'React.Griddle':commonProps.concat([{name:'showFilter',editor: BoolEditor},{name:'showSettings',editor: BoolEditor},bindEditorFce('results')]),
             'ReactBootstrap.Button':commonProps.concat([bsStyle,bsSize, content]),

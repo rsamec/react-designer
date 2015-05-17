@@ -6,23 +6,11 @@ var pdfKitService = {
         failureCB = failureCB || noOp;
 
         function openPDFWhenDone(inServiceURL, inData, successCB, failureCB) {
-            if (inData.status == 0) {
-
-                successCB(inServiceURL + '/' + inData.generatedFileID);
-            }
-            else if (inData.status == 2 && failureCB) {
-                failureCB(inData);
-            }
-            else {
-                window.setTimeout(function () {
-                    $.get(inServiceURL + '/generationjobs/' + inData.jobID, function (data) {
-                        openPDFWhenDone(inServiceURL, data, successCB, failureCB);
-                    }).fail(failureCB);
-                }, 1000);
-            }
+            var file = b64toBlob(inData,'application/pdf');
+            var fileURL = URL.createObjectURL(file);
+            successCB(fileURL);
+            //window.open(fileURL);
         }
-
-
         $.ajax({
             type: 'POST',
             url: inServiceURL + '/generationjobs',
@@ -36,5 +24,29 @@ var pdfKitService = {
         });
 
     }
+}
+
+function b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, {type: contentType});
+    return blob;
 }
 function noOp(){}

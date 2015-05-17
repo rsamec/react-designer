@@ -39,6 +39,20 @@ function transformToPages(schema,data){
     //step -> remove invisible sections (containers)
     traverse(clonedSchema).forEach(function (x) {
         if (!!x && x.elementName === CONTAINER_NAME && !!x.Visibility && !!x.Visibility.Path && !dataBinder.getValue(x.Visibility.Path)) {
+
+            //get parent
+            var parent = this.parent;
+            if (parent !==undefined) parent = parent.parent;
+            if (parent !==undefined) parent = parent.node;
+
+            //decrese the height of the parent container
+            if (parent !== undefined) {
+                var parentHeight = parseInt(parent.style.height, 10);
+                var nodeHeight = parseInt(x.style.height, 10);
+                if (!isNaN(nodeHeight) && !isNaN(parentHeight)) parent.style.height = parentHeight - nodeHeight;
+            }
+
+            //invisible section -> delete
             this.delete();
         }
     });

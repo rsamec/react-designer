@@ -3,15 +3,16 @@
 var React = require('react');
 
 var HtmlRenderer = React.createClass({
-    render: function () {
-        //experimental - columnCount
-        var columnCountStyle = {};
-        if (this.props.columnCount !== undefined) columnCountStyle.WebkitColumnCount=this.props.columnCount;
-
+    componentDidMount () {
+        var el = this.getDOMNode();
+    },
+    render() {
+        //experimental - columnCount, counterReset
+        var style = {};
+        if (this.props.columnCount !== undefined) style.WebkitColumnCount=this.props.columnCount;
+        if (this.props.counterReset !== undefined) style.counterReset = 'item ' + (this.props.counterReset - 1);
         return (
-            <div style={columnCountStyle}>
-                <div  dangerouslySetInnerHTML={{__html: this.props.content}}></div>
-            </div>
+            <div className="nestedList" style={style} dangerouslySetInnerHTML={{__html: this.props.content}}></div>
         );
     }
 });
