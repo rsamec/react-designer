@@ -7,7 +7,7 @@ It can be useful for rapid application prototyping (sketch your application skel
 
 ## Demo
 
-[DEMO](http://hand-formvalidation.rhcloud.com/)
+[DEMO](http://hand-formvalidation.rhcloud.com/designer)
 
 ## Features - (work in progress)
 

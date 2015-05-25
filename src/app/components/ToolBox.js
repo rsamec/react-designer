@@ -27,13 +27,12 @@ var ToolBox = React.createClass({
                         {name: 'JSXBox', label: 'JSXBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
                         {name: 'ImageBox', label: 'ImageBox'},
-
                     ]
                 },
                 {
                     type: 'Shapes',
                     collapsed: true,
-                    controls:_.map(['Rectangle','Circle', 'Ellipse','Line','Polyline'],function(x){return {
+                    controls:_.map(['Rectangle','Circle', 'Ellipse','Line','Polyline','CornerLine','CornerBox'],function(x){return {
                         'name':'Shapes.' + x, 'label': x}
                     })
                 },
@@ -47,7 +46,7 @@ var ToolBox = React.createClass({
                 {
                     type: 'Charts',
                     collapsed: true,
-                    controls:_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}})
+                    controls:[{name: 'ChartistGraph', label: 'Chart'}].concat(_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}}))
                 },
                 {
                     type: 'Extras',

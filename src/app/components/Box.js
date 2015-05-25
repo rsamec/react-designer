@@ -49,7 +49,7 @@ var Box = React.createClass({
         //prepare styles
         var cx = React.addons.classSet;
         var classes = cx({
-            'cBox':true,
+            'box':true,
             'selected':this.props.selected
         });
 

@@ -233,6 +233,7 @@ html.u-app *,
 html.u-app body * {
   box-sizing: border-box;
 }
+/*nameBgColor = #FFFFFF*/
 .property-grid {
   overflow: auto;
   box-sizing: border-box;
@@ -292,8 +293,8 @@ html.u-app body * {
   border-top: 0px;
 }
 .property-grid .name {
-  background: #fff;
-  color: #e40a5d;
+  background: nameBgColor;
+  color: #3782c4;
   white-space: nowrap;
 }
 .property-grid .value {

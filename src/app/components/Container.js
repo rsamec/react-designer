@@ -86,6 +86,7 @@ var Container = React.createClass({
             return React.DOM.span(null, 'Component ' + box.elementName + ' is not register among widgets.');
         }
         var props = box.elementName === 'ReactBootstrap.Glyphicon' ? _.omit(box, 'style') : _.extend({"dataBinder":this.props.dataBinder},box);
+
         return React.createElement(widgets[box.elementName], props, box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
@@ -108,7 +109,7 @@ var Container = React.createClass({
         //styles
         var cx = React.addons.classSet;
         var classes = cx({
-            'cContainer': true,
+            'con': true,
             'selected': this.props.selected,
             'parentSelected': this.props.parentSelected,
             'root': this.props.isRoot

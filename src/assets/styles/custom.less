@@ -25,36 +25,40 @@
 
 }
 
-.cContainer{
+.con{
     min-height:20px;
     min-width:20px;
     border:solid 1px gray;
     resize:none;
     overflow:visible;
 }
-.cContainer.selected {
+.con.selected {
     border-width: 3px;
     border-color: red;
 }
-.cContainer.parentSelected {
+.con.parentSelected {
     border-width: 3px;
     border-color: deeppink;
 }
-.cContainer.root {
+.con.root {
     background-image: url("../../assets/images/grid.png");
     background-repeat: repeat;
     min-height: 100vh;
 
 }
 
-.cBox {
+.box {
     position: absolute;
     border: 1px dashed gray;
     padding: 0.5rem;
 }
-.cBox.selected {
+.box.selected {
     border-width: 3px;
     border-color: red;
+}
+
+.cBox{
+    position: absolute;
 }
 
 html, body {
@@ -229,6 +233,8 @@ html, body {
     padding: 5px;
     z-index: 1000;
     background-color: white;
+    //max-width:30%;
+    min-width:30%;
 }
 .toolbarContent{
     position: relative;
@@ -308,3 +314,18 @@ li ol > li:before {
 //ol > li:first-child {counter-reset: item;} /* reset counter */
 //ol > li {counter-increment: item; position: relative;} /* increment counter */
 //ol > li:before {content:counters(item, ".") ". "; position: absolute; margin-right: 100%; right: 10px;} /* print counter */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #section-to-print, #section-to-print * {
+        visibility: visible;
+
+    }
+    #section-to-print {
+        display: block;
+//        position: absolute;
+//        left: 0;
+//        top: 0;
+    }
+}

@@ -2,9 +2,13 @@
 
 var React = require('react');
 
-//preview and container
-var PdfHummusRenderer = require('./views/PdfHummusRenderer');
-var HtmlRenderer = require('./views/HtmlRenderer');
+//preview
+var HtmlPagesRenderer = require('react-page-renderer').HtmlPagesRenderer;
+var PDFPagesTrigger = require('react-page-renderer').PDFPagesTrigger;
+var BootstrapPublisher = require('react-page-renderer').BootstrapPublisher;
+
+var WidgetFactory = require('./components/WidgetFactory');
+var widgets = WidgetFactory.getWidgets();
 
 var Freezer = require('freezer-js');
 
@@ -20,7 +24,8 @@ var ExampleList = require('./components/ExampleList');
 
 // components
 var Container = require('./components/Container');
-var WidgetFactory = require('./components/WidgetFactory');
+
+var BindToMixin = require('react-binding');
 
 //bootstrap
 var bootstrap = require('react-bootstrap');
@@ -44,19 +49,13 @@ var Menu = require('react-mfb').Menu;
 var MainButton = require('react-mfb').MainButton;
 var ChildButton = require('react-mfb').ChildButton;
 
+var formService = require('./services/formService');
+
 var emptyObjectSchema = {
     elementName: 'ObjectSchema',
     name: 'rootContainer',
     containers: [],
-    data: {
-        //Employee: {FirstName: 'John', LastName: 'Smith'},
-        //Hobbies: [
-        //    {HobbyName: 'Bandbington', Frequency: 'Daily'},
-        //    {HobbyName: 'Tennis', Frequency: 'Yearly'},
-        //    {HobbyName: 'Reading', Frequency: 'Monthly'},
-        //    {HobbyName: 'Cycling', Frequency: 'Daily'}
-        //]
-    }
+    data: {}
 };
 // Create a Freezer store
 var frozen = new Freezer({schema: emptyObjectSchema});
@@ -315,6 +314,47 @@ var ToolbarActions = React.createClass({
     }
 });
 
+var Preview = React.createClass({
+    mixins:[BindToMixin],
+    getInitialState(){
+        return {data:this.props.schema.data !==undefined?deepClone(this.props.schema.data):{}}
+    },
+    render: function() {
+        var schema = deepClone(this.props.schema);
+        var dataContext = this.bindToState('data');
+
+
+        var preview;
+
+        if (schema.input){
+            var rules = schema.businessRules || {};
+            var style = {height:'90vh',width:'90vw'};
+
+            return (
+                <div style={style}>
+                    <BootstrapPublisher widgets={this.props.widgets} schema={schema} rules={rules} dataContext={dataContext} />
+                </div>
+            )
+        }
+        else{
+            return (
+                <div>
+                    <div>
+                        <PDFPagesTrigger schema={schema} data={this.state.data}>
+                            <input type="button" value="PDF Kit" />
+                        </PDFPagesTrigger>
+                        <PDFPagesTrigger type='pdfHummus' schema={schema} data={this.state.data}>
+                            <input type="button" value="PDF Hummus" />
+                        </PDFPagesTrigger>
+                    </div>
+                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} dataContext={dataContext} />
+                </div>
+            );
+        }
+    }
+});
+
+
 
 //Designer - top editor
 var Designer = React.createClass({
@@ -458,22 +498,11 @@ var Designer = React.createClass({
 
         }
     },
-    previewPdfHummus: function () {
-        var schema = this.schema();
-        var defaultDocument = PdfHummusRenderer.transformToPdf(schema, schema.data);
-
-        hummusService.generatePDFDocument('http://pdfrendering.herokuapp.com', JSON.stringify(defaultDocument), function (url) {
-            window.open(url);
-        });
-    },
-    previewPdfKit: function () {
-        var schema = this.schema();
-        var pages = transformToPages(schema, schema.data);
-        //var url = true?'http://localhost:3000':'';
-
-        pdfKitService.generatePDFDocument('http://hand-formvalidation.rhcloud.com', JSON.stringify(pages), function (url) {
-            window.open(url);
-        });
+    publish(){
+        formService.publishSchema(this.props.store.get().toJS()).then(
+            function(response) {alert('Schema publish successfully.' + response.saveLocation)},
+            function(response) {alert('Schema publish failed.')}
+        );
     },
     componentDidMount: function () {
         var me = this;
@@ -540,18 +569,11 @@ var Designer = React.createClass({
                         icon="ion-ios-download"
                         label="Save"
                     />
-                    <ModalViewTrigger  modal={<HtmlRenderer schema={schema} data={schema.data} />}>
-                        <ChildButton
-                            icon="ion-social-html5"
-                            label="Preview"
-                        />
-                    </ModalViewTrigger>
                     <ChildButton
-                        onClick={this.previewPdfKit}
-                        icon="ion-printer"
-                        label="Generate PDF"
+                        onClick={this.publish}
+                        icon="ion-share"
+                        label="Publish"
                     />
-
                 </Menu>
                 <SplitPane orientation="horizontal" defaultSize="70vw">
                     <div>
@@ -565,30 +587,34 @@ var Designer = React.createClass({
                     </div>
                     <div style={{'minWidth': 300}}>
                         <div className='toolbarHeader'>
-                            <table>
+                            <table style={{width: '100%'}}>
                                 <tr>
                                     <td>
-                                        <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
-                                    </td>
-                                    <td>
                                         <div>
-                                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
-                                                <Button bsStyle='link' title="save">
-                                                    {displaySchemaName}
-                                                </Button>
-                                            </ModalTrigger>
-
                                             <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
                                                 <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
                                             </button>
                                             <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
                                                 <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
                                             </button>
-                                            &nbsp;&nbsp;
+                                        &nbsp;&nbsp;
                                             <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
                                                 <span className="glyphicon glyphicon-transfer" title="toogle source and preview"></span>
                                             </button>
+                                            <ModalViewTrigger  modal={<Preview widgets={widgets} schema={schema} />}>
+                                                <button type="button" className="btn btn-primary">
+                                                    <span className="glyphicon glyphicon-fullscreen" title="preview"></span>
+                                                </button>
+                                            </ModalViewTrigger>
+                                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
+                                                <Button bsStyle='link' title="save">
+                                                    {displaySchemaName}
+                                                </Button>
+                                            </ModalTrigger>
                                         </div>
+                                    </td>
+                                    <td  style={{'text-align': 'right'}}>
+                                        <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
                                     </td>
                                 </tr>
                             </table>
