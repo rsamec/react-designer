@@ -1,3 +1,7 @@
+//The MIT License (MIT)
+
+//Copyright (c) 2015 tomkp
+
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };

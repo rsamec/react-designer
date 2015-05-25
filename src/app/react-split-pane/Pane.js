@@ -1,3 +1,7 @@
+//The MIT License (MIT)
+
+//Copyright (c) 2015 tomkp
+
 'use strict';
 
 var _interopRequireWildcard = function (obj) { return obj && obj.__esModule ? obj : { 'default': obj }; };
@@ -26,7 +30,7 @@ var Pane = _React2['default'].createClass({
         var classes = ['Pane', orientation];
 
         var style = {
-            flex: 1,
+            //flex: 1,
             outline: 'none',
             overflow: 'auto'
         };

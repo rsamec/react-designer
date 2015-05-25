@@ -633,8 +633,10 @@ var Designer = React.createClass({
                                             <ToolBox addCtrl={this.addNewCtrl} />
                                         </TabPane>
                                         <TabPane eventKey={3} tab='Examples'>
+                                            <ExampleList loadSchema={this.loadObjectSchema} />
+                                        </TabPane>
+                                        <TabPane eventKey={4} tab='Operation'>
                                             <div>
-                                                <ExampleList loadSchema={this.loadObjectSchema} />
                                                 <ModalTrigger modal={this.importDialog()}>
                                                     <button type="button" className="btn btn-primary">
                                                         <span className="glyphicon glyphicon-import" title="import"></span>
