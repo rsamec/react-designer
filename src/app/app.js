@@ -199,7 +199,9 @@ var Workplace = React.createClass({
         var empty = this.props.schema.containers.length == 0;
         var component;
         var data = this.props.schema.data;
-        var dataBinder = new pathObjecBinder(function(){return data});
+        var dataBinder = new pathObjecBinder(function () {
+            return data
+        });
         //if (empty) {
         //    component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
         //}
@@ -315,20 +317,20 @@ var ToolbarActions = React.createClass({
 });
 
 var Preview = React.createClass({
-    mixins:[BindToMixin],
-    getInitialState(){
-        return {data:this.props.schema.data !==undefined?deepClone(this.props.schema.data):{}}
+    mixins: [BindToMixin],
+    getInitialState() {
+        return {data: this.props.schema.data !== undefined ? deepClone(this.props.schema.data) : {}}
     },
-    render: function() {
+    render: function () {
         var schema = deepClone(this.props.schema);
         var dataContext = this.bindToState('data');
 
 
         var preview;
 
-        if (schema.input){
+        if (schema.input) {
             var rules = schema.businessRules || {};
-            var style = {height:'90vh',width:'90vw'};
+            var style = {height: '90vh', width: '90vw'};
 
             return (
                 <div style={style}>
@@ -336,7 +338,7 @@ var Preview = React.createClass({
                 </div>
             )
         }
-        else{
+        else {
             return (
                 <div>
                     <div>
@@ -353,7 +355,6 @@ var Preview = React.createClass({
         }
     }
 });
-
 
 
 //Designer - top editor
@@ -395,7 +396,7 @@ var Designer = React.createClass({
         this.setState({storageKey: key});
         this.clearHistory();
     },
-    clearHistory:function(){
+    clearHistory: function () {
         this.setState({
             storeHistory: [this.props.store.get()],
             currentStore: 0
@@ -498,10 +499,14 @@ var Designer = React.createClass({
 
         }
     },
-    publish(){
+    publish() {
         formService.publishSchema(this.props.store.get().toJS()).then(
-            function(response) {alert('Schema publish successfully.' + response.saveLocation)},
-            function(response) {alert('Schema publish failed.')}
+            function (response) {
+                alert('Schema publish successfully.' + response.saveLocation)
+            },
+            function (response) {
+                alert('Schema publish failed.')
+            }
         );
     },
     componentDidMount: function () {
@@ -585,41 +590,64 @@ var Designer = React.createClass({
                         </div>
 
                     </div>
-                    <div style={{'minWidth': 300}}>
-                        <div className='toolbarHeader'>
-                            <table style={{width: '100%'}}>
-                                <tr>
-                                    <td>
-                                        <div>
-                                            <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
-                                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
-                                            </button>
-                                            <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
-                                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
-                                            </button>
-                                        &nbsp;&nbsp;
-                                            <button type="button" className="btn btn-primary" onClick={this.switchWorkplace}>
-                                                <span className="glyphicon glyphicon-transfer" title="toogle source and preview"></span>
-                                            </button>
+                    <div>
+
+                        <nav className="navbar navbar-default navbar-fixed-top-custom">
+                            <ul className="nav navbar-nav">
+                                <li>
+                                    <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
+                                </li>
+                            </ul>
+                            <ul className="nav navbar-nav navbar-right">
+                                <li>
+                                    <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
+                                        <Button bsStyle='link' title="save">
+                                                        {displaySchemaName}
+                                        </Button>
+                                    </ModalTrigger>
+                                </li>
+                                <li>
+                                    <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
+                                        <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
+                                        <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
+                                    </button>
+                                </li>
+
+
+                                <li className="dropdown">
+                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                                        <span className="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
+                                    </a>
+                                    <ul className="dropdown-menu" role="menu">
+                                        <li>
                                             <ModalViewTrigger  modal={<Preview widgets={widgets} schema={schema} />}>
-                                                <button type="button" className="btn btn-primary">
-                                                    <span className="glyphicon glyphicon-fullscreen" title="preview"></span>
-                                                </button>
+                                                <a>Preview</a>
                                             </ModalViewTrigger>
-                                            <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
-                                                <Button bsStyle='link' title="save">
-                                                    {displaySchemaName}
-                                                </Button>
+                                        </li>
+                                        <li>
+                                            <a onClick={this.switchWorkplace}>Switch</a>
+                                        </li>
+
+                                        <li className="divider"></li>
+                                        <li>
+                                            <ModalTrigger modal={this.importDialog()}>
+                                                <a>Import schema</a>
                                             </ModalTrigger>
-                                        </div>
-                                    </td>
-                                    <td  style={{'text-align': 'right'}}>
-                                        <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div className='toolbarContent'>
+                                        </li>
+                                        <li>
+                                            <a href={exportSchema} download={exportSchemaName}>Export schema</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <div className="toolbarContent">
                             <SplitPane orientation="vertical">
                                 <div className='propertyGrid'>
                                     <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged} />
@@ -634,20 +662,6 @@ var Designer = React.createClass({
                                         </TabPane>
                                         <TabPane eventKey={3} tab='Examples'>
                                             <ExampleList loadSchema={this.loadObjectSchema} />
-                                        </TabPane>
-                                        <TabPane eventKey={4} tab='Operation'>
-                                            <div>
-                                                <ModalTrigger modal={this.importDialog()}>
-                                                    <button type="button" className="btn btn-primary">
-                                                        <span className="glyphicon glyphicon-import" title="import"></span>
-                                                    </button>
-                                                </ModalTrigger>
-                                                <a href={exportSchema} download={exportSchemaName}>
-                                                    <button type="button" className="btn btn-primary">
-                                                        <span className="glyphicon glyphicon-export" title="export"></span>
-                                                    </button>
-                                                </a>
-                                            </div>
                                         </TabPane>
                                     </TabbedArea>
                                 </div>

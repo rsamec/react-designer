@@ -15,18 +15,24 @@ var ToolBox = React.createClass({
         return {
             dataSource: [
                 {
-                    type: 'Components',
+                    type: 'Base controls',
                     collapsed: false,
                     controls:[
                         {name: 'Container', label: 'Container'},
                         {name: 'Repeater', label: 'Repeater'},
-                        {name: 'TextBoxInput', label: 'TextBoxInput'},
-                        {name: 'CheckBoxInput', label: 'CheckBoxInput'},
                         {name: 'HtmlBox', label: 'HtmlEditor'},
                         {name: 'TextBox', label: 'TextBox'},
                         {name: 'JSXBox', label: 'JSXBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
-                        {name: 'ImageBox', label: 'ImageBox'},
+                        {name: 'ImageBox', label: 'ImageBox'}
+                    ]
+                },
+                {
+                    type: 'Input controls',
+                    collapsed: false,
+                    controls:[
+                        {name: 'TextBoxInput', label: 'TextBoxInput'},
+                        {name: 'CheckBoxInput', label: 'CheckBoxInput'}
                     ]
                 },
                 {
@@ -37,28 +43,26 @@ var ToolBox = React.createClass({
                     })
                 },
                 {
-                    type: 'Bootstrap',
+                    type: 'Bootstrap controls',
                     collapsed: true,
                     controls:_.map(['Input','Button', 'Panel','Glyphicon','Tooltip','Alert','Label'],function(x){return {
                         'name':'ReactBootstrap.' + x, 'label': x}
                     })
                 },
+                //{
+                //    type: 'Charts',
+                //    collapsed: true,
+                //    controls:[{name: 'ChartistGraph', label: 'Chart'}].concat(_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}}))
+                //},
                 {
-                    type: 'Charts',
-                    collapsed: true,
-                    controls:[{name: 'ChartistGraph', label: 'Chart'}].concat(_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}}))
-                },
-                {
-                    type: 'Extras',
+                    type: 'Extra controls',
                     collapsed: true,
                     controls: [
+                        {name: 'ChartistGraph', label: 'Chart'},
                         {name: 'React.Griddle', label: 'Griddle'},
+                        {name: 'react-pivot', label: 'Pivot table'},
                         {name: 'Flipper', label: 'Flipper'},
-                        {name: 'CollapsibleTree', label: 'CollapsibleTree'},
                         {name: 'react-inlinesvg', label: 'SvgBox'},
-                        {name: 'react-3d-carousel', label: 'Carousel 3D'},
-                        {name: 'react-pivot', label: 'Pivot table'}
-
                         //{name: 'Reacticon', label: 'Reacticon'},
                         //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
                     ]

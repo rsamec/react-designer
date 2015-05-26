@@ -1,3 +1,4 @@
+@import "react-split-pane.css";
 .mainForm {
   margin-left: 15px;
 }
@@ -194,16 +195,11 @@ body {
 .Tile div {
   position: relative;
 }
-.toolbarHeader {
-  position: fixed;
-  padding: 5px;
-  z-index: 1000;
-  background-color: white;
-  min-width: 30%;
+.navbar {
+  margin-bottom: 0px;
 }
-.toolbarContent {
-  position: relative;
-  top: 50px;
+.navbar-fixed-top-custom {
+  padding: 10px 15px 0px 10px;
 }
 .propertyGrid {
   border: solid 1px #808080;
@@ -389,138 +385,4 @@ li ol > li:before {
   -webkit-transform: rotateX(0deg);
   -o-transform: rotateX(0deg);
   -moz-transform: rotateX(0deg);
-}
-.node {
-  cursor: pointer;
-}
-.node circle {
-  fill: #fff;
-  stroke: steelblue;
-  stroke-width: 1.5px;
-}
-.node text {
-  font: 10px sans-serif;
-}
-.link {
-  fill: none;
-  stroke: #ccc;
-  stroke-width: 1.5px;
-}
-.mfb-component--tl {
-  animation: fromTop 1s 1;
-  -webkit-animation: fromTop 1s 1;
-}
-.mfb-component--tr {
-  animation: fromTop 1.3s 1;
-  -webkit-animation: fromTop 1.3s 1;
-}
-.mfb-component--br {
-  animation: fromBottom 1.6s 1;
-  -webkit-animation: fromBottom 1.6s 1;
-}
-.mfb-component--bl {
-  animation: fromBottom 1.9s 1;
-  -webkit-animation: fromBottom 1.9s 1;
-}
-@keyframes fromBottom {
-  0% {
-    transform: translateY(250px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-@keyframes fromTop {
-  0% {
-    transform: translateY(-250px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-@-webkit-keyframes fromBottom {
-  0% {
-    transform: translateY(250px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-@-webkit-keyframes fromTop {
-  0% {
-    transform: translateY(-250px);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-.react-3d-carousel {
-  width: 400px;
-  height: 300px;
-  position: relative;
-  perspective: 1000px;
-}
-.react-3d-carousel .carousel {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  transform-style: preserve-3d;
-}
-.react-3d-carousel .carousel figure {
-  display: block;
-  position: absolute;
-  width: 400px;
-  height: 300px;
-  left: 10px;
-  top: 10px;
-  border: 2px solid black;
-  line-height: 116px;
-  font-size: 80px;
-  font-weight: bold;
-  color: white;
-  text-align: center;
-}
-.react-3d-carousel .carousel figure {
-  background: rgba(0, 255, 170, 0.8);
-}
-#content table {
-  position: absolute;
-  top: 400px;
-  width: 400px;
-}
-.react-3d-carousel .prev {
-  position: absolute;
-  height: 100%;
-  width: 15%;
-  top: 0px;
-  left: 0px;
-}
-.react-3d-carousel .prev:before {
-  content: url("http://s3.postimg.org/o6xpvkidb/chevron_left_white.png");
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 43px;
-  height: 49px;
-  margin: auto;
-}
-.react-3d-carousel .next {
-  position: absolute;
-  height: 100%;
-  width: 15%;
-  top: 0px;
-  right: -5px;
-}
-.react-3d-carousel .next:before {
-  content: url("http://s2.postimg.org/l0n6eaoad/chevron_right_white.png");
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 43px;
-  height: 49px;
-  margin: auto;
 }

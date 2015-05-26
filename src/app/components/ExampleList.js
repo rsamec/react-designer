@@ -36,7 +36,7 @@ var ExampleList = React.createClass({
             function (schema) {
                 if (this.isMounted()) {
                     //alert(JSON.stringify(res.body));
-                    this.props.loadSchema(res.body, ctrl.name);
+                    this.props.loadSchema(schema, ctrl.name);
                 }
             }.bind(this),
             function (err) {

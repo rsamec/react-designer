@@ -194,16 +194,11 @@ body {
 .Tile div {
   position: relative;
 }
-.toolbarHeader {
-  position: fixed;
-  padding: 5px;
-  z-index: 1000;
-  background-color: white;
-  min-width: 30%;
+.navbar {
+  margin-bottom: 0px;
 }
-.toolbarContent {
-  position: relative;
-  top: 50px;
+.navbar-fixed-top-custom {
+  padding: 10px 15px 0px 10px;
 }
 .propertyGrid {
   border: solid 1px #808080;
