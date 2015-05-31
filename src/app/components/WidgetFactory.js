@@ -31,6 +31,7 @@ var WidgetFactory = (function () {
         'ImageBox':require('../widgets/ImageBox'),
         'Flipper':require('../widgets/Flipper'),
         'JSXBox':require('../widgets/JSXBox'),
+        'ImagePanel':require('../widgets/ImagePanel'),
 
         'react-pivot':require('../widgets/PivotTable'),
         'ChartistGraph':require('../widgets/ChartistGraph'),
@@ -64,7 +65,7 @@ var WidgetFactory = (function () {
                 {name: 'left',editor:numEditor}]
         };
         var sizeProps = [
-            {name: 'width', editor:numEditor,args:{defaultValue:100}},
+            {name: 'width', editor:numEditor,args:{defaultValue:300}},
             {name: 'height', editor:numEditor,args:{defaultValue:100}},
         ];
 
@@ -90,16 +91,18 @@ var WidgetFactory = (function () {
         var placement = ['left','right','bottom','top'];
         var typeOptions = ['text','table','image','code','slides'];
         var bsStyles = ['default','primary','success','info','warning','danger'];
-        var bsSizes = ['large','medium','small','xsmall']
+        var bsSizes = ['large','medium','small','xsmall'];
         var orientation = ['horizontal','vertical'];
 
         var bsStyle = {name:'bsStyle',editor:dropDownEditor, args:{options:bsStyles.map(function(g){ return {value:g,label:g}})}};
         var content = {name:'content',args:{defaultValue:'type your content'}};
         var bsSize = {name:'bsSize',editor:dropDownEditor, args:{options:bsSizes.map(function(g){ return {value:g,label:g}}),defaultValue:'medium'}}
         var numEditorFce = function(name,defaultVal) {
-            if (defaultVal === undefined) defaultVal = 100;
+            //if (defaultVal === undefined) defaultVal = 100;
             return {name: name, editor: numEditor, args: {defaultValue: defaultVal}};
         };
+
+        var defaultImg = "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==";
         var bindEditorFce = function(name, twoWayBindingMode,converter) {
             var result = {name: name, editor: bindEditor};
             if (!!twoWayBindingMode) result.args = {bindingMode:'TwoWay'};
@@ -113,6 +116,7 @@ var WidgetFactory = (function () {
         var shapeProps = [stroke,fill,strokeWidth];
 
         var cornerBoxOrientation  ={name: 'orientation', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topLeft'}};
+        var imgAlign  ={name: 'imageAlign', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topRight'}};
         return {
             'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor},{name:'businessRules',editor:JsonEditor},{name:'title'},{name:'input',editor:BoolEditor }],
             'Container':commonPropsSizes.concat([bindEditorFce('Visibility'), {name: 'startOnNewPage', editor:BoolEditor},{name: 'unbreakable', editor:BoolEditor}]),
@@ -125,7 +129,8 @@ var WidgetFactory = (function () {
                 {name:'front', args:{defaultValue:'front text'}},{name: 'frontColor', editor:colorEditor,args:{defaultValue:'#19489E'}},{name:'back', args:{defaultValue:'back text'}},{name: 'backColor', editor:colorEditor,args:{defaultValue:'#9E1919'}},fontProps]),
             'JSXBox': commonProps.concat([{name:'content', editor:codeMirrorEditor, args:{defaultValue:'return <div>Type your code</div>'}},bindEditorFce('Binding')]),
             'ValueBox':commonProps.concat([{name:'emptyValue',args:{defaultValue:'---'}},bindEditorFce('content'),fontProps]),
-            'ImageBox':commonProps.concat([{name:'url',args:{defaultValue:'https://raw.githubusercontent.com/rsamec/business-rules-engine/master/form_logo.jpg'}},{name:'width',editor:numEditor},{name:'height',editor: numEditor}]),
+            'ImageBox':commonPropsSizes.concat([{name:'url',args:{defaultValue:defaultImg}},numEditorFce('radius')]),
+            'ImagePanel':commonPropsSizes.concat([{name:'imageUrl',args:{defaultValue:defaultImg}},imgAlign,numEditorFce('imageWidth'),numEditorFce('imageHeight'),numEditorFce('imageRadius'),numEditorFce('imageMargin'),{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'roundCorner',editor:BoolEditor},numEditorFce('borderWidth',2),numEditorFce('padding'),{name: 'bgColor', editor:colorEditor}, {name: 'color', editor:colorEditor}]),
             'ReactD3.LineChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
             'ReactD3.ScatterChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
             'ReactD3.BarChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
@@ -147,7 +152,7 @@ var WidgetFactory = (function () {
             'react-inlinesvg':commonProps.concat([{name: 'src',args:{defaultValue:'http://upload.wikimedia.org/wikipedia/commons/8/8a/Bicycle_diagram-en.svg'}}]),
             'react-3d-carousel':commonProps.concat([{name:'width', editor:numEditor, args:{defaultValue:200}},{name:'images',editor:JsonEditor,args:{defaultValue:[]}},{name:'duration', editor:numEditor, args:{defaultValue:250}},{name:'layout',editor:dropDownEditor, args:{options:['prism','classic'].map(function(g){ return {value:g,label:g}}),defaultValue:'prism'}}]),
             //'SnapSvgBox':commonPropsSizes.concat([{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'headline'},{name:'htmlRibbonText'},{name:'cssRibbonText'},{name:'jsRibbonText'}]),
-            'Shapes.Rectangle':commonPropsSizes.concat([numEditorFce('height'), numEditorFce('width'),numEditorFce('x',25), numEditorFce('y',25)]).concat(shapeProps),
+            'Shapes.Rectangle':commonPropsSizes.concat([numEditorFce('height',100), numEditorFce('width',100),numEditorFce('x',25), numEditorFce('y',25)]).concat(shapeProps),
             'Shapes.Circle':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('r',25)]).concat(shapeProps),
             'Shapes.Ellipse':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('rx',25), numEditorFce('ry',15)]).concat(shapeProps),
             'Shapes.Line':commonPropsSizes.concat([numEditorFce('x1',25), numEditorFce('y1',25),numEditorFce('x2',75), numEditorFce('y2',75)]).concat(shapeProps),

@@ -24,7 +24,8 @@ var ToolBox = React.createClass({
                         {name: 'TextBox', label: 'TextBox'},
                         {name: 'JSXBox', label: 'JSXBox'},
                         {name: 'ValueBox', label: 'ValueBox'},
-                        {name: 'ImageBox', label: 'ImageBox'}
+                        {name: 'ImageBox', label: 'ImageBox'},
+                        {name: 'ImagePanel', label: 'ImagePanel'}
                     ]
                 },
                 {

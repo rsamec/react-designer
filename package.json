@@ -21,7 +21,7 @@
     "react-dnd": "^0.9.3",
     "react-inlinesvg": "^0.4.0",
     "react-mfb": "^0.2.0",
-    "react-page-renderer": "0.0.10",
+    "react-page-renderer": "0.0.20",
     "react-pivot": "^1.11.1",
     "react-tap-event-plugin": "^0.1.4",
     "react-tinymce": "^0.1.0",

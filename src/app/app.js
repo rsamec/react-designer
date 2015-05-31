@@ -349,7 +349,7 @@ var Preview = React.createClass({
                             <input type="button" value="PDF Hummus" />
                         </PDFPagesTrigger>
                     </div>
-                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} dataContext={dataContext} />
+                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} data={this.state.data} />
                 </div>
             );
         }
@@ -469,12 +469,26 @@ var Designer = React.createClass({
                 left: 0
             }
         }
+        var setDefaultValue= function(prop,item) {
+            if (prop.args !== undefined && prop.args.defaultValue !== undefined) {
+                if (item[prop.name] === undefined) item[prop.name] = prop.args.defaultValue;
+                //item[prop.name] = prop.args.defaultValue;
+            }
+        };
+
         //set default values
         if (!isContainer) {
             var widgetProps = WidgetFactory.getWidgetProperties(elName);
             for (var index in widgetProps) {
                 var widget = widgetProps[index];
-                if (widget.args !== undefined && widget.args.defaultValue !== undefined) defaultNewItem[widget.name] = widget.args.defaultValue;
+                setDefaultValue(widget, defaultNewItem);
+                if (widget.name === "style") {
+                    var styleProps = widget.items;
+                    for (var i in styleProps) {
+                        var style = styleProps[i];
+                        setDefaultValue(style,defaultNewItem["style"]);
+                    }
+                }
             }
         }
 

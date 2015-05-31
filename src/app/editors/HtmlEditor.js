@@ -23,7 +23,7 @@ var HtmlEditorDialog = React.createClass({
     },
     render: function() {
         return (
-            <Modal bsStyle="primary" title="Html editor" animation={false}>
+            <Modal bsStyle="primary" bsSize="large" title="Html editor" animation={false}>
                 <div className="modal-body">
                     <TinyMCE
                         content={this.props.content}
@@ -31,7 +31,16 @@ var HtmlEditorDialog = React.createClass({
                             menubar: false,
                             height:300,
                             plugins: 'autolink link image lists code',
-                            toolbar: 'bold italic underline | link | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | code'
+                            toolbar: 'bold italic underline | link | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | formatselect fontsizeselect | code',
+                            style_formats: [
+                                {title: 'Bold text', inline: 'b'},
+                                {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+                                {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+                                {title: 'Example 1', inline: 'span', classes: 'example1'},
+                                {title: 'Example 2', inline: 'span', classes: 'example2'},
+                                {title: 'Table styles'},
+                                {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+                            ]
                         }}
                         onChange={this.handleEditorChange}
                     />
