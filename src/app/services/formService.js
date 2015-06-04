@@ -8,7 +8,7 @@ class formService {
     getSchemaList() {
         var url = this.url;
         return new Promise(function (resolve, reject) {
-            request.get(url + '/publisher/assets/schemas/list.json')
+            request.get(url + '/data/schemas/list.json')
                 .end(function (err, res) {
                     if (res.ok) return resolve(res.body);
                     else reject(err)
@@ -19,7 +19,7 @@ class formService {
     getSchema(id) {
         var url = this.url;
         return new Promise(function (resolve, reject) {
-            request.get(url + '/publisher/assets/schemas/' + id + '.json')
+            request.get(url + '/data/schemas/' + id + '.json')
                 .end(function (err, res) {
                     if (res.ok) return resolve(res.body);
                     else reject(err)

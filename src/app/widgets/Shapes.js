@@ -4,7 +4,14 @@ var React = require('react');
 var _ = require('underscore');
 
 var SVGComponent = React.createClass({
+
     render() {
+        //var viewBox="";
+        //if (!!this.props.width && !!this.props.height) {
+        //    viewBox = _.reduce([0, 0, this.props.width, this.props.height], function (memo, num) {
+        //        return memo + " " + num;
+        //    }, "");
+        //}
         return <svg {...this.props}>{this.props.children}</svg>
     }
 });

@@ -152,7 +152,7 @@ var WidgetFactory = (function () {
             'react-inlinesvg':commonProps.concat([{name: 'src',args:{defaultValue:'http://upload.wikimedia.org/wikipedia/commons/8/8a/Bicycle_diagram-en.svg'}}]),
             'react-3d-carousel':commonProps.concat([{name:'width', editor:numEditor, args:{defaultValue:200}},{name:'images',editor:JsonEditor,args:{defaultValue:[]}},{name:'duration', editor:numEditor, args:{defaultValue:250}},{name:'layout',editor:dropDownEditor, args:{options:['prism','classic'].map(function(g){ return {value:g,label:g}}),defaultValue:'prism'}}]),
             //'SnapSvgBox':commonPropsSizes.concat([{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'headline'},{name:'htmlRibbonText'},{name:'cssRibbonText'},{name:'jsRibbonText'}]),
-            'Shapes.Rectangle':commonPropsSizes.concat([numEditorFce('height',100), numEditorFce('width',100),numEditorFce('x',25), numEditorFce('y',25)]).concat(shapeProps),
+            'Shapes.Rectangle':commonPropsSizes.concat([numEditorFce('x'), numEditorFce('y')]).concat(shapeProps),
             'Shapes.Circle':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('r',25)]).concat(shapeProps),
             'Shapes.Ellipse':commonPropsSizes.concat([numEditorFce('cx',50), numEditorFce('cy',50),numEditorFce('rx',25), numEditorFce('ry',15)]).concat(shapeProps),
             'Shapes.Line':commonPropsSizes.concat([numEditorFce('x1',25), numEditorFce('y1',25),numEditorFce('x2',75), numEditorFce('y2',75)]).concat(shapeProps),
