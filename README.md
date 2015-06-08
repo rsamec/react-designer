@@ -1,8 +1,10 @@
 # react-designer
 
 React designer is WYSIWYG editor for **easy content creation** (legal contracts, business forms, marketing leaflets, awesome inforgrafics, technical guides, visual reports, rich dashboards, tutorials and other content, etc.).
-The documents created are called as [reactive-document](http://hand-formvalidation.rhcloud.com), because of its dynamic substance. Reactive document ensures the user experience of paper and pan and enables document to adapt to user actions and its preferences.
-The content can be published to user via [react-publisher](https://github.com/rsamec/react-publisher).
+
+The content can be published in the form of [reactive-documents](http://hand-formvalidation.rhcloud.com) to user via [react-publisher](https://github.com/rsamec/react-publisher).
+
+**Reactive documents** because of its dynamic substance. Reactive document ensures the user experience of paper and pan and enables document to adapt to user actions and its preferences.
 
 It is using [react](https://facebook.github.io/react/) framework for rendering documents.
 
