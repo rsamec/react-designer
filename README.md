@@ -1,6 +1,10 @@
 # react-designer
 
-React designer is WYSIWYG editor for **easy content creation** (Legal contracts, business forms, marketing leaflets, awesome inforgrafics, technical guides, visual reports, rich dashboards, tutorials and other content, etc.)
+React designer is WYSIWYG editor for **easy content creation** (legal contracts, business forms, marketing leaflets, awesome inforgrafics, technical guides, visual reports, rich dashboards, tutorials and other content, etc.).
+The documents created are called as [reactive-document](http://hand-formvalidation.rhcloud.com), because of its dynamic substance. Reactive document ensures the user experience of paper and pan and enables document to adapt to user actions and its preferences.
+The content can be published to user via [react-publisher](https://github.com/rsamec/react-publisher).
+
+It is using [react](https://facebook.github.io/react/) framework for rendering documents.
 
 **Warning** - it is prototype and work in progress.
 
@@ -44,8 +48,8 @@ RDOM is object schema format that represents full description of document.
 
 It is a simple object tree that consists of
 
-containers - nodes that are invisible components - usable for logical grouping of reactive parts of document (sections)
-boxes - terminal nodes (leaf) that are visible components - (react components, boxes, widgets) - it maps to props of react component
++   **containers** - nodes that are invisible components - usable for logical grouping of reactive parts of document (sections)
++   **boxes** - terminal nodes (leaf) that are visible components - (react components, boxes, widgets) - it maps to props of react component
 
 Example RDOM document
 
@@ -175,13 +179,6 @@ Feel free to write your own content publisher - see list of some ideas.
 +   some MDI publishers
 
 
-# List of widgets
-
-Flipper - credits to [https://www.codementor.io/reactjs/tutorial/building-a-flipper-using-react-js-and-less-css]
-CollapsibleTree - credits to [http://bl.ocks.org/mbostock/4339083]
-...
-
-
 # Get started
 
 Run watch task and begin to develop your React components.
@@ -205,17 +202,10 @@ $ gulp pro
 
 # Road map
 
-Long run
-
-+   full support for css positioning schemas - absolute, relative, normal flow
-+   improve current editors + add json editor
-+   PDF - better support
-    +   publish pdfkit service 
-    +   better support html fragments -> to pdf (using html parser) - consider using pdfmake
-+   support for svg - rendering on server
-
 Coming soon
 
++   exact specification of RDOM format
++   cleaning code, refactoring widgets
 +   examples 
     +   add renderer examples (8)
     +   add api examples (?)
@@ -231,6 +221,17 @@ Coming soon
     +   recheck - should component update
     +   parse property values (parseInt,etc.) - to many places - remove defensive programming favor contract by design
 +   consider support for continues saving
+
+
+Long run
+
++   full support for css positioning schemas - absolute, relative, normal flow
++   improve current editors + add json editor
++   PDF - better support
+    +   publish pdfkit service 
+    +   better support html fragments -> to pdf (using html parser) - consider using pdfmake
++   support for svg - rendering on server
+
 
 # Licence
 
