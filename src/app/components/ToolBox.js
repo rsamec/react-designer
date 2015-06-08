@@ -64,6 +64,7 @@ var ToolBox = React.createClass({
                         {name: 'react-pivot', label: 'Pivot table'},
                         {name: 'Flipper', label: 'Flipper'},
                         {name: 'react-inlinesvg', label: 'SvgBox'},
+                        {name:'MovieSelect',label:'Movie carousel select'}
                         //{name: 'Reacticon', label: 'Reacticon'},
                         //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
                     ]

@@ -18,6 +18,7 @@ var rd3 = require('react-d3');
 var Griddle = require('griddle-react');
 var ChartistGraph = require('react-chartist');
 
+
 var Shapes = require('../widgets/Shapes');
 
 var WidgetFactory = (function () {
@@ -39,6 +40,7 @@ var WidgetFactory = (function () {
         'React.Griddle':Griddle,
         'react-inlinesvg':require('react-inlinesvg'),
         'react-3d-carousel':require('react-3d-carousel'),
+        'MovieSelect': require('react-movie-select')
 
         //'SnapSvgBox':require('../widgets/SnapSvgBox')
         //'Reacticon':require('../../../node_modules/reacticons/src/scripts/components/reacticon')
@@ -120,7 +122,7 @@ var WidgetFactory = (function () {
         return {
             'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor},{name:'businessRules',editor:JsonEditor},{name:'title'},{name:'input',editor:BoolEditor }],
             'Container':commonPropsSizes.concat([bindEditorFce('Visibility'), {name: 'startOnNewPage', editor:BoolEditor},{name: 'unbreakable', editor:BoolEditor}]),
-            'Repeater':commonPropsSizes.concat([bindEditorFce('Binding')]),
+            'Repeater':commonPropsSizes.concat([bindEditorFce('Binding')], {name: 'startOnNewPage', editor:BoolEditor},{name: 'unbreakable', editor:BoolEditor}),
             'CheckBoxInput':commonProps.concat([bindEditorFce('checked',true), {name: 'defaultChecked', editor:BoolEditor},{name:'label', args:{defaultValue:'Label'}}]),
             'TextBoxInput': commonProps.concat([bindEditorFce('value',true), {name:'defaultValue'},{name:'label',args:{defaultValue:'Label'}}]),
             'CollapsibleTree': commonProps.concat([{name:'title'},bindEditorFce('data')]),
@@ -159,7 +161,8 @@ var WidgetFactory = (function () {
             'Shapes.Polyline':commonPropsSizes.concat([{name:'points', args:{defaultValue:'25,25 25,75 50,75 50,50 75,25'}}]).concat(shapeProps),
             'Shapes.CornerLine':commonPropsSizes.concat([numEditorFce('x',25), numEditorFce('y',25),numEditorFce('size',150), numEditorFce('width',50),{name:'text'},{name: 'up', editor: BoolEditor}]).concat(shapeProps),
             'Shapes.CornerBox':commonPropsSizes.concat([numEditorFce('size',150), numEditorFce('width',50),{name:'text'},cornerBoxOrientation]).concat(shapeProps),
-            'react-pivot':commonProps.concat([bindEditorFce('rows'),bindEditorFce('dimensions'),{name:'reduce',editor: codeMirrorEditor},{name:'calculations',editor: codeMirrorEditor},{name:'nPaginateRows',editor: numEditor,args:{defaultValue:10}}])
+            'react-pivot':commonProps.concat([bindEditorFce('rows'),bindEditorFce('dimensions'),{name:'reduce',editor: codeMirrorEditor},{name:'calculations',editor: codeMirrorEditor},{name:'nPaginateRows',editor: numEditor,args:{defaultValue:10}}]),
+            'MovieSelect':commonProps.concat({name:'apiKey'},{name:'searchText'},numEditorFce('maxCount',10),bindEditorFce('selectedItems',true))
             //'Reacticon':commonProps.concat([{name: 'height', editor:numEditor},{name: 'width', editor:numEditor},{name: 'type', editor:dropDownEditor,options:typeOptions.map(function(g){ return {value:g,label:g}})},{name:'label'}, {name: 'bgColor', editor:colorEditor}, {name: 'primaryColor', editor:colorEditor},{name: 'strokeColor', editor:colorEditor},{name:'animate', editor:BoolEditor},{name:'progress', editor:BoolEditor},{name:'isProcessing', editor:BoolEditor}]),
         }
     }

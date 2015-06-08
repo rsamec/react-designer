@@ -1,15 +1,16 @@
 # react-designer
 
-React designer is WYSIWYG editor for **easy content creation** (dynamic documents, presentations, reports, contracts, etc.)
+React designer is WYSIWYG editor for **easy content creation** (Legal contracts, business forms, marketing leaflets, awesome inforgrafics, technical guides, visual reports, rich dashboards, tutorials and other content, etc.)
 
-It is prototype and work in progress. It is a simple content editor.
-It can be useful for rapid application prototyping (sketch your application skeleton by drawing your screens, compose it with basic widgets and describe its functionality with useful hints).
+**Warning** - it is prototype and work in progress.
+
+![designerScreen](https://github.com/rsamec/react-designer/blob/master/designer_roses.jpg)
 
 ## Demo
 
 [DEMO](http://hand-formvalidation.rhcloud.com/designer)
 
-## Features - (work in progress)
+## Features
 
 +   directly manipulate the layout of a document without having to type or remember names of components, elements, properties or other layout commands. 
 +   high-quality on-screen output and on-printer output
@@ -37,10 +38,16 @@ It can be useful for rapid application prototyping (sketch your application skel
     +   simple comparison is fast because of using immutable data structure
 +   simple document description (json) that enables to easy map to react component and its properties     
 
-## Object schema format
+## Reactive document object model (RDOM)
 
-Object schema format is complete description of document. It is a simple object tree that consists of containers that are invisible components and boxes (visible components, widgets).
+RDOM is object schema format that represents full description of document.
 
+It is a simple object tree that consists of
+
+containers - nodes that are invisible components - usable for logical grouping of reactive parts of document (sections)
+boxes - terminal nodes (leaf) that are visible components - (react components, boxes, widgets) - it maps to props of react component
+
+Example RDOM document
 
 ```json
 
@@ -72,7 +79,7 @@ You can see 2 collections (arrays) of objects
 The object schema tree is composed using __containers__ property as collection of children.
 The boxes on the other hand is a leaf collection that can not have other children.
 
-Obligatory object properties
+See these object properties
 
 +   elementName - type of element
 +   style - element positions and dimensions
@@ -215,7 +222,6 @@ Coming soon
     +   add document examples (8)
     +   add examples how to add widgets (8)
 +   add more widgets
-    +   reactions
     +   material-ui
 +   improve designer experience
     +   move objects in object browser
@@ -228,4 +234,4 @@ Coming soon
 
 # Licence
 
-MIT
+MIT Copyright (c) 2015 Roman Samec
