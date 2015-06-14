@@ -85,9 +85,14 @@ var Container = React.createClass({
         if (widgets[box.elementName] === undefined) {
             return React.DOM.span(null, 'Component ' + box.elementName + ' is not register among widgets.');
         }
-        var props = box.elementName === 'ReactBootstrap.Glyphicon' ? _.omit(box, 'style') : _.extend({"dataBinder":this.props.dataBinder},box);
+        //designer extended props
+        var extendedProps = {
+            "dataBinder":this.props.dataBinder,
+            "workplace":true
+        };
 
-        return React.createElement(widgets[box.elementName], props, box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
+        if (this.props.intlData !== undefined) _.extend(extendedProps,this.props.intlData);
+        return React.createElement(widgets[box.elementName], _.extend(extendedProps,_.omit(box,'locales')), box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
         e.stopPropagation();
@@ -162,6 +167,7 @@ var Container = React.createClass({
                          parentSelected={parentSelected}
                          selected={selected}
                          dataBinder={this.props.dataBinder}
+                         intlData = {this.props.intlData}
 
                      />
                  );

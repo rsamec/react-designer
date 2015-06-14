@@ -33,6 +33,14 @@ var ObjectPropertyGrid = React.createClass({
 
             updated = current.set(cloned);
         }
+        else if (prop.editor!== undefined && prop.editor.displayName === "CodeMirrorEditor")
+        {
+            var cloned = _.clone(current);
+            cloned[prop.name] = value;
+            cloned.code = event.code;
+            updated = current.set(cloned);
+            console.log("code mirror");
+        }
         else{
             updated = current.set(prop.name, value);
         }

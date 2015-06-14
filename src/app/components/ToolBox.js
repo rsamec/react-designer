@@ -33,7 +33,10 @@ var ToolBox = React.createClass({
                     collapsed: false,
                     controls:[
                         {name: 'TextBoxInput', label: 'TextBoxInput'},
-                        {name: 'CheckBoxInput', label: 'CheckBoxInput'}
+                        {name: 'CheckBoxInput', label: 'CheckBoxInput'},
+                        {name: 'SelectBoxInput', label: 'SelectBoxInput'},
+                        {name: 'TangleNumberText', label: 'TangleNumberText'},
+                        {name: 'TangleBoolText', label: 'TangleBoolText'}
                     ]
                 },
                 {
@@ -41,6 +44,13 @@ var ToolBox = React.createClass({
                     collapsed: true,
                     controls:_.map(['Rectangle','Circle', 'Ellipse','Line','Polyline','CornerLine','CornerBox'],function(x){return {
                         'name':'Shapes.' + x, 'label': x}
+                    })
+                },
+                {
+                    type: 'React internationalization',
+                    collapsed: true,
+                    controls:_.map(['FormattedDate','FormattedTime', 'FormattedRelative','FormattedNumber','FormattedMessage','FormattedHTMLMessage'],function(x){return {
+                        'name':'ReactIntl.' + x, 'label': x}
                     })
                 },
                 {

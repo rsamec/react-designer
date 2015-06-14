@@ -10,6 +10,8 @@ var Modal = Bootstrap.Modal;
 var ModalTrigger = Bootstrap.ModalTrigger;
 var Button = Bootstrap.Button;
 
+var TruncateString = require('../components/TruncateString');
+
 var CodeMirrorEditorDialog = React.createClass({
      getInitialState:function(){
        return  {
@@ -49,18 +51,25 @@ var CodeMirrorEditorDialog = React.createClass({
 });
 var CodeMirrorEditor = React.createClass({
     handleChange:function(value){
+        var codeToCompile = '(function() {' + value + '})();';
+        //var code = ReactTools.transform(codeToCompile,{harmony: true});
+
+        var code = JSXTransformer.transform(codeToCompile,{harmony: true}).code;
+
         var wrapEvent = {
             stopPropagation:function(){},
-            target:{value:value}
+            target:{value:value},
+            code:code
         }
         this.props.onChange(wrapEvent);
     },
     render: function () {
+        var value = !!this.props.value?this.props.value:{};
         return (
                 <table>
                     <tr>
                         <td>
-                            {this.props.value}
+                            <TruncateString value={JSON.stringify(value)} />
                         </td>
                         <td>
                             <ModalTrigger modal={<CodeMirrorEditorDialog value={this.props.value} handleChange={this.handleChange} />}>

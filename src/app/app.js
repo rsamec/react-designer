@@ -214,7 +214,9 @@ var Workplace = React.createClass({
                 current={this.props.current}
                 handleClick={handleClick}
                 isRoot={true}
-                dataBinder={dataBinder} />
+                dataBinder={dataBinder}
+                intlData = {this.props.schema.intlData}
+                />
         //}
 
         return ( <div className="cWorkplace">{component}</div>);
@@ -341,15 +343,7 @@ var Preview = React.createClass({
         else {
             return (
                 <div>
-                    <div>
-                        <PDFPagesTrigger schema={schema} data={this.state.data}>
-                            <input type="button" value="PDF Kit" />
-                        </PDFPagesTrigger>
-                        <PDFPagesTrigger type='pdfHummus' schema={schema} data={this.state.data}>
-                            <input type="button" value="PDF Hummus" />
-                        </PDFPagesTrigger>
-                    </div>
-                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} data={this.state.data} />
+                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} data={this.state.data} intlData={schema.intlData} dataContext={dataContext} />
                 </div>
             );
         }
@@ -597,7 +591,7 @@ var Designer = React.createClass({
                 <SplitPane orientation="horizontal" defaultSize="70vw">
                     <div>
                         <div style={toogleVisibleState(!this.state.jsonShown)}>
-                            <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged}/>
+                            <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged} />
                         </div>
                         <div style={toogleVisibleState(this.state.jsonShown)}>
                             <PrettyJson json={schema} />

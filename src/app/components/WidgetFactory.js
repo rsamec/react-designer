@@ -17,7 +17,7 @@ var ReactBootstrap = require('react-bootstrap');
 var rd3 = require('react-d3');
 var Griddle = require('griddle-react');
 var ChartistGraph = require('react-chartist');
-
+var ReactIntl = require('react-intl');
 
 var Shapes = require('../widgets/Shapes');
 
@@ -26,6 +26,7 @@ var WidgetFactory = (function () {
     var widgets = {
         'TextBoxInput': require('../widgets/TextBoxInput'),
         'CheckBoxInput': require('../widgets/CheckBoxInput'),
+        'SelectBoxInput': require('../widgets/SelectBoxInput'),
         'TextBox': require('../widgets/TextBox'),
         'ValueBox': require('../widgets/ValueBox'),
         'HtmlBox':require('../widgets/HtmlRenderer'),
@@ -33,6 +34,8 @@ var WidgetFactory = (function () {
         'Flipper':require('../widgets/Flipper'),
         'JSXBox':require('../widgets/JSXBox'),
         'ImagePanel':require('../widgets/ImagePanel'),
+        'TangleNumberText':require('../widgets/TangleNumberText'),
+        'TangleBoolText':require('../widgets/TangleBoolText'),
 
         'react-pivot':require('../widgets/PivotTable'),
         'ChartistGraph':require('../widgets/ChartistGraph'),
@@ -48,6 +51,9 @@ var WidgetFactory = (function () {
 
     _.each(['Rectangle','Circle', 'Ellipse','Line','Polyline','CornerLine','CornerBox'], function(name){
         widgets['Shapes.' + name] = Shapes[name];
+    });
+    _.each(['FormattedDate','FormattedTime', 'FormattedRelative','FormattedNumber','FormattedMessage','FormattedHTMLMessage'], function(name){
+        widgets['ReactIntl.' + name] = ReactIntl[name];
     });
 
     var bootstrapWidgets =['Input','Button', 'Panel','Glyphicon','Tooltip','Alert','Label'];
@@ -119,17 +125,20 @@ var WidgetFactory = (function () {
 
         var cornerBoxOrientation  ={name: 'orientation', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topLeft'}};
         var imgAlign  ={name: 'imageAlign', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topRight'}};
+
+        var formattedProps = commonProps.concat([bindEditorFce('value'),{name:'format'}]);
         return {
-            'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor},{name:'businessRules',editor:JsonEditor},{name:'title'},{name:'input',editor:BoolEditor }],
+            'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor},{name:'businessRules',editor:JsonEditor},{name:'title'},{name:'input',editor:BoolEditor }, {name:'intlData', editor:JsonEditor}],
             'Container':commonPropsSizes.concat([bindEditorFce('Visibility'), {name: 'startOnNewPage', editor:BoolEditor},{name: 'unbreakable', editor:BoolEditor}]),
             'Repeater':commonPropsSizes.concat([bindEditorFce('Binding')], {name: 'startOnNewPage', editor:BoolEditor},{name: 'unbreakable', editor:BoolEditor}),
             'CheckBoxInput':commonProps.concat([bindEditorFce('checked',true), {name: 'defaultChecked', editor:BoolEditor},{name:'label', args:{defaultValue:'Label'}}]),
             'TextBoxInput': commonProps.concat([bindEditorFce('value',true), {name:'defaultValue'},{name:'label',args:{defaultValue:'Label'}}]),
+            'SelectBoxInput': commonProps.concat([bindEditorFce('options'), bindEditorFce('selectedItems',true),{name: 'multi', editor:BoolEditor}]),
             'CollapsibleTree': commonProps.concat([{name:'title'},bindEditorFce('data')]),
             'TextBox': commonProps.concat([{name:'content', args:{defaultValue:'Type your text'}},fontProps]),
             'Flipper': commonProps.concat([{name:'width',editor:numEditor, args:{defaultValue:200}},{name:'height',editor: numEditor,args:{defaultValue:200}},{name: 'orientation', editor:dropDownEditor, args:{options:orientation.map(function(g){ return {value:g,label:g}}),defaultValue:'horizontal'}},
                 {name:'front', args:{defaultValue:'front text'}},{name: 'frontColor', editor:colorEditor,args:{defaultValue:'#19489E'}},{name:'back', args:{defaultValue:'back text'}},{name: 'backColor', editor:colorEditor,args:{defaultValue:'#9E1919'}},fontProps]),
-            'JSXBox': commonProps.concat([{name:'content', editor:codeMirrorEditor, args:{defaultValue:'return <div>Type your code</div>'}},bindEditorFce('Binding')]),
+            'JSXBox': commonProps.concat([{name:'content', editor:codeMirrorEditor, args:{defaultValue:'return <div>Type your code</div>'}},bindEditorFce("value",true),bindEditorFce('Binding'),bindEditorFce('locales')]),
             'ValueBox':commonProps.concat([{name:'emptyValue',args:{defaultValue:'---'}},bindEditorFce('content'),fontProps]),
             'ImageBox':commonPropsSizes.concat([{name:'url',args:{defaultValue:defaultImg}},numEditorFce('radius')]),
             'ImagePanel':commonPropsSizes.concat([{name:'imageUrl',args:{defaultValue:defaultImg}},imgAlign,numEditorFce('imageWidth'),numEditorFce('imageHeight'),numEditorFce('imageRadius'),numEditorFce('imageMargin'),{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'roundCorner',editor:BoolEditor},numEditorFce('borderWidth',2),numEditorFce('padding'),{name: 'bgColor', editor:colorEditor}, {name: 'color', editor:colorEditor}]),
@@ -162,7 +171,16 @@ var WidgetFactory = (function () {
             'Shapes.CornerLine':commonPropsSizes.concat([numEditorFce('x',25), numEditorFce('y',25),numEditorFce('size',150), numEditorFce('width',50),{name:'text'},{name: 'up', editor: BoolEditor}]).concat(shapeProps),
             'Shapes.CornerBox':commonPropsSizes.concat([numEditorFce('size',150), numEditorFce('width',50),{name:'text'},cornerBoxOrientation]).concat(shapeProps),
             'react-pivot':commonProps.concat([bindEditorFce('rows'),bindEditorFce('dimensions'),{name:'reduce',editor: codeMirrorEditor},{name:'calculations',editor: codeMirrorEditor},{name:'nPaginateRows',editor: numEditor,args:{defaultValue:10}}]),
-            'MovieSelect':commonProps.concat({name:'apiKey'},{name:'searchText'},numEditorFce('maxCount',10),bindEditorFce('selectedItems',true))
+            'MovieSelect':commonProps.concat([{name:'apiKey'},{name:'searchText'},numEditorFce('maxCount',10),bindEditorFce('selectedItems',true)]),
+            'ReactIntl.FormattedNumber':formattedProps,
+            'ReactIntl.FormattedDate':formattedProps,
+            'ReactIntl.FormattedTime':formattedProps,
+            'ReactIntl.FormattedRelative':formattedProps,
+            'ReactIntl.FormattedMessage':commonProps.concat([bindEditorFce('message')]),
+            'ReactIntl.FormattedHTMLMessage':commonProps.concat([bindEditorFce('message')]),
+            'TangleNumberText':commonProps.concat([bindEditorFce('value',true),numEditorFce('min'),numEditorFce('max'),numEditorFce('step'),numEditorFce('width'),numEditorFce('pixelDistance')]),
+            'TangleBoolText':commonProps.concat([bindEditorFce('value',true),{name:'trueText'},{name:'falseText'}])
+
             //'Reacticon':commonProps.concat([{name: 'height', editor:numEditor},{name: 'width', editor:numEditor},{name: 'type', editor:dropDownEditor,options:typeOptions.map(function(g){ return {value:g,label:g}})},{name:'label'}, {name: 'bgColor', editor:colorEditor}, {name: 'primaryColor', editor:colorEditor},{name: 'strokeColor', editor:colorEditor},{name:'animate', editor:BoolEditor},{name:'progress', editor:BoolEditor},{name:'isProcessing', editor:BoolEditor}]),
         }
     }

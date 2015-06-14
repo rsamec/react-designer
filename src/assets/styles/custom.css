@@ -260,3 +260,7 @@ li ol > li:before {
     display: block;
   }
 }
+.tangle-text {
+  color: darkblue;
+  border-bottom: 1px dashed black !important;
+}
