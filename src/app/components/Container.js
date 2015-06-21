@@ -92,7 +92,10 @@ var Container = React.createClass({
         };
 
         if (this.props.intlData !== undefined) _.extend(extendedProps,this.props.intlData);
-        return React.createElement(widgets[box.elementName], _.extend(extendedProps,_.omit(box,'locales')), box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
+        var props = _.extend(extendedProps,_.omit(box,'locales'));
+
+        if (this.props.dataBinder !== undefined && props.data !== undefined && props.data.Path !== undefined) props.data = this.props.dataBinder.getValue(props.data.Path);
+        return React.createElement(widgets[box.elementName], props , box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
         e.stopPropagation();

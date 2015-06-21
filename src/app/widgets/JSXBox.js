@@ -13,6 +13,7 @@ var FormattedTime = ReactIntl.FormattedTime;
 var FormattedRelative = ReactIntl.FormattedRelative;
 var FormattedMessage = ReactIntl.FormattedMessage;
 var FormattedHTMLMessage = ReactIntl.FormattedHTMLMessage;
+var chainedFunction = require('../utilities/createChainedFunction');
 
 //shortcuts
 var TangleText = TangleNumberText;

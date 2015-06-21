@@ -20,6 +20,7 @@ var ChartistGraph = require('react-chartist');
 var ReactIntl = require('react-intl');
 
 var Shapes = require('../widgets/Shapes');
+var Chart = require('react-pathjs-chart');
 
 var WidgetFactory = (function () {
 
@@ -45,6 +46,7 @@ var WidgetFactory = (function () {
         'react-3d-carousel':require('react-3d-carousel'),
         'MovieSelect': require('react-movie-select')
 
+
         //'SnapSvgBox':require('../widgets/SnapSvgBox')
         //'Reacticon':require('../../../node_modules/reacticons/src/scripts/components/reacticon')
     }
@@ -52,6 +54,10 @@ var WidgetFactory = (function () {
     _.each(['Rectangle','Circle', 'Ellipse','Line','Polyline','CornerLine','CornerBox'], function(name){
         widgets['Shapes.' + name] = Shapes[name];
     });
+    _.each(['Pie','Tree','SmoothLine'], function(name){
+        widgets['Chart.' + name] = Chart[name];
+    });
+
     _.each(['FormattedDate','FormattedTime', 'FormattedRelative','FormattedNumber','FormattedMessage','FormattedHTMLMessage'], function(name){
         widgets['ReactIntl.' + name] = ReactIntl[name];
     });
@@ -101,6 +107,7 @@ var WidgetFactory = (function () {
         var bsStyles = ['default','primary','success','info','warning','danger'];
         var bsSizes = ['large','medium','small','xsmall'];
         var orientation = ['horizontal','vertical'];
+        var position = ['topRight','topLeft','bottomRight','bottomLeft'];
 
         var bsStyle = {name:'bsStyle',editor:dropDownEditor, args:{options:bsStyles.map(function(g){ return {value:g,label:g}})}};
         var content = {name:'content',args:{defaultValue:'type your content'}};
@@ -123,8 +130,8 @@ var WidgetFactory = (function () {
 
         var shapeProps = [stroke,fill,strokeWidth];
 
-        var cornerBoxOrientation  ={name: 'orientation', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topLeft'}};
-        var imgAlign  ={name: 'imageAlign', editor:dropDownEditor, args:{options: ['topRight','topLeft','bottomRight','bottomLeft'].map(function(g){ return {value:g,label:g}}),defaultValue:'topRight'}};
+        var cornerBoxOrientation  ={name: 'orientation', editor:dropDownEditor, args:{options: position.map(function(g){ return {value:g,label:g}}),defaultValue:'topLeft'}};
+        var imgAlign  ={name: 'imageAlign', editor:dropDownEditor, args:{options: position.map(function(g){ return {value:g,label:g}}),defaultValue:'topRight'}};
 
         var formattedProps = commonProps.concat([bindEditorFce('value'),{name:'format'}]);
         return {
@@ -142,14 +149,11 @@ var WidgetFactory = (function () {
             'ValueBox':commonProps.concat([{name:'emptyValue',args:{defaultValue:'---'}},bindEditorFce('content'),fontProps]),
             'ImageBox':commonPropsSizes.concat([{name:'url',args:{defaultValue:defaultImg}},numEditorFce('radius')]),
             'ImagePanel':commonPropsSizes.concat([{name:'imageUrl',args:{defaultValue:defaultImg}},imgAlign,numEditorFce('imageWidth'),numEditorFce('imageHeight'),numEditorFce('imageRadius'),numEditorFce('imageMargin'),{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'roundCorner',editor:BoolEditor},numEditorFce('borderWidth',2),numEditorFce('padding'),{name: 'bgColor', editor:colorEditor}, {name: 'color', editor:colorEditor}]),
-            'ReactD3.LineChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ReactD3.ScatterChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ReactD3.BarChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ReactD3.AreaChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ReactD3.PieChart':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ReactD3.Treemap':commonProps.concat([{name:'data',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'title'}]),
-            'ChartistGraph':commonProps.concat([bindEditorFce('data'),{name:'options',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'type', editor:dropDownEditor,args:{options:['Line','Bar','Pie'].map(function(x) {return {value:x,label:x}}),defaultValue:'Line'}}]),
+            'Chart.SmoothLine':commonPropsSizes.concat([bindEditorFce('data'),{name:'xKey'},{name:'yKey'}]),
+            'Chart.Pie':commonPropsSizes.concat([bindEditorFce('data'),{name:'accessorKey'},{name:'color',editor: colorEditor},{name:'r',editor: numEditor},{name:'R',editor: numEditor},{name: 'legendPosition', editor:dropDownEditor, args:{options: position.map(function(g){ return {value:g,label:g}}),defaultValue:'topRight'}}]),
+            'Chart.Tree':commonPropsSizes.concat([bindEditorFce('data')]),
 
+            'ChartstGraph':commonProps.concat([bindEditorFce('data'),{name:'options',editor:JsonEditor},{name:'width',editor:numEditor},{name:'height',editor: numEditor},{name:'type', editor:dropDownEditor,args:{options:['Line','Bar','Pie'].map(function(x) {return {value:x,label:x}}),defaultValue:'Line'}}]),
             'HtmlBox':commonProps.concat([{name:'content',label:'Html', editor:htmlEditor,args:{defaultValue:'Type your content'}},{name:'columnCount',editor:numEditor},{name:'counterReset',editor:numEditor}]),
             'TinyMceEditor':commonProps.concat([{name:'content',label:'Html', editor:htmlEditor},{name:'columnCount',editor:numEditor}]),
             'React.Griddle':commonProps.concat([{name:'showFilter',editor: BoolEditor},{name:'showSettings',editor: BoolEditor},{name:'noDataMessage'},{name:'columns',editor:JsonEditor},{name:'columnMetadata',editor:JsonEditor},{name:'enableInfiniteScroll',editor:BoolEditor},{name:'useFixedHeader ',editor:BoolEditor},numEditorFce('bodyHeight',400),bindEditorFce('results')]),

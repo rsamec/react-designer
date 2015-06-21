@@ -264,3 +264,39 @@ li ol > li:before {
   color: darkblue;
   border-bottom: 1px dashed black !important;
 }
+.pie {
+  position: relative;
+}
+.pie text {
+  font-size: 10px;
+  cursor: pointer;
+  pointer-events: none;
+}
+.pie path {
+  cursor: pointer;
+}
+.legend {
+  border: 1px solid #cccccc;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background: #eeeeee;
+  padding: 10px;
+  position: absolute;
+}
+.legend.topRight {
+  right: 0;
+  top: 0;
+}
+.legend.topLeft {
+  left: 0;
+  top: 0;
+}
+.legend.bottomLeft {
+  left: 0;
+  bottom: 0;
+}
+.legend.bottomRight {
+  right: 0;
+  bottom: 0;
+}

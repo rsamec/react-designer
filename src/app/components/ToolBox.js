@@ -60,16 +60,15 @@ var ToolBox = React.createClass({
                         'name':'ReactBootstrap.' + x, 'label': x}
                     })
                 },
-                //{
-                //    type: 'Charts',
-                //    collapsed: true,
-                //    controls:[{name: 'ChartistGraph', label: 'Chart'}].concat(_.map(['LineChart','BarChart','AreaChart','Treemap','PieChart','ScatterChart','CandleStickChart'],function(x){return { 'name':'ReactD3.' + x, 'label': x}}))
-                //},
+                {
+                    type: 'Charts',
+                    collapsed: true,
+                    controls:[{name: 'ChartistGraph', label: 'Chart'}].concat(_.map(['Pie','Tree','SmoothLine'],function(x){return { 'name':'Chart.' + x, 'label': x}}))
+                },
                 {
                     type: 'Extra controls',
                     collapsed: true,
                     controls: [
-                        {name: 'ChartistGraph', label: 'Chart'},
                         {name: 'React.Griddle', label: 'Griddle'},
                         {name: 'react-pivot', label: 'Pivot table'},
                         {name: 'Flipper', label: 'Flipper'},
