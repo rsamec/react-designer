@@ -1,7 +1,6 @@
-'use strict';
-
-var React = require('react');
-var TreeView = require('react-treeview');
+import React from 'react';
+import TreeView from 'react-treeview';
+import _ from 'lodash';
 
 //var ItemTypes = require('./ItemTypes');
 //var DragDropMixin = require('react-dnd').DragDropMixin;

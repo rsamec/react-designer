@@ -1,18 +1,20 @@
-'use strict';
+import React from 'react';
+import _ from 'lodash';
+import Freezer from 'freezer-js';
+import genie from 'genie';
+import BindToMixin from 'react-binding';
+import SplitPane from 'react-split-pane'
 
-var React = require('react');
+//bootstrap
+import {Modal,ModalTrigger,Button,Panel,TabbedArea,TabPane} from 'react-bootstrap';
 
-//preview
-var HtmlPagesRenderer = require('react-page-renderer').HtmlPagesRenderer;
-var PDFPagesTrigger = require('react-page-renderer').PDFPagesTrigger;
-var BootstrapPublisher = require('react-page-renderer').BootstrapPublisher;
+//menu
+import {Menu,MainButton,ChildButton} from 'react-mfb'
 
-var WidgetFactory = require('./components/WidgetFactory');
-var widgets = WidgetFactory.getWidgets();
+//custom components
+import ComponentMetaData from './components/ComponentMetaData.js';
 
-var Freezer = require('freezer-js');
-
-//editor components
+var Widgets = require('./components/WidgetFactory');
 var ToolBox = require('./components/ToolBox');
 var ObjectBrowser = require('./components/ObjectBrowser');
 var PrettyJson = require('./components/PrettyJson');
@@ -21,207 +23,39 @@ var Tile = require('./components/Tile');
 var If = require('./components/If');
 var ModalViewTrigger = require('./components/ModalViewTrigger');
 var ExampleList = require('./components/ExampleList');
-
-// components
 var Container = require('./components/Container');
-
-var BindToMixin = require('react-binding');
-
-//bootstrap
-var bootstrap = require('react-bootstrap');
-var Modal = bootstrap.Modal;
-var ModalTrigger = bootstrap.ModalTrigger;
-var Button = bootstrap.Button;
-var Panel = bootstrap.Panel;
-var DropdownButton = bootstrap.DropdownButton;
-var MenuItem = bootstrap.MenuItem;
-var TabbedArea = bootstrap.TabbedArea;
-var TabPane = bootstrap.TabPane;
 
 //utilities
 var traverse = require('traverse');
-var transformToPages = require('./utilities/transformToPages');
-var deepClone = require('./utilities/deepClone');
-//binding
-var pathObjecBinder = require('./utilities/pathObjectBinder');
-
-var Menu = require('react-mfb').Menu;
-var MainButton = require('react-mfb').MainButton;
-var ChildButton = require('react-mfb').ChildButton;
 
 var formService = require('./services/formService');
+
+//dialogs
+var FilePickerDialog = require('./dialogs/FilePickerDialog');
+var SaveAsDialog = require('./dialogs/SaveAsDialog');
+var LoadDialog = require('./dialogs/LoadDialog');
+
+var Workplace = require('./components/Workplace');
+var Preview = require('./components/Preview');
+
 
 var emptyObjectSchema = {
     elementName: 'ObjectSchema',
     name: 'rootContainer',
     containers: [],
-    data: {}
+    data: {},
+    props: {
+        defaultData: {},
+        dataSource: {
+            type: 'template',
+            template: {}
+        }
+    }
 };
+
+
 // Create a Freezer store
 var frozen = new Freezer({schema: emptyObjectSchema});
-
-var SplitPane = require('./react-split-pane/SplitPane');
-
-var SaveAsDialog = React.createClass({
-    getInitialState: function () {
-        return {storageKey: this.props.storageKey};
-    },
-    onChange: function (e) {
-        this.setState({storageKey: e.target.value});
-    },
-    ok: function (e) {
-        this.props.confirm(this.state.storageKey);
-        this.props.onRequestHide();
-    },
-
-    render: function () {
-        return (
-            <Modal bsStyle="primary" title="Rename document" animation={false}>
-                <div className="modal-body">
-                    <input type="text" value={this.state.storageKey} onChange={this.onChange} />
-                </div>
-                <div className="modal-footer">
-                    <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
-            </Modal>
-        );
-    }
-});
-
-var LoadDialog = React.createClass({
-    getInitialState: function () {
-        return {storageKey: this.props.storageKey};
-    },
-    onChange: function (e) {
-        this.setState({storageKey: e});
-    },
-    ok: function (e) {
-        this.props.confirm(e);
-        this.props.onRequestHide();
-    },
-
-    render: function () {
-        var keys = [];
-        for (var i = 0; i !== localStorage.length; i++) {
-            keys.push(localStorage.key(i));
-        }
-        ;
-        var tiles = keys.map(function (key) {
-            return (
-                <Tile onClick={this.ok} eventKey={key}>{key}</Tile>
-            )
-        }, this);
-
-        return (
-            <Modal bsStyle="primary" title="Load document" animation={false}>
-                <div className="modal-body">
-                    <div>
-                        {tiles}
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
-            </Modal>
-        );
-    }
-});
-
-var FilePickerDialog = React.createClass({
-    getInitialState: function () {
-        return {
-            storageKey: this.props.storageKey
-        };
-    },
-    onChange: function (e) {
-
-        var files = e.target.files; // FileList object
-
-        // Loop through the FileList
-        for (var i = 0, f; f = files[i]; i++) {
-
-            var parts = f.name.split(".");
-            var fileName = parts[0];
-            // Only process image files.
-            if (parts[1] != 'json') {
-                continue;
-            }
-
-            var reader = new FileReader();
-
-            var self = this;
-            // Closure to capture the file information.
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    // Render thumbnail.
-                    var objectSchema = JSON.parse(e.target.result);
-
-                    self.setState({
-                        storageKey: fileName,
-                        objectSchema: objectSchema
-                    });
-                };
-            })(f);
-            // Read in the file as a data URL.
-            reader.readAsText(f);
-        }
-
-
-    },
-    ok: function (e) {
-        if (this.state.objectSchema !== undefined) this.props.confirm(this.state.objectSchema, this.state.storageKey);
-        this.props.onRequestHide();
-    },
-    render: function () {
-        return (
-            <Modal bsStyle="primary" title="File picker document" animation={false}>
-                <div className="modal-body">
-                    <input type="file" onChange={this.onChange} />
-
-
-                </div>
-                <div className="modal-footer">
-                    <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
-            </Modal>
-        );
-    }
-});
-
-var Workplace = React.createClass({
-    render: function () {
-        var handleClick = function () {
-            if (this.props.currentChanged !== undefined) this.props.currentChanged(this.props.schema);
-        }.bind(this);
-        var empty = this.props.schema.containers.length == 0;
-        var component;
-        var data = this.props.schema.data;
-        var dataBinder = new pathObjecBinder(function () {
-            return data
-        });
-        //if (empty) {
-        //    component = <div className='cContainer root'>Add container element to workplace - click on container in toolbox</div>
-        //}
-        //else {
-        component =
-            <Container
-                containers={this.props.schema.containers}
-                boxes={this.props.schema.boxes}
-                currentChanged={this.props.currentChanged}
-                current={this.props.current}
-                handleClick={handleClick}
-                isRoot={true}
-                dataBinder={dataBinder}
-                intlData = {this.props.schema.intlData}
-                />
-        //}
-
-        return ( <div className="cWorkplace">{component}</div>);
-    }
-});
 
 var ToolbarActions = React.createClass({
     up: function () {
@@ -271,7 +105,7 @@ var ToolbarActions = React.createClass({
         if (parent === undefined) return;
 
         //clone
-        var clone = deepClone(current);
+        var clone = _.cloneDeep(current);
         clone.name = "Copy " + clone.name;
 
 
@@ -302,54 +136,22 @@ var ToolbarActions = React.createClass({
                 <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.copy}>
                     <span className="glyphicon glyphicon-copy" title="copy element"></span>
                 </button>
-            &nbsp;&nbsp;
+                &nbsp;&nbsp;
                 <button disabled={ disabledUp } type="button" className="btn btn-primary" onClick={this.up}>
                     <span className="glyphicon glyphicon-arrow-up" title="move up"></span>
                 </button>
                 <button disabled={ disabledDown } type="button" className="btn btn-primary" onClick={this.down}>
                     <span className="glyphicon glyphicon-arrow-down" title="move down"></span>
                 </button>
-            &nbsp;&nbsp;
-                <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.removeCtrl}>
+                &nbsp;&nbsp;
+                <button disabled={ disabledCurrent } type="button" className="btn btn-primary"
+                        onClick={this.removeCtrl}>
                     <span className="glyphicon glyphicon-remove-sign" title="delete element"></span>
                 </button>
             </div>
         );
     }
 });
-
-var Preview = React.createClass({
-    mixins: [BindToMixin],
-    getInitialState() {
-        return {data: this.props.schema.data !== undefined ? deepClone(this.props.schema.data) : {}}
-    },
-    render: function () {
-        var schema = deepClone(this.props.schema);
-        var dataContext = this.bindToState('data');
-
-
-        var preview;
-
-        if (schema.input) {
-            var rules = schema.businessRules || {};
-            var style = {height: '90vh', width: '90vw'};
-
-            return (
-                <div style={style}>
-                    <BootstrapPublisher widgets={this.props.widgets} schema={schema} rules={rules} dataContext={dataContext} />
-                </div>
-            )
-        }
-        else {
-            return (
-                <div>
-                    <HtmlPagesRenderer widgets={this.props.widgets} schema={schema} data={this.state.data} intlData={schema.intlData} dataContext={dataContext} />
-                </div>
-            );
-        }
-    }
-});
-
 
 //Designer - top editor
 var Designer = React.createClass({
@@ -452,6 +254,7 @@ var Designer = React.createClass({
                 width: 740,
                 position: 'relative'
             },
+            props: ComponentMetaData[elName].metaData.props,
             boxes: [],
             containers: []
         }
@@ -461,30 +264,9 @@ var Designer = React.createClass({
             style: {
                 top: 0,
                 left: 0
-            }
-        }
-        var setDefaultValue= function(prop,item) {
-            if (prop.args !== undefined && prop.args.defaultValue !== undefined) {
-                if (item[prop.name] === undefined) item[prop.name] = prop.args.defaultValue;
-                //item[prop.name] = prop.args.defaultValue;
-            }
+            },
+            props: Widgets[elName] && Widgets[elName].metaData.props || {}
         };
-
-        //set default values
-        if (!isContainer) {
-            var widgetProps = WidgetFactory.getWidgetProperties(elName);
-            for (var index in widgetProps) {
-                var widget = widgetProps[index];
-                setDefaultValue(widget, defaultNewItem);
-                if (widget.name === "style") {
-                    var styleProps = widget.items;
-                    for (var i in styleProps) {
-                        var style = styleProps[i];
-                        setDefaultValue(style,defaultNewItem["style"]);
-                    }
-                }
-            }
-        }
 
         var updated = items.push(defaultNewItem);
         this.currentChanged(updated[updated.length - 1]);
@@ -541,6 +323,17 @@ var Designer = React.createClass({
                 // The change has been already triggered by the state, no need of re-render
             }
         });
+        //var templateListener = this.schema().getListener();
+        //
+        //var lastDataSource = this.schema().props.dataSource;
+        //templateListener.on('update', function (updated) {
+        //    if (lastDataSource !== updated.props.dataSource) {
+        //        updated.props.set("defaultData",genie(updated.props.dataSource.template));
+        //    }
+        //    lastDataSource = updated.props.dataSource;
+        //});
+
+
     },
     render: function () {
         // demo defaults
@@ -569,112 +362,115 @@ var Designer = React.createClass({
         return (
             <div>
                 <Menu effect={effect} method={method} position={pos}>
-                    <MainButton iconResting="ion-plus-round" iconActive="ion-close-round" />
+                    <MainButton iconResting="ion-plus-round" iconActive="ion-close-round"/>
 
                     <ModalTrigger modal={this.loadDialog()}>
                         <ChildButton
                             icon="ion-ios-upload"
                             label="Open"
-                        />
+                            />
                     </ModalTrigger>
                     <ChildButton
                         onClick={this.save}
                         icon="ion-ios-download"
                         label="Save"
-                    />
+                        />
                     <ChildButton
                         onClick={this.publish}
                         icon="ion-share"
                         label="Publish"
-                    />
+                        />
                 </Menu>
-                <SplitPane orientation="horizontal" defaultSize="70vw">
+                <SplitPane split="vertical" minSize={80} defaultSize="70vw">
                     <div>
                         <div style={toogleVisibleState(!this.state.jsonShown)}>
-                            <Workplace schema={schema} current={this.state.current} currentChanged={this.currentChanged} />
+                            <Workplace schema={schema} current={this.state.current}
+                                       currentChanged={this.currentChanged}/>
                         </div>
                         <div style={toogleVisibleState(this.state.jsonShown)}>
-                            <PrettyJson json={schema} />
+                            <PrettyJson json={schema}/>
                         </div>
-
                     </div>
                     <div>
-
-                        <nav className="navbar navbar-default navbar-fixed-top-custom">
-                            <ul className="nav navbar-nav">
-                                <li>
-                                    <ToolbarActions current={this.state.current}  currentChanged={this.currentChanged} />
-                                </li>
-                            </ul>
-                            <ul className="nav navbar-nav navbar-right">
-                                <li>
-                                    <ModalTrigger disabled={ disabledUndo }  modal={this.saveDialog()}>
-                                        <Button bsStyle='link' title="save">
-                                                        {displaySchemaName}
-                                        </Button>
-                                    </ModalTrigger>
-                                </li>
-                                <li>
-                                    <button disabled={ disabledUndo } type="button" className="btn btn-primary" onClick={this.undo}>
-                                        <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button disabled={ disabledRedo } type="button" className="btn btn-primary" onClick={this.redo}>
-                                        <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
-                                    </button>
-                                </li>
-
-
-                                <li className="dropdown">
-                                    <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                        <span className="glyphicon glyphicon-option-vertical" aria-hidden="true"></span>
-                                    </a>
-                                    <ul className="dropdown-menu" role="menu">
+                        <SplitPane split="horizontal">
+                            <div>
+                                <nav className="navbar navbar-default navbar-fixed-top-custom">
+                                    <ul className="nav navbar-nav">
                                         <li>
-                                            <ModalViewTrigger  modal={<Preview widgets={widgets} schema={schema} />}>
-                                                <a>Preview</a>
-                                            </ModalViewTrigger>
+                                            <ToolbarActions current={this.state.current}
+                                                            currentChanged={this.currentChanged}/>
                                         </li>
+                                    </ul>
+                                    <ul className="nav navbar-nav navbar-right">
                                         <li>
-                                            <a onClick={this.switchWorkplace}>Switch</a>
-                                        </li>
-
-                                        <li className="divider"></li>
-                                        <li>
-                                            <ModalTrigger modal={this.importDialog()}>
-                                                <a>Import schema</a>
+                                            <ModalTrigger disabled={ disabledUndo } modal={this.saveDialog()}>
+                                                <Button bsStyle='link' title="save">
+                                                    {displaySchemaName}
+                                                </Button>
                                             </ModalTrigger>
                                         </li>
                                         <li>
-                                            <a href={exportSchema} download={exportSchemaName}>Export schema</a>
+                                            <button disabled={ disabledUndo } type="button" className="btn btn-primary"
+                                                    onClick={this.undo}>
+                                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button disabled={ disabledRedo } type="button" className="btn btn-primary"
+                                                    onClick={this.redo}>
+                                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
+                                            </button>
                                         </li>
 
-                                    </ul>
-                                </li>
-                            </ul>
-                        </nav>
 
-                        <div className="toolbarContent">
-                            <SplitPane orientation="vertical">
-                                <div className='propertyGrid'>
-                                    <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged} />
-                                </div>
-                                <div>
-                                    <TabbedArea defaultActiveKey={2}>
-                                        <TabPane eventKey={1} tab='Tree'>
-                                            <ObjectBrowser rootNode={schema} current={this.state.current} currentChanged={this.currentChanged}  />
-                                        </TabPane>
-                                        <TabPane eventKey={2} tab='Pallete'>
-                                            <ToolBox addCtrl={this.addNewCtrl} />
-                                        </TabPane>
-                                        <TabPane eventKey={3} tab='Examples'>
-                                            <ExampleList loadSchema={this.loadObjectSchema} />
-                                        </TabPane>
-                                    </TabbedArea>
-                                </div>
-                            </SplitPane>
-                        </div>
+                                        <li className="dropdown">
+                                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
+                                               aria-expanded="false">
+                                                <span className="glyphicon glyphicon-option-vertical"
+                                                      aria-hidden="true"></span>
+                                            </a>
+                                            <ul className="dropdown-menu" role="menu">
+                                                <li>
+                                                    <ModalViewTrigger
+                                                        modal={<Preview widgets={Widgets} schema={schema} />}>
+                                                        <a>Preview</a>
+                                                    </ModalViewTrigger>
+                                                </li>
+                                                <li>
+                                                    <a onClick={this.switchWorkplace}>Switch</a>
+                                                </li>
+
+                                                <li className="divider"></li>
+                                                <li>
+                                                    <ModalTrigger modal={this.importDialog()}>
+                                                        <a>Import schema</a>
+                                                    </ModalTrigger>
+                                                </li>
+                                                <li>
+                                                    <a href={exportSchema} download={exportSchemaName}>Export schema</a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged}/>
+                            </div>
+                            <div>
+                                <TabbedArea defaultActiveKey={2}>
+                                    <TabPane eventKey={1} tab='Tree'>
+                                        <ObjectBrowser rootNode={schema} current={this.state.current}
+                                                       currentChanged={this.currentChanged}/>
+                                    </TabPane>
+                                    <TabPane eventKey={2} tab='Pallete'>
+                                        <ToolBox addCtrl={this.addNewCtrl}/>
+                                    </TabPane>
+                                    <TabPane eventKey={3} tab='Examples'>
+                                        <ExampleList loadSchema={this.loadObjectSchema}/>
+                                    </TabPane>
+                                </TabbedArea>
+                            </div>
+                        </SplitPane>
                     </div>
                 </SplitPane>
             </div>

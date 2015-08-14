@@ -1,4 +1,4 @@
-'use strict';
+import _ from 'lodash';
 
 var React = require('react'),
     PropTypes = React.PropTypes,
@@ -7,9 +7,10 @@ var React = require('react'),
     Box = require('./Box'),
     ResizableHandle = require('./ResizableHandle'),
     If = require('./If'),
-    WidgetFactory = require('./WidgetFactory');
+    Widgets = require('./WidgetFactory');
 
-var widgets = WidgetFactory.getWidgets();
+var WidgetRenderer = require('./WidgetRenderer');
+
 
 var Container = React.createClass({
     mixins: [DragDropMixin],
@@ -80,22 +81,6 @@ var Container = React.createClass({
         this.props.currentChanged(updated);
         //currentChanged(updated);
 
-    },
-    createComponent: function (box) {
-        if (widgets[box.elementName] === undefined) {
-            return React.DOM.span(null, 'Component ' + box.elementName + ' is not register among widgets.');
-        }
-        //designer extended props
-        var extendedProps = {
-            "dataBinder":this.props.dataBinder,
-            "workplace":true
-        };
-
-        if (this.props.intlData !== undefined) _.extend(extendedProps,this.props.intlData);
-        var props = _.extend(extendedProps,_.omit(box,'locales'));
-
-        if (this.props.dataBinder !== undefined && props.data !== undefined && props.data.Path !== undefined) props.data = this.props.dataBinder.getValue(props.data.Path);
-        return React.createElement(widgets[box.elementName], props , box.content !== undefined ? React.DOM.span(null, box.content) : undefined);
     },
     handleClick: function (e) {
         e.stopPropagation();
@@ -186,7 +171,7 @@ var Container = React.createClass({
                         if (this.props.currentChanged !== undefined) this.props.currentChanged(box);
                     }.bind(this);
 
-                    var boxComponent = this.createComponent(box, key);
+                    var boxComponent = <WidgetRenderer widget={Widgets[box.elementName]} node={box} dataBinder={this.props.dataBinder} />;
                     var left = box.style.left === undefined ? 0 : parseInt(box.style.left, 10);
                     var top = box.style.top === undefined ? 0 : parseInt(box.style.top, 10);
                     return (

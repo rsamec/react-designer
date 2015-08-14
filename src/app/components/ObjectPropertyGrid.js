@@ -1,61 +1,42 @@
 'use strict';
 
-var React = require('react');
-var PropertyGrid = require('property-grid');
-var pathObjecBinder = require('../utilities/pathObjectBinder');
-var deepClone = require('../utilities/deepClone');
-var WidgetFactory = require('./WidgetFactory');
+import React from 'react';
+import PropertyEditor from 'react-property-editor';
+
+import Widgets from './WidgetFactory';
+import ComponentMetaData from './ComponentMetaData.js';
+
 
 var ObjectPropertyGrid = React.createClass({
-    currentProps:function(){
-        if (this.props.current.node=== undefined) return [];
-        return WidgetFactory.getWidgetProperties(this.props.current.node.elementName);
-    },
-    onPropertyValueChange: function(event, prop, value, path){
-        if (prop.name === undefined) return;
-        //console.log(prop.name + ' has a new value: "' + value + '". Full path is ' + path.join('/'))
-        if (prop.editor!== undefined && prop.editor.displayName === "BoolEditor"){
-            value = event.target.checked?true:false;
-        }
-
-        if (prop.editor!== undefined && prop.editor.displayName === "NumberInputEditor"){
-            value = value!==undefined?parseInt(value,10):0;
-        }
-
+    widgetPropsChanged: function (updatedValue) {
         var current = this.props.current.node;
-        var updated;
-        if (_.isArray(path) && path.length === 2){
-            //TODO: find better way how to update nested properties
-            var cloned = deepClone(current);
-            var binder = new pathObjecBinder(function(){return cloned});
-            var joinedPath = path[0].name + "." + path[1].name;
-            binder.setValue(joinedPath,value);
-
-            updated = current.set(cloned);
-        }
-        else if (prop.editor!== undefined && prop.editor.displayName === "CodeMirrorEditor")
-        {
-            var cloned = _.clone(current);
-            cloned[prop.name] = value;
-            cloned.code = event.code;
-            updated = current.set(cloned);
-            console.log("code mirror");
-        }
-        else{
-            updated = current.set(prop.name, value);
-        }
+        var updated = current.set("props", updatedValue);
         this.props.currentChanged(updated);
     },
-    render: function() {
+    commonPropsChanged:function(updatedValue){
+        var current = this.props.current.node;
+        var updated = current.set("style", updatedValue.style);
+        this.props.currentChanged(updated);
+    },
+
+    render: function () {
+        var currentNode = this.props.current.node;
+        var elementName = currentNode.elementName;
+
+        var settings = (elementName === "Container" || elementName === "Repeater" || elementName === "ObjectSchema")? ComponentMetaData[elementName].metaData.settings:Widgets[elementName].metaData.settings;
+        var props = currentNode.toJS().props;
+
+        var commonProps = {
+            name:currentNode.name,
+            style:currentNode.style
+        };
+
         return (
             <div>
-                <PropertyGrid
-                    properties={this.currentProps()}
-                    onChange={this.onPropertyValueChange}
-                    autoUpdate={false}
-                    value={this.props.current.node}
-                >
-                </PropertyGrid>
+                <PropertyEditor value={commonProps}
+                                onChange={ this.commonPropsChanged }/>
+                <PropertyEditor value={props} settings={settings}
+                                onChange={ this.widgetPropsChanged }/>
             </div>
         );
     }

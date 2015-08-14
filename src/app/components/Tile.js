@@ -1,15 +1,12 @@
-'use strict';
+import React from 'react';
 
-var React = require('react');
-
-var Tile = React.createClass({
-    handleClick:function(e){
+export default class Tile extends React.Component
+{
+    handleClick(e){
         this.props.onClick(this.props.eventKey);
-    },
-    render: function () {
-
-        return (<div className="Tile" onClick={this.handleClick}>{this.props.children}</div>);
     }
-})
+    render() {
 
-module.exports = Tile;
+        return (<div className="Tile" onClick={this.handleClick.bind(this)}>{this.props.children}</div>);
+    }
+}
