@@ -1,10 +1,12 @@
 'use strict';
 
 import React from 'react';
+import _ from 'lodash';
 import PropertyEditor from 'react-property-editor';
 
 import Widgets from './WidgetFactory';
 import ComponentMetaData from './ComponentMetaData.js';
+import clearObject from "../utilities/clearObject.js";
 
 
 var ObjectPropertyGrid = React.createClass({
@@ -15,7 +17,13 @@ var ObjectPropertyGrid = React.createClass({
     },
     commonPropsChanged:function(updatedValue){
         var current = this.props.current.node;
-        var updated = current.set("style", updatedValue.style);
+        var updated;
+        if (current.name !== updatedValue.name){
+            updated = current.set("name", updatedValue.name);
+        }
+        else{
+            updated = current.set("style", updatedValue.style);
+        }
         this.props.currentChanged(updated);
     },
 
@@ -23,8 +31,13 @@ var ObjectPropertyGrid = React.createClass({
         var currentNode = this.props.current.node;
         var elementName = currentNode.elementName;
 
-        var settings = (elementName === "Container" || elementName === "Repeater" || elementName === "ObjectSchema")? ComponentMetaData[elementName].metaData.settings:Widgets[elementName].metaData.settings;
-        var props = currentNode.toJS().props;
+
+        var metaData = (elementName === "Container" || elementName === "Repeater" || elementName === "ObjectSchema")? ComponentMetaData[elementName].metaData:Widgets[elementName].metaData;
+
+        var settings = metaData && metaData.settings || {};
+
+        var emptyProps = clearObject(metaData.props);
+        var props = _.merge(emptyProps,currentNode.toJS().props);
 
         var commonProps = {
             name:currentNode.name,

@@ -90,9 +90,9 @@ var Container = React.createClass({
 
         // The comparison is fast, and we won't render the component if
         // it does not need it. This is a huge gain in performance.
-        var current = this.props.current.node;
-        var nextCurrent = nextProps.current.node;
-        return this.props.parent != nextProps.parent || this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || (current !== undefined && nextCurrent !== undefined && current.name != nextCurrent.name);
+        //var update = this.props.parent != nextProps.parent || this.props.containers != nextProps.containers || this.props.boxes != nextProps.boxes || this.props.selected != nextProps.selected;// || (current !== undefined && nextCurrent !== undefined && current.name != nextCurrent.name);
+        //console.log(this.props.name + " -> " + update);
+        return true;
     },
     render: function () {
 
@@ -156,6 +156,7 @@ var Container = React.createClass({
                          selected={selected}
                          dataBinder={this.props.dataBinder}
                          intlData = {this.props.intlData}
+                         ctx={this.props.ctx}
 
                      />
                  );
@@ -171,7 +172,6 @@ var Container = React.createClass({
                         if (this.props.currentChanged !== undefined) this.props.currentChanged(box);
                     }.bind(this);
 
-                    var boxComponent = <WidgetRenderer widget={Widgets[box.elementName]} node={box} dataBinder={this.props.dataBinder} />;
                     var left = box.style.left === undefined ? 0 : parseInt(box.style.left, 10);
                     var top = box.style.top === undefined ? 0 : parseInt(box.style.top, 10);
                     return (
@@ -181,8 +181,10 @@ var Container = React.createClass({
                             top={top}
                             selected={selected}
                             hideSourceOnDrag={this.props.hideSourceOnDrag}
-                            handleClick={handleClick}>
-                                {boxComponent}
+                            handleClick={handleClick}
+                            node={box} dataBinder={this.props.dataBinder}
+                            ctx={this.props.ctx}
+                            >
                         </Box>
                     );
                 }, this)

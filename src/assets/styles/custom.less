@@ -232,17 +232,18 @@ html, body {
     margin-bottom: 0px;
 }
 .navbar-fixed-top-custom {
-    //width: 30%;
-    //position: fixed;
+    width: 30%;
+    position: fixed;
     //right: 0;
-    //z-index: 1030;
+    z-index: 1030;
     padding: 10px 15px 0px 10px;
+
     //float:right;
 //    flex-direction: column;
-//    height: 100%;
-//    top: 0;
+    height: 60px;
+    top: 0;
 //    bottom: 0;
-//    display:flex;
+    display:block;
 //    flex: 1;
 //    position: relative;
 //    outline: none;
@@ -255,8 +256,25 @@ html, body {
 //    height: 100%;
 //
 }
-.propertyGrid{
-    border: solid 1px gray
+.propertyContainer{
+    height:100%;
+    width:100%;
+    overflow-y:auto;
+}
+.propertyToolbox{
+    position: absolute;
+
+}
+.propertyGrid
+{
+    //overflow-y: scroll;
+    //height:400px;
+    padding-top:60px;
+    //border: solid 1px gray
+}
+
+.SplitPane .horizontal{
+
 }
 .emptyWorkplace{
     height: 100%;

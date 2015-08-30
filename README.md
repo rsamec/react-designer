@@ -170,7 +170,7 @@ Feel free to write your own content publisher - see list of some ideas.
 
 +   PDFRenderer - provide high-quality printed output on a variety of printers
     +   SimplePDFRenderer - transforms directly to PDF
-    +   HmtlToPDFRederer - transforms to PDF from HTML
+    +   HmtlToPDFRenderer - transforms to PDF from HTML
 +   HtmlRenderer - provide high-quality on-screen output
     +   InputRenderer - allow the user to fill in data in document
         +   SimpleInputRenderer - usage of simple custom controls
@@ -207,7 +207,7 @@ $ gulp pro
 Coming soon
 
 +   exact specification of RDOM format
-+   cleaning code, refactoring widgets
++   inherit properties from root or containers (page typography, common colors, etc.)
 +   examples 
     +   add renderer examples (8)
     +   add api examples (?)
@@ -223,7 +223,7 @@ Coming soon
     +   recheck - should component update
     +   parse property values (parseInt,etc.) - to many places - remove defensive programming favor contract by design
 +   consider support for continues saving
-
++   data watchers - if some data changes, it changes on the other site
 
 Long run
 

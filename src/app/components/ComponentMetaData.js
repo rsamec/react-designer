@@ -1,28 +1,42 @@
+import DataTemplates from '../utilities/DataTemplateExamples.js';
+import Widgets from '../components/WidgetFactory';
+import _ from 'lodash';
+
+var sharedShapeMetaData = {
+    defaultColors: {
+        fill: '#2409ba',
+        stroke: '#E65243',
+        strokeWidth: 20
+    }
+}
+
 export default {
     ObjectSchema: {
         metaData: {
             props: {
                 title: "",
-                dataSource: {
-                    type: '',
-                    template: {}
+                defaultData:{},
+                dataTemplate:{},
+                context:{
+                    intlData: {},
+                    styles:_.mapValues(Widgets,function(value,key,object){
+                        var widget =object[key];
+                        return widget && widget.metaData && widget.metaData.props || {}}
+                    )
+
                 },
-                businessRules: {},
-                input: false,
-                intlData: {},
-                defaultData:{}
+
+
             },
             settings: {
                 fields: {
                     defaultData: {type: 'plainJsonEditor'},
-                    businessRules: {type: 'jsonEditor'},
-                    intlData: {type: 'jsonEditor'},
-                    dataSource: {
-                        fields: {
-                            type: {type: 'select', settings: {options: ['template', 'raw']}},
-                            template: {type: 'dataTemplateEditor'}
-                        }
-                    }
+                    defaultProps: {type: 'jsonEditor'},
+                    dataTemplate:{type: 'dataTemplateEditor', settings:{templates:DataTemplates}},
+                    context: {
+                        fields: {intlData: {type: 'jsonEditor'}}
+                    },
+                    styles:{type:'jsonEditor'}
                 }
             }
         }
@@ -30,16 +44,13 @@ export default {
     Container:{
         metaData: {
             props: {
-                Visibility: {
-                    Path: '',
-                    Mode: 'OneWay'
-                },
+                visibility:{},
                 startOnNewPage: false,
                 unbreakable: false
             },
             settings: {
                 fields: {
-                    Visibility: {type: 'bindingEditor'}
+                    visibility: {type: 'bindingEditor'}
                 }
             }
         }
@@ -47,16 +58,13 @@ export default {
     Repeater:{
         metaData: {
             props: {
-                Binding: {
-                    Path: '',
-                    Mode: 'OneWay'
-                },
+                binding: {},
                 startOnNewPage: false,
                 unbreakable: false
             },
             settings: {
                 fields: {
-                    Visibility: {type: 'bindingEditor'}
+                    binding: {type: 'bindingEditor'}
                 }
             }
         }

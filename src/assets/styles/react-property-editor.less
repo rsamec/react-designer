@@ -1,3 +1,5 @@
+//@import "../../node_modules/react-colors-picker/assets/index.css";
+
 /* JSON Editor */
 .jsonEditor * {
     vertical-align: top;
@@ -67,7 +69,8 @@
 }
 
 .jsonValue {
-    padding-left: 5px;
+    position:relative;
+    padding-left: 15px;
     flex-grow: 1;
 }
 
@@ -97,6 +100,23 @@
 .jsonName:hover > .jsonRemove {
     visibility: visible;
 }
+
+.jsonReset{
+    visibility: hidden;
+    padding-left: 0px;
+    text-decoration: none;
+    width: .6em;
+    display: inline-block;
+    position: absolute;
+    left: 0;
+}
+.jsonValue:hover > div > .jsonReset{
+    visibility: visible;
+}
+.jsonValue:hover > div > div > .jsonReset{
+    visibility: visible;
+}
+
 //pre {
 //  background: #eee;
 //  border: 1px solid #ddd;
@@ -143,4 +163,8 @@
 
 .jsonGroup {
     margin-bottom: 10px;
+}
+
+.bindingEditor .jsonEditor{
+    display: inline-block;
 }

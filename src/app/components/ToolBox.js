@@ -70,7 +70,7 @@ ToolBox.defaultProps = {
         {
             type: 'Shapes',
             collapsed: true,
-            controls: _.map(['Rectangle', 'Circle', 'Ellipse', 'Line', 'Polyline', 'CornerLine', 'CornerBox'], function (x) {
+            controls: _.map(['Rectangle', 'Circle', 'Ellipse', 'Line','Triangle', 'Polyline', 'CornerLine', 'CornerBox'], function (x) {
                 return {
                     'name': 'Shapes.' + x, 'label': x
                 }
@@ -106,7 +106,7 @@ ToolBox.defaultProps = {
             collapsed: true,
             controls: [
                 {name: 'React.Griddle', label: 'Griddle'},
-                {name: 'react-pivot', label: 'Pivot table'},
+                {name: 'react-pivot.PivotTable', label: 'Pivot table'},
                 {name: 'Flipper', label: 'Flipper'},
                 {name: 'react-inlinesvg', label: 'SvgBox'},
                 {name: 'MovieSelect', label: 'Movie carousel select'}

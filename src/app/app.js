@@ -44,13 +44,7 @@ var emptyObjectSchema = {
     name: 'rootContainer',
     containers: [],
     data: {},
-    props: {
-        defaultData: {},
-        dataSource: {
-            type: 'template',
-            template: {}
-        }
-    }
+    props: ComponentMetaData.ObjectSchema.metaData.props,
 };
 
 
@@ -242,7 +236,13 @@ var Designer = React.createClass({
         var current = this.state.current.node;
         if (current === undefined) return;
 
+
         var isContainer = (elName === "Container" || elName === "Repeater");
+        var normalizeElName = elName;
+        if (!isContainer) {
+            var position = elName.indexOf('.');
+            normalizeElName = position !== -1 ? elName.substr(position + 1) : elName;
+        }
         var items = isContainer ? current.containers : current.boxes;
         var defaultNewItem = isContainer ? {
             name: "container",
@@ -259,13 +259,13 @@ var Designer = React.createClass({
             containers: []
         }
             : {
-            name: elName,
+            name: normalizeElName,
             elementName: elName,
             style: {
                 top: 0,
                 left: 0
             },
-            props: Widgets[elName] && Widgets[elName].metaData.props || {}
+            props: {}
         };
 
         var updated = items.push(defaultNewItem);
@@ -392,8 +392,9 @@ var Designer = React.createClass({
                         </div>
                     </div>
                     <div>
-                        <SplitPane split="horizontal">
-                            <div>
+                        <SplitPane split="horizontal" className='rightPane'>
+
+                            <div className="propertyContainer">
                                 <nav className="navbar navbar-default navbar-fixed-top-custom">
                                     <ul className="nav navbar-nav">
                                         <li>
@@ -410,21 +411,26 @@ var Designer = React.createClass({
                                             </ModalTrigger>
                                         </li>
                                         <li>
-                                            <button disabled={ disabledUndo } type="button" className="btn btn-primary"
+                                            <button disabled={ disabledUndo } type="button"
+                                                    className="btn btn-primary"
                                                     onClick={this.undo}>
-                                                <span className="glyphicon glyphicon-arrow-left" title="undo"></span>
+                                                    <span className="glyphicon glyphicon-arrow-left"
+                                                          title="undo"></span>
                                             </button>
                                         </li>
                                         <li>
-                                            <button disabled={ disabledRedo } type="button" className="btn btn-primary"
+                                            <button disabled={ disabledRedo } type="button"
+                                                    className="btn btn-primary"
                                                     onClick={this.redo}>
-                                                <span className="glyphicon glyphicon-arrow-right" title="redo"></span>
+                                                    <span className="glyphicon glyphicon-arrow-right"
+                                                          title="redo"></span>
                                             </button>
                                         </li>
 
 
                                         <li className="dropdown">
-                                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
+                                            <a href="#" className="dropdown-toggle" data-toggle="dropdown"
+                                               role="button"
                                                aria-expanded="false">
                                                 <span className="glyphicon glyphicon-option-vertical"
                                                       aria-hidden="true"></span>
@@ -447,14 +453,18 @@ var Designer = React.createClass({
                                                     </ModalTrigger>
                                                 </li>
                                                 <li>
-                                                    <a href={exportSchema} download={exportSchemaName}>Export schema</a>
+                                                    <a href={exportSchema} download={exportSchemaName}>Export
+                                                        schema</a>
                                                 </li>
 
                                             </ul>
                                         </li>
                                     </ul>
                                 </nav>
-                                <ObjectPropertyGrid current={this.state.current} currentChanged={this.currentChanged}/>
+                                <div className="propertyGrid">
+                                    <ObjectPropertyGrid current={this.state.current}
+                                                    currentChanged={this.currentChanged}/>
+                                </div>
                             </div>
                             <div>
                                 <TabbedArea defaultActiveKey={2}>

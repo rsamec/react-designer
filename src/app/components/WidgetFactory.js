@@ -9,6 +9,7 @@ import ReactBootstrap from 'react-bootstrap';
 //var Griddle = require('griddle-react');
 //var ChartistGraph = require('react-chartist');
 import ReactIntl from 'react-intl';
+import {PivotTable} from '../widgetAdapter/react-pivot';
 
 var Widgets = {
 
@@ -24,7 +25,6 @@ var Widgets = {
     'Core.Flipper': Core.Flipper,
     'Core.TangleNumberText': Core.TangleNumberText,
     'Core.TangleBoolText': Core.TangleBoolText,
-    'Core.PivotTable': Core.PivotTable,
 
     'Shapes.Rectangle': Shapes.Rectangle,
     'Shapes.Ellipse': Shapes.Ellipse,
@@ -32,6 +32,7 @@ var Widgets = {
     'Shapes.Line': Shapes.Line,
     'Shapes.Polyline': Shapes.Polyline,
     'Shapes.CornerBox': Shapes.CornerBox,
+    'Shapes.Triangle':Shapes.Triangle,
 
     'Chart.Pie': Chart.Pie,
     'Chart.Bar': Chart.Bar,
@@ -39,7 +40,10 @@ var Widgets = {
     'Chart.StockLine': Chart.StockLine,
     'Chart.Scatterplot': Chart.Scatterplot,
     'Chart.Radar': Chart.Radar,
-    'Chart.Tree': Chart.Tree
+    'Chart.Tree': Chart.Tree,
+
+    'react-pivot.PivotTable': PivotTable
+
 
 
     //'ChartistGraph':require('../widgets/ChartistGraph'),

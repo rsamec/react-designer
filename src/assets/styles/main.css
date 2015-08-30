@@ -1,4 +1,6 @@
 @import "react-split-pane.css";
+@import "react-colors-picker.css";
+@import "react-property-editor.css";
 .mainForm {
   margin-left: 15px;
 }
@@ -199,10 +201,24 @@ body {
   margin-bottom: 0px;
 }
 .navbar-fixed-top-custom {
+  width: 30%;
+  position: fixed;
+  z-index: 1030;
   padding: 10px 15px 0px 10px;
+  height: 60px;
+  top: 0;
+  display: block;
+}
+.propertyContainer {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+}
+.propertyToolbox {
+  position: absolute;
 }
 .propertyGrid {
-  border: solid 1px #808080;
+  padding-top: 60px;
 }
 .emptyWorkplace {
   height: 100%;
@@ -425,4 +441,8 @@ li ol > li:before {
   -webkit-transform: rotateX(0deg);
   -o-transform: rotateX(0deg);
   -moz-transform: rotateX(0deg);
+}
+pre {
+  float: none;
+  width: auto;
 }
