@@ -12,15 +12,14 @@ var LoadDialog = React.createClass({
     },
     ok: function (e) {
         this.props.confirm(e);
-        this.props.onRequestHide();
+        this.props.onHide();
     },
 
     render: function () {
         var keys = [];
         for (var i = 0; i !== localStorage.length; i++) {
             keys.push(localStorage.key(i));
-        }
-        ;
+        };
         var tiles = keys.map(function (key) {
             return (
                 <Tile onClick={this.ok} eventKey={key}>{key}</Tile>
@@ -28,16 +27,18 @@ var LoadDialog = React.createClass({
         }, this);
 
         return (
-            <Modal bsStyle="primary" title="Load document" animation={false}>
-                <div className="modal-body">
-                    <div>
-                        {tiles}
-                    </div>
-                </div>
-                <div className="modal-footer">
-                    <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
+            <Modal {...this.props}  bsStyle="primary" animation={false}>
+                <Modal.Header>
+                    <Modal.Title>Load document</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    {tiles}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button onClick={this.props.onHide}>Close</Button>
+                </Modal.Footer>
             </Modal>
         );
     }

@@ -1,12 +1,12 @@
 import React from 'react';
+//bootstrap
+import {Modal,Button,Panel,Tabs,Tab} from 'react-bootstrap';
 import _ from 'lodash';
 import Freezer from 'freezer-js';
 import genie from 'genie';
 import BindToMixin from 'react-binding';
-import SplitPane from 'react-split-pane'
+import SplitPane from 'react-split-pane';
 
-//bootstrap
-import {Modal,ModalTrigger,Button,Panel,TabbedArea,TabPane} from 'react-bootstrap';
 
 //menu
 import {Menu,MainButton,ChildButton} from 'react-mfb'
@@ -127,17 +127,17 @@ var ToolbarActions = React.createClass({
 
         return (
             <div>
+                &nbsp;&nbsp;
+                <button disabled={ disabledUp } type="button" className="btn btn-primary" onClick={this.up}>
+                    <span className="glyphicon glyphicon-open-file" title="move up"></span>
+                </button>
+                <button disabled={ disabledDown } type="button" className="btn btn-primary" onClick={this.down}>
+                    <span className="glyphicon glyphicon-save-file" title="move down"></span>
+                </button>
+                &nbsp;&nbsp;
                 <button disabled={ disabledCurrent } type="button" className="btn btn-primary" onClick={this.copy}>
                     <span className="glyphicon glyphicon-copy" title="copy element"></span>
                 </button>
-                &nbsp;&nbsp;
-                <button disabled={ disabledUp } type="button" className="btn btn-primary" onClick={this.up}>
-                    <span className="glyphicon glyphicon-arrow-up" title="move up"></span>
-                </button>
-                <button disabled={ disabledDown } type="button" className="btn btn-primary" onClick={this.down}>
-                    <span className="glyphicon glyphicon-arrow-down" title="move down"></span>
-                </button>
-                &nbsp;&nbsp;
                 <button disabled={ disabledCurrent } type="button" className="btn btn-primary"
                         onClick={this.removeCtrl}>
                     <span className="glyphicon glyphicon-remove-sign" title="delete element"></span>
@@ -160,7 +160,10 @@ var Designer = React.createClass({
             jsonShown: false,
             current: {
                 node: store.schema
-            }
+            },
+            openDlgShow: false,
+            saveDlgShow: false,
+            importDlgShow: false
         };
     },
     undo: function () {
@@ -209,18 +212,7 @@ var Designer = React.createClass({
         this.loadObjectSchema(JSON.parse(localStorage.getItem(key)) || emptyObjectSchema, key)
     },
 
-    loadDialog: function () {
-        return React.createElement(LoadDialog, {confirm: this.load, storageKey: this.state.storageKey});
-    },
-    saveDialog: function () {
-        return React.createElement(SaveAsDialog, {confirm: this.saveAs, storageKey: this.state.storageKey});
-    },
-    importDialog: function () {
-        return React.createElement(FilePickerDialog, {
-            confirm: this.loadObjectSchema,
-            storageKey: this.state.storageKey
-        });
-    },
+
     currentChanged: function (currentNode) {
         var parent = currentNode.__.parents;
         var parentNode = parent.length !== 0 ? parent[0].__.parents[0] : undefined;
@@ -279,16 +271,6 @@ var Designer = React.createClass({
     switchWorkplace: function () {
         this.setState({jsonShown: !this.state.jsonShown});
     },
-    handlePdfPreview: function (e) {
-        if (e === "PdfHummus") {
-            this.previewPdfHummus();
-        } else if (e === "PdfKit") {
-            this.previewPdfKit();
-        }
-        else {
-
-        }
-    },
     publish() {
         formService.publishSchema(this.props.store.get().toJS()).then(
             function (response) {
@@ -335,6 +317,15 @@ var Designer = React.createClass({
 
 
     },
+    showOpenDlg(e){
+        this.setState({openDlgShow:true})
+    },
+    showSaveDlg(e){
+        this.setState({saveDlgShow:true})
+    },
+    showImportDlg(e){
+        this.setState({importDlgShow:true})
+    },
     render: function () {
         // demo defaults
         var effect = 'zoomin',
@@ -358,18 +349,25 @@ var Designer = React.createClass({
         var displaySchemaName = this.state.storageKey
         if (!disabledUndo) displaySchemaName += ' *';
 
+        var closeDialog = function(e) {
+            this.setState({
+                openDlgShow: false,
+                saveDlgShow: false,
+                importDlgShow: false
+            })
+        }.bind(this);
 
         return (
             <div>
                 <Menu effect={effect} method={method} position={pos}>
                     <MainButton iconResting="ion-plus-round" iconActive="ion-close-round"/>
 
-                    <ModalTrigger modal={this.loadDialog()}>
-                        <ChildButton
-                            icon="ion-ios-upload"
-                            label="Open"
-                            />
-                    </ModalTrigger>
+                    <ChildButton
+                        onClick={this.showOpenDlg}
+                        icon="ion-ios-upload"
+                        label="Open"
+                        />
+
                     <ChildButton
                         onClick={this.save}
                         icon="ion-ios-download"
@@ -398,17 +396,28 @@ var Designer = React.createClass({
                                 <nav className="navbar navbar-default navbar-fixed-top-custom">
                                     <ul className="nav navbar-nav">
                                         <li>
+                                            <ModalViewTrigger
+                                                modal={<Preview widgets={Widgets} schema={schema} />}>
+                                                <button type="button" className="btn btn-primary" onClick={this.copy}>
+                                                    <span className="glyphicon glyphicon-fullscreen"
+                                                          title="preview"></span>
+                                                </button>
+                                            </ModalViewTrigger>
+                                        </li>
+                                        <li>
+
                                             <ToolbarActions current={this.state.current}
                                                             currentChanged={this.currentChanged}/>
                                         </li>
                                     </ul>
                                     <ul className="nav navbar-nav navbar-right">
                                         <li>
-                                            <ModalTrigger disabled={ disabledUndo } modal={this.saveDialog()}>
-                                                <Button bsStyle='link' title="save">
-                                                    {displaySchemaName}
-                                                </Button>
-                                            </ModalTrigger>
+
+                                            <Button disabled={ disabledUndo } bsStyle='link' title="save"
+                                                    onClick={this.showSaveDlg}>
+                                                {displaySchemaName}
+                                            </Button>
+
                                         </li>
                                         <li>
                                             <button disabled={ disabledUndo } type="button"
@@ -427,7 +436,6 @@ var Designer = React.createClass({
                                             </button>
                                         </li>
 
-
                                         <li className="dropdown">
                                             <a href="#" className="dropdown-toggle" data-toggle="dropdown"
                                                role="button"
@@ -437,52 +445,49 @@ var Designer = React.createClass({
                                             </a>
                                             <ul className="dropdown-menu" role="menu">
                                                 <li>
-                                                    <ModalViewTrigger
-                                                        modal={<Preview widgets={Widgets} schema={schema} />}>
-                                                        <a>Preview</a>
-                                                    </ModalViewTrigger>
-                                                </li>
-                                                <li>
                                                     <a onClick={this.switchWorkplace}>Switch</a>
                                                 </li>
 
                                                 <li className="divider"></li>
                                                 <li>
-                                                    <ModalTrigger modal={this.importDialog()}>
-                                                        <a>Import schema</a>
-                                                    </ModalTrigger>
+                                                    <a onClick={this.showImportDlg}>Import
+                                                        schema</a>
                                                 </li>
                                                 <li>
                                                     <a href={exportSchema} download={exportSchemaName}>Export
                                                         schema</a>
                                                 </li>
-
                                             </ul>
                                         </li>
                                     </ul>
                                 </nav>
                                 <div className="propertyGrid">
                                     <ObjectPropertyGrid current={this.state.current}
-                                                    currentChanged={this.currentChanged}/>
+                                                        currentChanged={this.currentChanged}/>
                                 </div>
                             </div>
                             <div>
-                                <TabbedArea defaultActiveKey={2}>
-                                    <TabPane eventKey={1} tab='Tree'>
+                                <Tabs defaultActiveKey={2}>
+                                    <Tab eventKey={1} title='Tree'>
                                         <ObjectBrowser rootNode={schema} current={this.state.current}
                                                        currentChanged={this.currentChanged}/>
-                                    </TabPane>
-                                    <TabPane eventKey={2} tab='Pallete'>
+                                    </Tab>
+                                    <Tab eventKey={2} title='Pallete'>
                                         <ToolBox addCtrl={this.addNewCtrl}/>
-                                    </TabPane>
-                                    <TabPane eventKey={3} tab='Examples'>
+                                    </Tab>
+                                    <Tab eventKey={3} title='Examples'>
                                         <ExampleList loadSchema={this.loadObjectSchema}/>
-                                    </TabPane>
-                                </TabbedArea>
+                                    </Tab>
+                                </Tabs>
                             </div>
                         </SplitPane>
                     </div>
                 </SplitPane>
+                <div>
+                    <LoadDialog show={this.state.openDlgShow} confirm={this.load} storageKey={this.state.storageKey} onHide={closeDialog} />
+                    <SaveAsDialog show={this.state.saveDlgShow} confirm={this.saveAs} storageKey={this.state.storageKey} onHide={closeDialog} />
+                    <FilePickerDialog show={this.state.importDlgShow} confirm={this.loadObjectSchema} storageKey={this.state.storageKey} onHide={closeDialog} />
+                </div>
             </div>
         )
     }

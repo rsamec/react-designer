@@ -185,7 +185,7 @@ body {
   height: 30px;
   width: 120px;
   position: relative;
-  float: left;
+  display: inline-block;
   margin-left: 15px;
   margin-top: 15px;
   text-align: center;
@@ -198,13 +198,13 @@ body {
   margin-bottom: 0px;
 }
 .navbar-fixed-top-custom {
-  width: 30%;
+  width: 100%;
   position: fixed;
   z-index: 1030;
   padding: 10px 15px 0px 10px;
   height: 60px;
   top: 0;
-  display: block;
+  display: flex;
 }
 .propertyContainer {
   height: 100%;
@@ -216,6 +216,7 @@ body {
 }
 .propertyGrid {
   padding-top: 60px;
+  z-index: 1000;
 }
 .emptyWorkplace {
   height: 100%;

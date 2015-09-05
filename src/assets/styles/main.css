@@ -1,6 +1,309 @@
-@import "react-split-pane.css";
 @import "react-colors-picker.css";
-@import "react-property-editor.css";
+@import "mfb.css";
+@import "codemirror.css";
+.backface-visibility-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.tile {
+  color: white;
+  padding: 15px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.flipper-container {
+  float: left;
+  width: 250px;
+  height: 250px;
+  margin-right: 15px;
+  display: block;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -ms-perspective: 1000px;
+}
+.flipper-container span {
+  color: white;
+}
+.flipper-container > div.flipper {
+  float: left;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+}
+.flipper-container > div.flipper .front,
+.flipper-container > div.flipper .back {
+  float: left;
+  display: block;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  -ms-transform-style: preserve-3d;
+  -webkit-transition: -webkit-transform ease 500ms;
+  -moz-transition: -webkit-transform ease 500ms;
+  -ms-transition: -webkit-transform ease 500ms;
+  -o-transition: -webkit-transform ease 500ms;
+  transition: -webkit-transform ease 500ms;
+  -webkit-transition: transform ease 500ms;
+  -moz-transition: transform ease 500ms;
+  -ms-transition: transform ease 500ms;
+  -o-transition: transform ease 500ms;
+  transition: transform ease 500ms;
+}
+.flipper-container > div.flipper .front {
+  z-index: 2;
+  background: #19489E;
+  /* front tile styles go here! */
+}
+.flipper-container > div.flipper .back {
+  background: #9E1919;
+  /* back tile styles go here! */
+}
+.flipper-container.horizontal .front {
+  transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+}
+.flipper-container.horizontal .back {
+  transform: rotateY(-180deg);
+  -ms-transform: rotateY(-180deg);
+  -webkit-transform: rotateY(-180deg);
+  -o-transform: rotateY(-180deg);
+  -moz-transform: rotateY(-180deg);
+}
+.flipper-container.horizontal div.flipper.flipped .front {
+  transform: rotateY(180deg);
+  -ms-transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+}
+.flipper-container.horizontal div.flipper.flipped .back {
+  transform: rotateY(0deg);
+  -ms-transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+  -o-transform: rotateY(0deg);
+  -moz-transform: rotateY(0deg);
+}
+.flipper-container.vertical .front {
+  transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+}
+.flipper-container.vertical .back {
+  transform: rotateX(-180deg);
+  -ms-transform: rotateX(-180deg);
+  -webkit-transform: rotateX(-180deg);
+  -o-transform: rotateX(-180deg);
+  -moz-transform: rotateX(-180deg);
+}
+.flipper-container.vertical div.flipper.flipped .front {
+  transform: rotateX(180deg);
+  -ms-transform: rotateX(180deg);
+  -webkit-transform: rotateX(180deg);
+  -o-transform: rotateX(180deg);
+  -moz-transform: rotateX(180deg);
+}
+.flipper-container.vertical div.flipper.flipped .back {
+  transform: rotateX(0deg);
+  -ms-transform: rotateX(0deg);
+  -webkit-transform: rotateX(0deg);
+  -o-transform: rotateX(0deg);
+  -moz-transform: rotateX(0deg);
+}
+/* JSON Editor */
+.jsonEditor * {
+  vertical-align: top;
+}
+.jsonEditor > .jsonObject > .jsonChildren {
+  margin-left: 0;
+  border-left: 0;
+  padding: 0;
+}
+.jsonChildren {
+  margin-left: 20px;
+  display: none;
+  font-weight: normal;
+  border-left: 1px dotted #ddd;
+}
+.jsonFlex .jsonChildren {
+  margin-left: -20px;
+}
+.jsonCompound.open > .jsonChildren {
+  display: block;
+}
+.jsonAdd {
+  margin-left: 5px;
+}
+.jsonFlex .jsonField {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  -webkit-align-content: stretch;
+  -ms-flex-line-pack: stretch;
+  align-content: stretch;
+}
+.jsonFieldAdder {
+  margin-left: 13px;
+}
+.jsonFieldAdder select {
+  margin-left: 5px;
+}
+.compoundToggle:before {
+  content: '▸';
+  color: #333;
+  line-height: 1em;
+  margin-right: 3px;
+}
+.open > .compoundToggle:before {
+  content: '▾';
+}
+.jsonName {
+  font-style: italic;
+  position: relative;
+  padding-left: 15px;
+  white-space: nowrap;
+  min-width: 80px;
+}
+.jsonValue {
+  position: relative;
+  padding-left: 15px;
+  flex-grow: 1;
+}
+.jsonValue > input,
+.jsonValue > textarea,
+.jsonValue > select {
+  margin-bottom: 5px;
+}
+.jsonFlex input[type=text],
+.jsonFlex input[type=number],
+.jsonFlex input[type=password],
+.jsonFlex textarea {
+  width: 100%;
+}
+.jsonRemove,
+.jsonFixed {
+  visibility: hidden;
+  margin-right: 5px;
+  text-decoration: none;
+  width: .6em;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+}
+.jsonName:hover > .jsonRemove {
+  visibility: visible;
+}
+.jsonReset {
+  visibility: hidden;
+  padding-left: 0px;
+  text-decoration: none;
+  width: .6em;
+  display: inline-block;
+  position: absolute;
+  left: 0;
+}
+.jsonValue:hover > .jsonReset {
+  visibility: visible;
+}
+.compoundToggle,
+.jsonString {
+  cursor: pointer;
+}
+.booleanField * {
+  vertical-align: middle;
+}
+.booleanField input {
+  margin-bottom: 0;
+}
+.jsonError > .jsonName,
+.jsonError .jsonErrorMsg {
+  color: #f36;
+}
+.jsonError .jsonErrorMsg {
+  margin: 0 0 10px 10px;
+  font-size: 0.9em;
+  vertical-align: bottom;
+  display: block;
+}
+.jsonError > .jsonValue > input,
+.jsonError > .jsonValue > select,
+.jsonError > .jsonValue > textarea {
+  background-color: #fff8f8;
+}
+.jsonNovalue {
+  color: #999;
+  font-style: italic;
+}
+.jsonGroup {
+  margin-bottom: 10px;
+}
+.bindingEditor .jsonEditor {
+  display: inline-block;
+}
+.Resizer {
+  background: #000;
+  opacity: .2;
+  z-index: 1;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding;
+  background-clip: padding-box;
+}
+.Resizer:hover {
+  -webkit-transition: all 2s ease;
+  transition: all 2s ease;
+}
+.Resizer.horizontal {
+  height: 11px;
+  margin: -5px 0;
+  border-top: 5px solid rgba(255, 255, 255, 0);
+  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  cursor: row-resize;
+  width: 100%;
+}
+.Resizer.horizontal:hover {
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+.Resizer.vertical {
+  width: 11px;
+  margin: 0 -5px;
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+  height: 100%;
+}
+.Resizer.vertical:hover {
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+}
 .mainForm {
   margin-left: 15px;
 }
@@ -188,7 +491,7 @@ body {
   height: 30px;
   width: 120px;
   position: relative;
-  float: left;
+  display: inline-block;
   margin-left: 15px;
   margin-top: 15px;
   text-align: center;
@@ -201,13 +504,13 @@ body {
   margin-bottom: 0px;
 }
 .navbar-fixed-top-custom {
-  width: 30%;
+  width: 100%;
   position: fixed;
   z-index: 1030;
   padding: 10px 15px 0px 10px;
   height: 60px;
   top: 0;
-  display: block;
+  display: flex;
 }
 .propertyContainer {
   height: 100%;
@@ -219,6 +522,7 @@ body {
 }
 .propertyGrid {
   padding-top: 60px;
+  z-index: 1000;
 }
 .emptyWorkplace {
   height: 100%;
@@ -316,131 +620,6 @@ li ol > li:before {
 .legend.bottomRight {
   right: 0;
   bottom: 0;
-}
-.backface-visibility-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.tile {
-  color: white;
-  padding: 15px;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-}
-.flipper-container {
-  float: left;
-  width: 250px;
-  height: 250px;
-  margin-right: 15px;
-  display: block;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  -moz-perspective: 1000px;
-  -ms-perspective: 1000px;
-}
-.flipper-container span {
-  color: white;
-}
-.flipper-container > div.flipper {
-  float: left;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-}
-.flipper-container > div.flipper .front,
-.flipper-container > div.flipper .back {
-  float: left;
-  display: block;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  position: absolute;
-  top: 0;
-  left: 0;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  -moz-transform-style: preserve-3d;
-  -ms-transform-style: preserve-3d;
-  -webkit-transition: -webkit-transform ease 500ms;
-  -moz-transition: -webkit-transform ease 500ms;
-  -ms-transition: -webkit-transform ease 500ms;
-  -o-transition: -webkit-transform ease 500ms;
-  transition: -webkit-transform ease 500ms;
-  -webkit-transition: transform ease 500ms;
-  -moz-transition: transform ease 500ms;
-  -ms-transition: transform ease 500ms;
-  -o-transition: transform ease 500ms;
-  transition: transform ease 500ms;
-}
-.flipper-container > div.flipper .front {
-  z-index: 2;
-  background: #19489E;
-  /* front tile styles go here! */
-}
-.flipper-container > div.flipper .back {
-  background: #9E1919;
-  /* back tile styles go here! */
-}
-.flipper-container.horizontal .front {
-  transform: rotateY(0deg);
-  -ms-transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
-  -o-transform: rotateY(0deg);
-  -moz-transform: rotateY(0deg);
-}
-.flipper-container.horizontal .back {
-  transform: rotateY(-180deg);
-  -ms-transform: rotateY(-180deg);
-  -webkit-transform: rotateY(-180deg);
-  -o-transform: rotateY(-180deg);
-  -moz-transform: rotateY(-180deg);
-}
-.flipper-container.horizontal div.flipper.flipped .front {
-  transform: rotateY(180deg);
-  -ms-transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-  -o-transform: rotateY(180deg);
-  -moz-transform: rotateY(180deg);
-}
-.flipper-container.horizontal div.flipper.flipped .back {
-  transform: rotateY(0deg);
-  -ms-transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
-  -o-transform: rotateY(0deg);
-  -moz-transform: rotateY(0deg);
-}
-.flipper-container.vertical .front {
-  transform: rotateX(0deg);
-  -ms-transform: rotateX(0deg);
-  -webkit-transform: rotateX(0deg);
-  -o-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
-}
-.flipper-container.vertical .back {
-  transform: rotateX(-180deg);
-  -ms-transform: rotateX(-180deg);
-  -webkit-transform: rotateX(-180deg);
-  -o-transform: rotateX(-180deg);
-  -moz-transform: rotateX(-180deg);
-}
-.flipper-container.vertical div.flipper.flipped .front {
-  transform: rotateX(180deg);
-  -ms-transform: rotateX(180deg);
-  -webkit-transform: rotateX(180deg);
-  -o-transform: rotateX(180deg);
-  -moz-transform: rotateX(180deg);
-}
-.flipper-container.vertical div.flipper.flipped .back {
-  transform: rotateX(0deg);
-  -ms-transform: rotateX(0deg);
-  -webkit-transform: rotateX(0deg);
-  -o-transform: rotateX(0deg);
-  -moz-transform: rotateX(0deg);
 }
 pre {
   float: none;

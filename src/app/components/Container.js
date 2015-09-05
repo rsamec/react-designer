@@ -9,7 +9,6 @@ var React = require('react'),
     If = require('./If'),
     Widgets = require('./WidgetFactory');
 
-var WidgetRenderer = require('./WidgetRenderer');
 
 
 var Container = React.createClass({
@@ -65,7 +64,8 @@ var Container = React.createClass({
         var box = boxes[index];
         if (box === undefined) return;
 
-        var updated = box.set({'style': {'top': top, 'left': left,'height':box.style.height,'width':box.style.width}});
+        var updated = box.set({'style': {'top': top, 'left': left}});
+        //var updated = box.set({'style': {'top': top, 'left': left,'height':box.style.height,'width':box.style.width}});
         this.props.currentChanged(updated);
     },
     resizeContainer: function (container, width, height) {

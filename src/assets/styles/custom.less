@@ -219,7 +219,7 @@ html, body {
     height: 30px;
     width: 120px;
     position: relative;
-    float: left;
+    display:inline-block;
     margin-left: 15px;
     margin-top: 15px;
     text-align: center;
@@ -232,7 +232,7 @@ html, body {
     margin-bottom: 0px;
 }
 .navbar-fixed-top-custom {
-    width: 30%;
+    width: 100%;
     position: fixed;
     //right: 0;
     z-index: 1030;
@@ -243,8 +243,7 @@ html, body {
     height: 60px;
     top: 0;
 //    bottom: 0;
-    display:block;
-//    flex: 1;
+    display:flex;//    flex: 1;
 //    position: relative;
 //    outline: none;
 //    overflow: hidden;
@@ -267,9 +266,9 @@ html, body {
 }
 .propertyGrid
 {
-    //overflow-y: scroll;
-    //height:400px;
+
     padding-top:60px;
+    z-index: 1000;
     //border: solid 1px gray
 }
 

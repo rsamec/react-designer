@@ -7,6 +7,9 @@ import PropertyEditor from 'react-property-editor';
 import Widgets from './WidgetFactory';
 import ComponentMetaData from './ComponentMetaData.js';
 import clearObject from "../utilities/clearObject.js";
+import WidgetStyleEditor  from '../editors/WidgetStyleEditor';
+
+PropertyEditor.registerType('widgetStyleEditor',WidgetStyleEditor);
 
 
 var ObjectPropertyGrid = React.createClass({
@@ -34,20 +37,17 @@ var ObjectPropertyGrid = React.createClass({
 
         var metaData = (elementName === "Container" || elementName === "Repeater" || elementName === "ObjectSchema")? ComponentMetaData[elementName].metaData:Widgets[elementName].metaData;
 
+        //props
+        var props = _.merge(clearObject(metaData.props),currentNode.toJS().props);
         var settings = metaData && metaData.settings || {};
 
-        var emptyProps = clearObject(metaData.props);
-        var props = _.merge(emptyProps,currentNode.toJS().props);
 
-        var commonProps = {
-            name:currentNode.name,
-            style:currentNode.style
-        };
+        var commonProps = { name:currentNode.name}
+        if (elementName !== "ObjectSchema") commonProps["style"] = currentNode.style;
 
         return (
             <div>
-                <PropertyEditor value={commonProps}
-                                onChange={ this.commonPropsChanged }/>
+                <PropertyEditor value={commonProps} onChange={ this.commonPropsChanged }/>
                 <PropertyEditor value={props} settings={settings}
                                 onChange={ this.widgetPropsChanged }/>
             </div>

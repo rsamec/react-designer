@@ -1,40 +1,39 @@
 import React from 'react';
 import _ from 'lodash';
-import {Accordion,Panel,Button,ListGroup,ListGroupItem} from 'react-bootstrap';
+import {Panel,Tabs,Tab} from 'react-bootstrap';
+import WidgetIcon from './WidgetIcon.js';
 
-export default class ToolBox extends React.Component
-{
+export default class ToolBox extends React.Component {
     handleClick(ctrl) {
         this.props.addCtrl(ctrl.name);
     }
 
     render() {
         var header = function (name, count) {
-            return (<h3>{name} <span className='badge'>{count}</span></h3>);
+            return (<h4>{name} <span className='badge'>{count}</span></h4>);
         };
 
         return (
             <div>
-                <Accordion defaultActiveKey={0}>
+                <Tabs defaultActiveKey={0} position='left' tabWidth={1} paneWidth={4}>
+
                     {this.props.dataSource.map(function (node, i) {
                         return (
-                            <Panel header={header(node.type,node.controls.length)} eventKey={i} key={name + i}
-                                   bsStyle='primary'>
-                                <ListGroup fill>
+                            <Tab title={node.type} eventKey={i} key={'tab' + i}>
+                                <div className="toolboxGroup">
+                                    {header(node.type,node.controls.length)}
                                     {node.controls.map(function (ctrl, j) {
                                         return (
-                                            <ListGroupItem key={ctrl.name}>
-                                                <Button bsStyle='link' onClick={this.handleClick.bind(this,ctrl)}>
-                                                    <span>{ctrl.label}</span>
-                                                </Button>
-                                            </ListGroupItem>
+                                            <div className="Tile" onClick={this.handleClick.bind(this,ctrl)}>
+                                                <WidgetIcon name={ctrl.name} label={ctrl.label} />
+                                            </div>
                                         );
                                     }, this)}
-                                </ListGroup>
-                            </Panel>
+                                </div>
+                            </Tab>
                         );
                     }, this)}
-                </Accordion>
+                </Tabs>
             </div>
         );
     }
@@ -43,11 +42,17 @@ export default class ToolBox extends React.Component
 ToolBox.defaultProps = {
     dataSource: [
         {
-            type: 'Base controls',
+            type: 'Panels',
             collapsed: false,
             controls: [
                 {name: 'Container', label: 'Container'},
                 {name: 'Repeater', label: 'Repeater'},
+            ]
+        },
+        {
+            type: 'Text',
+            collapsed: false,
+            controls: [
                 {name: 'Core.HtmlBox', label: 'HtmlEditor'},
                 {name: 'Core.TextBox', label: 'TextBox'},
                 {name: 'Core.JSXBox', label: 'JSXBox'},
@@ -57,7 +62,16 @@ ToolBox.defaultProps = {
             ]
         },
         {
-            type: 'Input controls',
+            type: 'Images',
+            collapsed: false,
+            controls: [
+
+                {name: 'Core.ImageBox', label: 'ImageBox'},
+                {name: 'Core.ImagePanel', label: 'ImagePanel'}
+            ]
+        },
+        {
+            type: 'Input',
             collapsed: false,
             controls: [
                 {name: 'Core.TextBoxInput', label: 'TextBoxInput'},
@@ -70,27 +84,9 @@ ToolBox.defaultProps = {
         {
             type: 'Shapes',
             collapsed: true,
-            controls: _.map(['Rectangle', 'Circle', 'Ellipse', 'Line','Triangle', 'Polyline', 'CornerLine', 'CornerBox'], function (x) {
+            controls: _.map(['Rectangle', 'Circle', 'Ellipse', 'Line', 'Triangle'], function (x) {
                 return {
                     'name': 'Shapes.' + x, 'label': x
-                }
-            })
-        },
-        {
-            type: 'React internationalization',
-            collapsed: true,
-            controls: _.map(['FormattedDate', 'FormattedTime', 'FormattedRelative', 'FormattedNumber', 'FormattedMessage', 'FormattedHTMLMessage'], function (x) {
-                return {
-                    'name': 'react-intl.' + x, 'label': x
-                }
-            })
-        },
-        {
-            type: 'Bootstrap controls',
-            collapsed: true,
-            controls: _.map(['Input', 'Button', 'Panel', 'Glyphicon', 'Tooltip', 'Alert', 'Label'], function (x) {
-                return {
-                    'name': 'react-bootstrap.' + x, 'label': x
                 }
             })
         },
@@ -102,18 +98,27 @@ ToolBox.defaultProps = {
             })
         },
         {
-            type: 'Extra controls',
+            type: 'Bootstrap',
             collapsed: true,
-            controls: [
-                {name: 'React.Griddle', label: 'Griddle'},
-                {name: 'react-pivot.PivotTable', label: 'Pivot table'},
-                {name: 'Flipper', label: 'Flipper'},
-                {name: 'react-inlinesvg', label: 'SvgBox'},
-                {name: 'MovieSelect', label: 'Movie carousel select'}
-                //{name: 'Reacticon', label: 'Reacticon'},
-                //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
-            ]
-        }
+            controls: _.map(['Input', 'Button', 'Panel', 'Glyphicon', 'Tooltip', 'Alert', 'Label'], function (x) {
+                return {
+                    'name': 'react-bootstrap.' + x, 'label': x
+                }
+            })
+        },
+        //{
+        //    type: 'Extra',
+        //    collapsed: true,
+        //    controls: [
+        //        {name: 'React.Griddle', label: 'Griddle'},
+        //        {name: 'react-pivot.PivotTable', label: 'Pivot table'},
+        //        {name: 'Flipper', label: 'Flipper'},
+        //        {name: 'react-inlinesvg', label: 'SvgBox'},
+        //        {name: 'MovieSelect', label: 'Movie carousel select'}
+        //        //{name: 'Reacticon', label: 'Reacticon'},
+        //        //{name: 'SnapSvgBox', label: 'SnapSvgBox'},
+        //    ]
+        //}
     ]
 }
 

@@ -7,7 +7,7 @@ var React = require('react'),
     DropEffects = require('react-dnd').DropEffects,
     ResizableHandle=require('./ResizableHandle');
 
-var WidgetRenderer = require('./WidgetRenderer');
+import {WidgetRenderer} from 'react-page-renderer';
 var Widgets = require('./WidgetFactory');
 
 var Box = React.createClass({
@@ -44,8 +44,9 @@ var Box = React.createClass({
 
         // The comparison is fast, and we won't render the component if
         // it does not need it. This is a huge gain in performance.
-        var update = this.props.node !== nextProps.node ||  this.props.selected != nextProps.selected;;
-        //console.log(this.props.node.name + " -> " + update);
+        var box = this.props.node;
+        var update = this.props.node !== nextProps.node ||  this.props.selected != nextProps.selected || (this.props.ctx["styles"] && this.props.ctx["styles"][box.elementName]) !== (nextProps.ctx["styles"] && nextProps.ctx["styles"][box.elementName]);
+
         return update;//update;
     },
     render:function() {
@@ -65,8 +66,9 @@ var Box = React.createClass({
         });
 
         var box = this.props.node;
-        var customStyle = this.props.ctx["styles"][box.elementName];
-        var intlData = this.props.ctx["intlData"];
+        var ctx = this.props.ctx || {};
+        var customStyle = ctx["styles"] && ctx["styles"][box.elementName];
+        var intlData = ctx["intlData"];
         var boxComponent = <WidgetRenderer widget={Widgets[box.elementName]} node={box} dataBinder={this.props.dataBinder} customStyle={customStyle} intlData={intlData} />;
         return (
             <div className={classes} {...this.dragSourceFor(ItemTypes.BOX)}

@@ -1,4 +1,5 @@
-import DataTemplates from '../utilities/DataTemplateExamples.js';
+import Examples from '../utilities/DataTemplateExamples.js';
+
 import Widgets from '../components/WidgetFactory';
 import _ from 'lodash';
 
@@ -9,34 +10,30 @@ var sharedShapeMetaData = {
         strokeWidth: 20
     }
 }
-
 export default {
     ObjectSchema: {
         metaData: {
             props: {
-                title: "",
-                defaultData:{},
-                dataTemplate:{},
+                title: undefined,
+                defaultData:undefined,
                 context:{
-                    intlData: {},
-                    styles:_.mapValues(Widgets,function(value,key,object){
-                        var widget =object[key];
-                        return widget && widget.metaData && widget.metaData.props || {}}
-                    )
-
+                    styles:undefined
                 },
-
-
+                template:undefined
             },
             settings: {
                 fields: {
                     defaultData: {type: 'plainJsonEditor'},
-                    defaultProps: {type: 'jsonEditor'},
-                    dataTemplate:{type: 'dataTemplateEditor', settings:{templates:DataTemplates}},
                     context: {
-                        fields: {intlData: {type: 'jsonEditor'}}
+                        fields:{
+                            intlData: {type: 'plainJsonEditor'},
+                            styles:{type:'widgetStyleEditor'}
+                        }
                     },
-                    styles:{type:'jsonEditor'}
+                    template: {
+                        type: 'dataTemplateEditor',
+                        settings: {templates: Examples}
+                    }
                 }
             }
         }
@@ -44,13 +41,16 @@ export default {
     Container:{
         metaData: {
             props: {
-                visibility:{},
+                visibility:undefined,
                 startOnNewPage: false,
                 unbreakable: false
             },
             settings: {
                 fields: {
-                    visibility: {type: 'bindingEditor'}
+                    visibility: {type: 'bindingEditor'},
+                    startOnNewPage: {type: 'boolean'},
+                    unbreakable: {type: 'boolean'}
+
                 }
             }
         }
@@ -58,13 +58,15 @@ export default {
     Repeater:{
         metaData: {
             props: {
-                binding: {},
+                binding: undefined,
                 startOnNewPage: false,
                 unbreakable: false
             },
             settings: {
                 fields: {
-                    binding: {type: 'bindingEditor'}
+                    binding: {type: 'bindingEditor'},
+                    startOnNewPage: {type: 'boolean'},
+                    unbreakable: {type: 'boolean'}
                 }
             }
         }

@@ -10,19 +10,24 @@ var SaveAsDialog = React.createClass({
     },
     ok: function (e) {
         this.props.confirm(this.state.storageKey);
-        this.props.onRequestHide();
+        this.props.onHide();
     },
 
     render: function () {
         return (
-            <Modal bsStyle="primary" title="Rename document" animation={false}>
-                <div className="modal-body">
+            <Modal {...this.props}  bsStyle="primary" title="Rename document" animation={false}>
+                <Modal.Header>
+                    <Modal.Title>Rename document</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
                     <input type="text" value={this.state.storageKey} onChange={this.onChange}/>
-                </div>
-                <div className="modal-footer">
+                </Modal.Body>
+
+                <Modal.Footer>
                     <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
-                </div>
+                    <Button onClick={this.props.onHide}>Close</Button>
+                </Modal.Footer>
             </Modal>
         );
     }

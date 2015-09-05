@@ -46,11 +46,11 @@ var FilePickerDialog = React.createClass({
     },
     ok: function (e) {
         if (this.state.objectSchema !== undefined) this.props.confirm(this.state.objectSchema, this.state.storageKey);
-        this.props.onRequestHide();
+        this.props.onHide();
     },
     render: function () {
         return (
-            <Modal bsStyle="primary" title="File picker document" animation={false}>
+            <Modal {...this.props}  bsStyle="primary" title="File picker document" animation={false}>
                 <div className="modal-body">
                     <input type="file" onChange={this.onChange}/>
 
@@ -58,7 +58,7 @@ var FilePickerDialog = React.createClass({
                 </div>
                 <div className="modal-footer">
                     <Button onClick={this.ok}>OK</Button>
-                    <Button onClick={this.props.onRequestHide}>Close</Button>
+                    <Button onClick={this.props.onHide}>Close</Button>
                 </div>
             </Modal>
         );

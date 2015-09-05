@@ -31,7 +31,7 @@ var Workplace = React.createClass({
                 handleClick={handleClick}
                 isRoot={true}
                 dataBinder={dataContext}
-                ctx={this.props.schema.props.context}
+                ctx={this.props.schema.props.context || {}}
                 />
 
         return ( <div className="cWorkplace">{component}</div>);

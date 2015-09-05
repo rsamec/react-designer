@@ -5,7 +5,7 @@ import Shapes from 'react-shapes';
 import Chart from 'react-pathjs-chart';
 
 //external widgets with more controls
-import ReactBootstrap from 'react-bootstrap';
+var ReactBootstrap = require('react-bootstrap');
 //var Griddle = require('griddle-react');
 //var ChartistGraph = require('react-chartist');
 import ReactIntl from 'react-intl';
@@ -57,10 +57,6 @@ var Widgets = {
     //'SnapSvgBox':require('../widgets/SnapSvgBox')
     //'Reacticon':require('../../../node_modules/reacticons/src/scripts/components/reacticon')
 }
-
-_.each(['FormattedDate', 'FormattedTime', 'FormattedRelative', 'FormattedNumber', 'FormattedMessage', 'FormattedHTMLMessage'], function (name) {
-    Widgets['react-intl.' + name] = ReactIntl[name];
-});
 
 var bootstrapWidgets = ['Input', 'Button', 'Panel', 'Glyphicon', 'Tooltip', 'Alert', 'Label'];
 _.each(bootstrapWidgets, function (widgetName) {
@@ -146,6 +142,21 @@ _.extend(Widgets['react-bootstrap.Input'], {
     }
 });
 
+_.each(['FormattedDate', 'FormattedTime', 'FormattedRelative', 'FormattedNumber', 'FormattedMessage', 'FormattedHTMLMessage'], function (name) {
+    Widgets['react-intl.' + name] = ReactIntl[name];
+});
+
+_.extend(Widgets['react-intl.FormattedNumber'], {
+    metaData: {
+        props: {
+            value: {},
+            format: undefined
+        },
+        settings:{
+            value:{type:'bindingValueEditor'}
+        }
+    }
+});
 
 //return {
 //    'ObjectSchema':[{name:'name'},{name:'data',editor:JsonEditor},{name:'businessRules',editor:JsonEditor},{name:'title'},{name:'input',editor:BoolEditor }, {name:'intlData', editor:JsonEditor}],
