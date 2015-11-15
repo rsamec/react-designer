@@ -1,5 +1,7 @@
 # react-designer
 
+__Warning__: This project is moved to [react-designer-core](https://github.com/rsamec/react-designer-core).
+
 React designer is WYSIWYG editor for **easy content creation** (legal contracts, business forms, marketing leaflets, awesome inforgrafics, technical guides, visual reports, rich dashboards, tutorials and other content, etc.).
 
 The content can be published in the form of [reactive-documents](http://hand-formvalidation.rhcloud.com) to user via [react-publisher](https://github.com/rsamec/react-publisher).
@@ -14,7 +16,6 @@ It is using [react](https://facebook.github.io/react/) framework for rendering d
 
 ## Demo
 
-[DEMO](http://hand-formvalidation.rhcloud.com/designer)
 
 ## Features
 
