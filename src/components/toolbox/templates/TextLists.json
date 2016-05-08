@@ -1,0 +1,128 @@
+{
+  "elementName": "ObjectSchema",
+  "name": "TextLists",
+  "containers": [
+    {
+      "name": "TextLists",
+      "elementName": "Container",
+      "style": {
+        "top": 0,
+        "left": 0,
+        "width": 408,
+        "height": 538,
+        "position": "relative"
+      },
+      "props": {
+        "startOnNewPage": false,
+        "unbreakable": false
+      },
+      "boxes": [
+        {
+          "name": "OrderList",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": 0,
+            "left": 0,
+            "width": 200,
+            "height": 97,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Ordered list</strong></p>\n<ol>\n<li>item 1</li>\n<li>item 2</li>\n<li>item 3</li>\n</ol>"
+          }
+        },
+        {
+          "name": "OrderListLongLines",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": 90,
+            "width": 199,
+            "height": 144,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Ordered list with longer lines</strong></p>\n<ol>\n<li>item 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit</li>\n<li>item 3</li>\n</ol>"
+          }
+        },
+        {
+          "name": "OrderedNested",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": 233,
+            "left": -3,
+            "width": 201,
+            "height": 285,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Ordered nested lists</strong></p>\n<ol>\n<li>item 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit\n<ol>\n<li>subitem 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</li>\n<li>subitem 3\n<ol>\n<li>sub subitem 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</li>\n<li>sub subitem 3</li>\n</ol>\n</li>\n</ol>\n</li>\n<li>item 3</li>\n</ol>"
+          }
+        },
+        {
+          "name": "UnorderedList",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": -1,
+            "left": 198,
+            "width": 199,
+            "height": 87,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Unordered list</strong></p>\n<ul>\n<li>item 1</li>\n<li>item 2</li>\n<li>item 3</li>\n</ul>"
+          }
+        },
+        {
+          "name": "UnorderedLongLines",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": 90,
+            "left": 198,
+            "width": 199,
+            "height": 140,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Unordered list with longer lines</strong></p>\n<ul>\n<li>item 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit</li>\n<li>item 3</li>\n</ul>"
+          }
+        },
+        {
+          "name": "UndorderedNested",
+          "elementName": "Core.ListItemContent",
+          "style": {
+            "top": 231,
+            "left": 198,
+            "width": 204,
+            "height": 295,
+            "transform": {
+              "tx": 1,
+              "ty": 0,
+              "sx": 1,
+              "sy": 1,
+              "rz": 0,
+              "ox": 0.5,
+              "oy": 0.5
+            }
+          },
+          "props": {
+            "content": "<p><strong>Unordered nested lists</strong></p>\n<ul>\n<li style=\"text-align: left;\">item 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit\n<ul>\n<li>subitem 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</li>\n<li>subitem 3\n<ul>\n<li>sub subitem 1</li>\n<li>Lorem ipsum dolor sit amet, consectetur adipisicing elit.</li>\n<li>sub subitem 3</li>\n</ul>\n</li>\n</ul>\n</li>\n<li>item 3</li>\n</ul>"
+          }
+        }
+      ],
+      "containers": []
+    }
+  ],
+  "data": {},
+  "props": {
+    "context": {
+      "styles": {
+        "Core.ListItemContent": {
+          "font": {
+            "fontFamily": "Arial",
+            "fontSize": 10
+          }
+        }
+      }
+    }
+  }
+}

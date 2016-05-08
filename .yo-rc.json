@@ -1,0 +1,7 @@
+{
+  "generator-react-webpack": {
+    "appName": "reactDesignerMinimal",
+    "style": "less",
+    "postcss": false
+  }
+}

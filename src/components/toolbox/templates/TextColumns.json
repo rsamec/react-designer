@@ -1,0 +1,110 @@
+{
+  "elementName": "ObjectSchema",
+  "name": "TextColumns",
+  "containers": [
+    {
+      "name": "container",
+      "elementName": "Container",
+      "style": {
+        "top": 0,
+        "left": 0,
+        "width": 414,
+        "height": 940,
+        "position": "relative"
+      },
+      "props": {
+        "startOnNewPage": false,
+        "unbreakable": false
+      },
+      "boxes": [
+        {
+          "name": "HtmlBox",
+          "elementName": "Core.ArticleContent",
+          "style": {
+            "top": 0,
+            "left": 0,
+            "width": 400,
+            "height": 160,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Two columns</strong></p>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.</p>",
+            "columnCount": 2
+          }
+        },
+        {
+          "name": "Copy HtmlBox",
+          "elementName": "Core.ArticleContent",
+          "style": {
+            "top": 160,
+            "left": 0,
+            "width": 400,
+            "height": 180,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Three&nbsp;columns</strong></p>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.</p>",
+            "columnCount": 3
+          }
+        },
+        {
+          "name": "Copy Copy Copy HtmlBox",
+          "elementName": "Core.ArticleContent",
+          "style": {
+            "top": 723,
+            "left": 0,
+            "width": 400,
+            "height": 200,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Six&nbsp;columns</strong></p>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.</p>",
+            "columnCount": 6
+          }
+        },
+        {
+          "name": "Copy Copy HtmlBox",
+          "elementName": "Core.ArticleContent",
+          "style": {
+            "top": 339,
+            "width": 400,
+            "height": 180,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Four columns</strong></p>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.</p>",
+            "columnCount": 4
+          }
+        },
+        {
+          "name": "Copy Copy Copy HtmlBox",
+          "elementName": "Core.ArticleContent",
+          "style": {
+            "top": 519,
+            "width": 400,
+            "height": 200,
+            "transform": {}
+          },
+          "props": {
+            "content": "<p><strong>Five&nbsp;columns</strong></p>\n<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Malit profecta versatur nomine ocurreret multavit, officiis viveremus aeternum superstitio suspicor alia nostram, quando nostros congressus susceperant concederetur leguntur iam, vigiliae democritea tantopere causae, atilii plerumque ipsas potitur pertineant multis rem quaeri pro, legendum didicisse credere ex maluisset per videtis. Cur discordans praetereat aliae ruinae dirigentur orestem eodem, praetermittenda divinum. Collegisti, deteriora malint loquuntur officii cotidie finitas referri doleamus ambigua acute. Adhaesiones ratione beate arbitraretur detractis perdiscere, constituant hostis polyaeno. Diu concederetur.</p>",
+            "columnCount": 5
+          }
+        }
+      ],
+      "containers": []
+    }
+  ],
+  "data": {},
+  "props": {
+    "defaultData": {},
+    "context": {
+      "styles": {
+        "Core.ArticleContent": {
+          "font": {
+            "fontSize": 10
+          }
+        }
+      }
+    }
+  }
+}
