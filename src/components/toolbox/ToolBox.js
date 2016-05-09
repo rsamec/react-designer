@@ -121,5 +121,4 @@ export default class ToolBox extends React.Component {
 			</div>
 		);
 	}
-};
-
+}

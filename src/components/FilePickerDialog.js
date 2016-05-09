@@ -18,7 +18,7 @@ export default class FilePickerDialog extends React.Component {
     // Loop through the FileList
     for (var i = 0, f; f = files[i]; i++) {
 
-      var parts = f.name.split(".");
+      var parts = f.name.split('.');
       var fileName = parts[0];
       // Only process image files.
       if (parts[1] != 'json') {
@@ -29,7 +29,7 @@ export default class FilePickerDialog extends React.Component {
 
       var self = this;
       // Closure to capture the file information.
-      reader.onload = (function (theFile) {
+      reader.onload = (function () {
         return function (e) {
           // Render thumbnail.
           var objectSchema = JSON.parse(e.target.result);
@@ -45,7 +45,7 @@ export default class FilePickerDialog extends React.Component {
     }
   }
 
-  ok(e) {
+  ok() {
     if (this.state.objectSchema !== undefined) this.props.confirm(this.state.objectSchema, this.state.storageKey);
     this.props.onHide();
   }
@@ -59,4 +59,4 @@ export default class FilePickerDialog extends React.Component {
         </div>
       </Modal>);
   }
-};
+}

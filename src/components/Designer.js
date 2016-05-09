@@ -2,6 +2,7 @@ import React from 'react';
 import {Workplace, ObjectBrowser} from 'react-designer-core';
 import SplitPane from 'react-split-pane';
 import Dock from 'react-dock';
+import _ from 'lodash';
 
 import Widgets from './Widgets';
 import WidgetRenderer from './WidgetRenderer';
@@ -46,26 +47,26 @@ export default class Designer extends React.Component {
     );
   }
 
-  addNewContainer(elName) {
-
-    var itemToAdd = {
-      name: 'New Container',
-      elementName: elName,
-      style: elName === 'Container' ? {height: 200, width: 740} : {},
-      containers: [],
-      boxes: []
-    };
-    this.addNewItem(itemToAdd);
-  }
-
-  addNewCtrl(elName) {
-    var itemToAdd = {
-      name: 'New Widget',
-      elementName: elName,
-      style: {}
-    };
-    this.addNewItem(itemToAdd);
-  }
+  // addNewContainer(elName) {
+  //
+  //   var itemToAdd = {
+  //     name: 'New Container',
+  //     elementName: elName,
+  //     style: (elName === 'Container' ||  elName === 'BackgroundContainer') ? {height: 200, width: 740} : {},
+  //     containers: [],
+  //     boxes: []
+  //   };
+  //   this.addNewItem(itemToAdd);
+  // }
+  //
+  // addNewCtrl(elName) {
+  //   var itemToAdd = {
+  //     name: 'New Widget',
+  //     elementName: elName,
+  //     style: {}
+  //   };
+  //   this.addNewItem(itemToAdd);
+  // }
 
   addNewItem(elName, itemToAdd) {
     var current = this.state.current.node;
@@ -76,7 +77,7 @@ export default class Designer extends React.Component {
     if (itemToAdd.name === undefined) itemToAdd['name'] = itemToAdd.elementName;
     if (itemToAdd.style === undefined) itemToAdd['style'] = {};
 
-    var type = itemToAdd.containers !== undefined ? "containers" : "boxes";
+    var type = itemToAdd.containers !== undefined ? 'containers' : 'boxes';
     //init empty collection if needed
     var updated = (current[type] === undefined) ? current.set({[type]: [itemToAdd]}) : current[type].push(itemToAdd).__.parents[0];
 
@@ -96,8 +97,8 @@ export default class Designer extends React.Component {
 
     let exportSchema, exportSchemaName;
     if (this.state.exportDlgShow) {
-      exportSchema = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(schema));
-      exportSchemaName = schema.name + ".json";
+      exportSchema = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(schema));
+      exportSchemaName = schema.name + '.json';
     }
     return (
       <div className="index">
@@ -194,7 +195,7 @@ export default class Designer extends React.Component {
             </SplitPane>
           </div>
         </SplitPane>
-        <Dock position='right' dimMode={this.state.toolboxPin?"none":"opaque"}
+        <Dock position='right' dimMode={this.state.toolboxPin?'none':'opaque'}
               isVisible={this.state.toolboxVisible}
               onVisibleChange={(isVisible) => this.setState({ toolboxVisible:isVisible })}>
           {/* you can pass a function as a child here */}
@@ -216,7 +217,7 @@ export default class Designer extends React.Component {
               </div>
               <h3>Components</h3>
             </FixedHeader>
-            <div style={{paddingTop:60,paddingLeft:5,}}>
+            <div style={{paddingTop:60,paddingLeft:5}}>
               <ToolBox addCtrl={this.addNewItem.bind(this)}/>
             </div>
           </div>

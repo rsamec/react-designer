@@ -135,6 +135,38 @@ var layoutList = _.map(uiTiles,function(item){
 let ToolBox = (props) => {
 	return (
 		<div>
+      <h3>Containers</h3>
+      <hr/>
+      {containerList.map(function(item,i){
+        var addFce = ()=> {
+
+          var style = (item.name === 'Container' ||  item.name === 'BackgroundContainer') ? {height: 200, width: 740}:{};
+          props.add({
+            elementName: item.name,
+            style:style,
+            containers:[],
+            boxes:[]
+          })
+        }
+        return <div key={'l' + i}  onClick={addFce}>
+          {React.createElement(item.icon,{width:60,height:60})}
+          <span style={{fontSize:18}}>{item.title}</span>
+        </div>
+      })}
+      <h3>Layouts</h3>
+      <hr/>
+      {layoutList.map(function(item,i){
+        var addFce = ()=> {
+          props.add({
+            elementName: item.name,
+            container:item.container
+          })
+        }
+        return <div key={'l' + i}  onClick={addFce}>
+          {React.createElement(item.icon,{width:60,height:60})}
+          <span style={{fontSize:18}}>{item.title}</span>
+        </div>
+      })}
 			<h3>Basic content</h3>
 			<hr/>
 			{list.map(function(item,i){
@@ -147,34 +179,6 @@ let ToolBox = (props) => {
 					{React.createElement(item.icon,{width:60,height:60})}
 					<span style={{fontSize:18}}>{item.title}</span>
 					</div>
-			})}
-			<h3>Containers</h3>
-			<hr/>
-			{containerList.map(function(item,i){
-				var addFce = ()=> {
-					props.add({
-						elementName: item.name,
-            containers:[]
-					})
-				}
-				return <div key={'l' + i}  onClick={addFce}>
-					{React.createElement(item.icon,{width:60,height:60})}
-					<span style={{fontSize:18}}>{item.title}</span>
-				</div>
-			})}
-			<h3>Layouts</h3>
-			<hr/>
-			{layoutList.map(function(item,i){
-				var addFce = ()=> {
-					props.add({
-						elementName: item.name,
-						container:item.container
-					})
-				}
-				return <div key={'l' + i}  onClick={addFce}>
-					{React.createElement(item.icon,{width:60,height:60})}
-					<span style={{fontSize:18}}>{item.title}</span>
-				</div>
 			})}
 			<h3>Charts</h3>
 			<hr/>

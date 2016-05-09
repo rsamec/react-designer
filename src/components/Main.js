@@ -1,6 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import Designer from './Designer';
+import $ from 'jquery';
 
 //require('normalize.css');
 require('styles/App.css');
@@ -84,43 +85,42 @@ export default class AppContainer extends React.Component {
   saveChanges(){
 
     if (this.props.schemaId === undefined) return;
-    console.log("Attempt to save changes .");
+    //console.log('Attempt to save changes .');
 
     //return;
     var schema = this.schema();
     var name = schema.name;
 
     $.ajax({
-      type: "PUT",
-      url: SERVICE_URL + "/docs/" + this.props.schemaId,
+      type: 'PUT',
+      url: SERVICE_URL + '/docs/' + this.props.schemaId,
       data: {
         schemaTemplate: JSON.stringify(schema),
         name: name,
         owner: '56b1147e42dea27c23ba397e'
       },
       dataType: 'json',
-      success: function (data) {
-        console.log("Save success.");
+      success: function () {
+        //console.log('Save success.');
       },
-      error: function (xhr, ajaxOptions, thrownError) {
-        console.log("Save failure.");
-        alert("failed");
+      error: function () {
+        //console.log('Save failure.');
       }
     })
   }
   generate(type) {
 
     var contentType = 'image/' + type;
-    if (type === "pdf") contentType = 'application/pdf';
+    if (type === 'pdf') contentType = 'application/pdf';
     //var url = 'http://render-pergamon.rhcloud.com';
     //var url = 'http://photo-papermill.rhcloud.com';
     //var url = 'http://localhost:8080';
     //var name = this.context.router.getCurrentParams().name;
 
     var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
-    xmlhttp.open("POST", SERVICE_URL + '/' + type);
+    xmlhttp.open('POST', SERVICE_URL + '/' + type);
 
-    xmlhttp.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xmlhttp.responseType = 'arraybuffer';
 
     xmlhttp.onreadystatechange = function () {
@@ -139,8 +139,8 @@ export default class AppContainer extends React.Component {
 
     me.setState({publishOpen: true, published: false});
     $.ajax({
-      type: "POST",
-      url: SERVICE_URL + "/docs",
+      type: 'POST',
+      url: SERVICE_URL + '/docs',
       data: {
         schemaTemplate: JSON.stringify(schema),
         name: name,
@@ -156,8 +156,8 @@ export default class AppContainer extends React.Component {
           }
         })
       },
-      error: function (xhr, ajaxOptions, thrownError) {
-        alert("failed");
+      error: function () {
+        alert('failed');
       }
     })
   }
