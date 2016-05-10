@@ -13,6 +13,7 @@ var config = _.merge({
     'webpack/hot/only-dev-server',
     './src/components/run'
   ],
+  
   cache: true,
   devtool: 'eval',
   plugins: [

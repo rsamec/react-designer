@@ -233,3 +233,30 @@
 .Pane.horizontal {
   overflow: auto;
 }
+.flex-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+.flex-item {
+  margin: 10px;
+  text-align: center;
+  min-width: 150px;
+}
+.flex-item .thumb {
+  background-color: gainsboro;
+  border-radius: 4px;
+  display: inline-block;
+}
+.flex-item .thumb:hover {
+  border: 1px solid cadetblue;
+}
+.flex-item span {
+  vertical-align: middle;
+  text-align: center;
+}
+.flex-item .footer {
+  text-align: center;
+  min-width: 100%;
+}

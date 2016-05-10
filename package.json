@@ -77,13 +77,17 @@
     "react-dock": "^0.2.3",
     "react-dom": "^0.14.0",
     "react-flexr": "^2.1.0-beta",
+    "react-gmaps": "^1.5.0",
     "react-html-pages-renderer": "^1.8.0",
     "react-icons": "^2.0.1",
+    "react-input-range": "^0.8.0",
     "react-loader": "^2.4.0",
     "react-overlays": "^0.6.3",
+    "react-pathjs-chart": "^0.3.5",
     "react-photo-widget-factory": "^1.2.2",
     "react-property-editor": "^1.4.0",
     "react-router": "^2.4.0",
+    "react-shapes": "^0.1.0",
     "react-split-pane": "^0.1.38"
   }
 }

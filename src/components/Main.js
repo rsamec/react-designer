@@ -9,6 +9,8 @@ require('styles/react-flexr.css');
 require('styles/RichEditor.css');
 require('styles/react-property-editor.css');
 require('styles/react-colors-picker.css');
+require('styles/article-image-box.css');
+require('styles/react-input-range.css');
 
 const BASE_SERVICE_URL = 'http://www.paperify.io';
 //const BASE_SERVICE_URL = 'http://photo-papermill.rhcloud.com';

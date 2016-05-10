@@ -2,19 +2,22 @@ import _ from 'lodash';
 import WidgetFactory from 'react-photo-widget-factory';
 import * as md from 'react-icons/lib/md';
 
+import {Bar, Pie, Tree, SmoothLine, StockLine, Scatterplot, Radar} from 'react-pathjs-chart';
+import {Rectangle,Circle,Ellipse,Line,PolyLine,Triangle} from 'react-shapes';
+
 import BackgroundContainer from './widgets/BackgroundContainer';
 import Grid from './widgets/GridWrapper';
 import Cell from './widgets/CellWrapper';
 import RichText from './widgets/RichTextEditor';
+import Gmaps from './widgets/Gmaps';
+import HBar from './widgets/HBar';
+import InputRange from './widgets/InputRange';
 
 
 export default {
   'BackgroundContainer':BackgroundContainer,
   'Grid':Grid,
   'Cell':Cell,
-
-  'Core.RichTextContent':RichText,
-
 
   'Core.TextContent':WidgetFactory.TextContent,
   'Core.HtmlContent': WidgetFactory.HtmlContent,
@@ -34,7 +37,28 @@ export default {
 
   'Core.TextBoxInput':WidgetFactory.TextBoxInput,
   'Core.Icon':WidgetFactory.Icon,
-  'Core.IconMorph':WidgetFactory.IconMorph
+  'Core.IconMorph':WidgetFactory.IconMorph,
+
+  'Shapes.Rectangle':Rectangle,
+  'Shapes.Circle':Circle,
+  'Shapes.Ellipse':Ellipse,
+  'Shapes.Line':Line,
+  'Shapes.PolyLine':PolyLine,
+  'Shapes.Triangle':Triangle,
+
+  'Chart.Bar':Bar,
+  'Chart.Pie':Pie,
+  'Chart.Tree':Tree,
+  'Chart.SmoothLine':SmoothLine,
+  'Chart.StockLine':StockLine,
+  'Chart.Scatterplot':Scatterplot,
+  'Chart.Radar':Radar,
+
+  'react-input-range.InputRange':InputRange,
+
+  'react-gmaps.Gmaps':Gmaps,
+  'Chart.HBar':HBar,
+  'Core.RichTextContent':RichText
 
 };
 
@@ -323,6 +347,51 @@ _.extend(RichText,{  metaData: {
     fields: {
       content: {type: 'jsonEditor'},
       font:{type:'fontEditor'}
+    }
+  }
+}});
+
+
+_.extend(Gmaps,{  metaData: {
+  settings: {
+    fields: {
+      width:{type:'number'},
+      height:{type:'number'},
+      lat:{type:'number'},
+      lng:{type:'number'},
+      zoom:{type:'number'},
+      content:{type:'string'}
+    }
+  }
+}});
+
+_.extend(InputRange,{  metaData: {
+  settings: {
+    fields: {
+      maxValue:{type:'number'},
+      minValue:{type:'number'},
+      value:{type:'number'},
+      font:{type:'fontEditor'}
+    }
+  }
+}});
+_.extend(HBar,{  metaData: {
+  settings: {
+    fields: {
+      width:{type:'number'},
+      height:{type:'number'},
+      item:{fields:{
+        width:{type:'number'},
+        height:{type:'number'},
+        count:{type:'number'}
+      }},
+      icon: {
+        type: 'select',
+        settings: {options: iconKeys}
+      },
+      color:{type:'colorPicker'},
+      selectColor: {type: 'colorPicker'},
+      value:{type:'number'}
     }
   }
 }});

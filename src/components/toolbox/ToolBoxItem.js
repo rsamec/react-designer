@@ -3,6 +3,12 @@ import _ from 'lodash';
 //import Radium from 'radium';
 
 export default class ToolBoxItem extends React.Component {
+  add(item){
+    var style = item.style || {};
+    style.top = undefined;
+    style.left = undefined;
+    this.props.addFce(item);
+  }
   render() {
     const {imgUrl, addFce, container} =  this.props;
 
@@ -35,7 +41,17 @@ export default class ToolBoxItem extends React.Component {
             };
             //itemStyle['width'] = item.props.width;
             //itemStyle['height'] = item.props.height;
-            return (<div key={'tool' + index} style={itemStyle} onClick={()=>{addFce(item)}}></div>)
+            return (<div key={'tool' + index} style={itemStyle} onClick={()=>{this.add(item)}}
+                         onMouseOver={(e)=> {
+                          var item = e.target;
+                          item.style['background-color'] = 'lightblue';
+                          item.style['opacity'] = 0.5;
+                         }}
+                         onMouseOut={(e)=> {
+                          var item = e.target;
+                          item.style['background-color'] = 'transparent';
+                          item.style['opacity'] = 1;
+                         }}></div>)
           }, this)}
       </div>
 

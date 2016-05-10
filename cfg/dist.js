@@ -11,6 +11,9 @@ var config = _.merge({
   entry: path.join(__dirname, '../src/components/run'),
   cache: false,
   devtool: 'sourcemap',
+  output: {
+    publicPath: '/react-designer/assets/'
+  },
   plugins: [
     new webpack.optimize.DedupePlugin(),
     new webpack.DefinePlugin({

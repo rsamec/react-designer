@@ -76,6 +76,7 @@ export default class Designer extends React.Component {
 
     if (itemToAdd.name === undefined) itemToAdd['name'] = itemToAdd.elementName;
     if (itemToAdd.style === undefined) itemToAdd['style'] = {};
+    if (itemToAdd.props === undefined) itemToAdd['props'] = {};
 
     var type = itemToAdd.containers !== undefined ? 'containers' : 'boxes';
     //init empty collection if needed

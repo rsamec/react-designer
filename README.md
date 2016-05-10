@@ -4,9 +4,9 @@ React designer is WYSIWYG editor for **easy content creation** (legal contracts,
 
 **Warning**: Nevertheless, i must repeatedly stress that it is still a prototype and work in progress.
 
-![designerScreen](https://github.com/rsamec/react-designer/blob/master/designer_roses.jpg)
 
 ## Demo
+
 [Live demo](http://rsamec.github.io/react-designer/)
 
 
@@ -30,19 +30,43 @@ React designer is WYSIWYG editor for **easy content creation** (legal contracts,
     +   simple comparison is fast because of using immutable data structure
 +   undo/redo functionality
 
+## Basic principle
 
++ document definition is simple JSON (minimal semantic, extensible, framework agnostic)
++ separate document definition from document rendering.
+    +   document definition - simple JSON - [Page Transform Tree (PTT)](https://github.com/rsamec/ptt) - it is framework agnostic definition
+    +   document rendering  - visual component tree - [React virtual DOM](http://facebook.github.io/react) - rendering to DOM so that it maps each component (terminal node) from logical tree to react component and its properties
++ modularity 
+  + Workplace - [react-designer-core](https://github.com/rsamec/react-designer-core)
+    + Container
+    + Box
+    + RichTextEditor [draftjs](https://github.com/facebook/draft-js)
+  + ObjectBrowser - [react-designer-core](https://github.com/rsamec/react-designer-core)
+  + PropertyGrid - [react-property-editor](https://github.com/rsamec/react-property-editor)
+    + code editor - [react-codemirror](https://github.com/JedWatson/react-codemirror)
+    + html editor - [react-tinymce](https://github.com/instructure-react/react-tinymce)
+    + color editor - [react-colors-picker](https://github.com/react-component/react-colors-picker)
+    + gradient editor - [react-gradient-color-picker](https://github.com/javidhsueh/react-gradient-color-picker)
+  + Preview - [react-html-pages-renderer](https://github.com/rsamec/react-html-pages-renderer)
++ extensibility - you can use popular [react-bootstrap](https://github.com/react-bootstrap/react-bootstrap),[material-ui](https://github.com/callemall/material-ui) or take your favourite component and simple use it
+  + containers
+    + Grid, Cell - [react-flexr](https://github.com/kodyl/react-flexr)
+  + widgets
+    + basic text, images [react-photo-widget-factory](https://github.com/rsamec/react-photo-widget-factory)
+    + charts - [react-pathjs-chart](https://github.com/rsamec/react-pathjs-chart)
+    + shapes - [react-shapes](https://github.com/rsamec/react-shapes)
+    
+    
 ## Content publishing 
  
 There are many ways how you can publish content created in react-designer. Feel free to write your own content publisher.
 
-
-
-+   PDFRenderer - provide high-quality printed output on a variety of printers
-    +   PDFRenderer - transforms directly to PDF (not implemented yet)
-    +   HmtlToPDFRenderer - transforms to PDF from HTML (implemented using phantomjs - [node-html-pdf](https://github.com/marcbachmann/node-html-pdf))
 +   HtmlRenderer [react-html-pages-renderer](https://github.com/rsamec/react-html-pages-renderer)- provide high-quality on-screen output
     +   HtmlRenderer - renders html - expands to full screen
     +   HtmlPagesRenderer - allow the user to visualize what the document will look like when printed
++   PDFRenderer - provide high-quality printed output on a variety of printers
+    +   PDFRenderer - transforms directly to PDF (not implemented yet)
+    +   HmtlToPDFRenderer - transforms to PDF from HTML (implemented using phantomjs - [node-html-pdf](https://github.com/marcbachmann/node-html-pdf))
 
 # Get started
 
