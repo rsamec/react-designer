@@ -9,6 +9,7 @@ React designer is WYSIWYG editor for **easy content creation** (legal contracts,
 
 [Live demo](http://rsamec.github.io/react-designer/)
 
++ [Solved by Flexbox](http://rsamec.github.io/react-designer/#/5704a74691fe8fa2b926fa91)
 
 ## Features
 
@@ -73,9 +74,11 @@ There are many ways how you can publish content created in react-designer. Feel 
 # Get started
 
 ```
+$ npm install
 $ npm start
 ```
-__Warning__: Bug fix - web pack loads package.json as javascript - fix by opening file in node_modules/babel-core/lib/api/node.js - replace require("../../package") with require("../../package.json") 
+__Warning__: Bug fix in babel-core -> web pack loads package.json as javascript - fix by adding __.json__ extension in node_modules/babel-core/lib/api/node.js - replace require("../../package") with require("../../package.json")
+ 
 ## Roadmap
 
 +   support for more positioning schemas (especially to support for responsive design)

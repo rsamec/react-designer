@@ -87,7 +87,7 @@ export default class AppContainer extends React.Component {
   saveChanges(){
 
     if (this.props.schemaId === undefined) return;
-    //console.log('Attempt to save changes .');
+    return;//console.log('Attempt to save changes .');
 
     //return;
     var schema = this.schema();
