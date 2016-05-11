@@ -21,23 +21,29 @@ var shapeBasic = require('./templates/ShapeBasic.json').containers[0];
 // 		})}
 // 	</div>)
 // }
-const TOOLBOX_TEMPLATES_PATH =  './templates/';
-
+var textTitleImg = require('./images/TextTitles.jpg');
+var textParagraphImg = require('./images/TextParagraph.png');
+var TextListsImg = require('./images/TextLists.png');
+var TextColumnsImg = require('./images/TextColumns.png');
+var ShapeBasicImg = require('./images/ShapeBasic.png');
+var BootstrapImg = require('./images/Bootstrap.png');
+var ImagesImg = require('./images/Images.jpg');
+var ChartImg = require('./images/Chart.jpg');
 
 let ToolBoxTexts = (props) => {
 	return (<div>
 			<h3>Titles</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'TextTitles.jpg')} container={textTitles} addFce={props.add}/>
+			<ToolBoxItem imgUrl={textTitleImg} container={textTitles} addFce={props.add}/>
 			<h3>Paragraphs</h3>
 			<hr/>
-			<ToolBoxItem  imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'TextParagraph.png')} container={textParagraph} addFce={props.add}/>
+			<ToolBoxItem  imgUrl={textParagraphImg} container={textParagraph} addFce={props.add}/>
 			<h3>Lists</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'TextLists.png')} container={textLists} addFce={props.add}/>
+			<ToolBoxItem imgUrl={TextListsImg} container={textLists} addFce={props.add}/>
 			<h3>Multiple columns paragraphs</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'TextColumns.png')} container={textColumns} addFce={props.add}/>
+			<ToolBoxItem imgUrl={TextColumnsImg} container={textColumns} addFce={props.add}/>
 		</div>
 	)
 }
@@ -49,7 +55,7 @@ let ToolBoxShapes = (props) => {
 		<div>
 			<h3>Basic shapes</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'ShapeBasic.png')} container={shapeBasic} addFce={props.add}/>
+			<ToolBoxItem imgUrl={ShapeBasicImg} container={shapeBasic} addFce={props.add}/>
 		</div>
 	)
 }
@@ -60,7 +66,7 @@ let ToolBoxBootstrap = (props) => {
 		<div>
 			<h3>Image boxes</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'Bootstrap.png')} container={bootstrapCon} addFce={props.add}/>
+			<ToolBoxItem imgUrl={BootstrapImg} container={bootstrapCon} addFce={props.add}/>
 		</div>
 	)
 }
@@ -71,7 +77,7 @@ let ToolBoxImages = (props) => {
 		<div>
 			<h3>Image boxes</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'Images.jpg')} container={imagesCon} addFce={props.add}/>
+			<ToolBoxItem imgUrl={ImagesImg} container={imagesCon} addFce={props.add}/>
 		</div>
 	)
 }
@@ -81,7 +87,7 @@ let ToolBoxCharts = (props) => {
 		<div>
 			<h3>Charts</h3>
 			<hr/>
-			<ToolBoxItem imgUrl={require(TOOLBOX_TEMPLATES_PATH + 'Chart.jpg')} container={chartCon} addFce={props.add}/>
+			<ToolBoxItem imgUrl={ChartImg} container={chartCon} addFce={props.add}/>
 		</div>
 	)
 }

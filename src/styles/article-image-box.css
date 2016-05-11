@@ -1,0 +1,61 @@
+/*
+ * Caption component
+ */
+h1,
+p {
+  margin: 0;
+  padding: 0 0 .5em;
+}
+.caption {
+  position: relative;
+  overflow: hidden;
+  /* Only the -webkit- prefix is required these days */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+.caption::before {
+  content: ' ';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: transparent;
+  transition: background 0.35s ease-out;
+}
+.caption:hover::before {
+  background: rgba(0, 0, 0, 0.5);
+}
+.caption__media {
+  display: block;
+  min-width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+.caption__overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  color: white;
+  -webkit-transform: translateY(100%);
+  transform: translateY(100%);
+  transition: -webkit-transform 0.35s ease-out;
+  transition: transform 0.35s ease-out;
+}
+.caption:hover .caption__overlay {
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+.caption__overlay__title {
+  -webkit-transform: translateY(-webkit-calc(-110%));
+  transform: translateY(calc(-110%));
+  transition: -webkit-transform 0.35s ease-out;
+  transition: transform 0.35s ease-out;
+}
+.caption:hover .caption__overlay__title {
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}

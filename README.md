@@ -42,12 +42,14 @@ React designer is WYSIWYG editor for **easy content creation** (legal contracts,
     + Box
     + RichTextEditor [draftjs](https://github.com/facebook/draft-js)
   + ObjectBrowser - [react-designer-core](https://github.com/rsamec/react-designer-core)
-  + PropertyGrid - [react-property-editor](https://github.com/rsamec/react-property-editor)
+  + ObjectPropertyGrid - [react-property-editor](https://github.com/rsamec/react-property-editor)
     + code editor - [react-codemirror](https://github.com/JedWatson/react-codemirror)
     + html editor - [react-tinymce](https://github.com/instructure-react/react-tinymce)
     + color editor - [react-colors-picker](https://github.com/react-component/react-colors-picker)
     + gradient editor - [react-gradient-color-picker](https://github.com/javidhsueh/react-gradient-color-picker)
   + Preview - [react-html-pages-renderer](https://github.com/rsamec/react-html-pages-renderer)
+  + Toolbar - designer actions buttons (copy, delete,up, down)
+  + Toolbox - designer component palette
 + extensibility - you can use popular [react-bootstrap](https://github.com/react-bootstrap/react-bootstrap),[material-ui](https://github.com/callemall/material-ui) or take your favourite component and simple use it
   + containers
     + Grid, Cell - [react-flexr](https://github.com/kodyl/react-flexr)
@@ -73,7 +75,7 @@ There are many ways how you can publish content created in react-designer. Feel 
 ```
 $ npm start
 ```
-
+__Warning__: Bug fix - web pack loads package.json as javascript - fix by opening file in node_modules/babel-core/lib/api/node.js - replace require("../../package") with require("../../package.json") 
 ## Roadmap
 
 +   support for more positioning schemas (especially to support for responsive design)
