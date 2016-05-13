@@ -33,6 +33,8 @@ let GridWrapper = (props) => {
     styles.paddingLeft = size.left;
   }
 
+  //selfProps = _.omit(props,['width','height']);
+
   const childrenWithProps = React.Children.map(props.children,
     (child) => React.cloneElement(child, {width: '100%'}));
   return <Grid style={styles} {...props}>{childrenWithProps}</Grid>

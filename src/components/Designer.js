@@ -96,6 +96,8 @@ export default class Designer extends React.Component {
     var schema = this.props.state.schema;
     var editorState = this.props.editorState || {};
 
+    var publishState = editorState.publishState || {};
+
     let exportSchema, exportSchemaName;
     if (this.state.exportDlgShow) {
       exportSchema = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(schema));
@@ -169,7 +171,7 @@ export default class Designer extends React.Component {
 												<li><a onClick={()=> {this.setState({exportDlgShow:true})}}>Export</a>
 												</li>
 												<li role="separator" className="divider"></li>
-												<li><a onClick={this.props.editorState.publish}>Publish</a></li>
+												<li><a onClick={() => {this.props.editorState.publish();this.setState({publishOpen:true})}}>Publish</a></li>
 												<li role="separator" className="divider"></li>
 												<li><a onClick={() => {this.setState({schemaOpen: true})}}>Schema</a></li>
 												<li role="separator" className="divider"></li>
@@ -240,8 +242,16 @@ export default class Designer extends React.Component {
             <a href={exportSchema} download={exportSchemaName}>{exportSchemaName}</a>
           </div >
         </Modal>
+        <Modal show={this.state.publishOpen} onHide={()=>{this.setState({publishOpen: false})}}
+               style={ModalStyles.modalStyle} backdropStyle={ModalStyles.backdropStyle}>
+          <div style={ModalStyles.dialogStyle}>
+            {publishState.published ?
+              <div><h4>{publishState.name}</h4><a target="_blank"
+                                                 href={publishState.url}>{publishState.url}</a></div> :
+              <span>Please, wait, publishing ...</span>}
+          </div>
+        </Modal>
       </div>
-
     );
   }
 }

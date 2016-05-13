@@ -7,7 +7,7 @@ import styleBorder from'./utils/border'
 
 let CellWrapper = (props) => {
 
-  var styles = {};
+  var styles = {minHeight:20,minWidth:20};
 
   //apply parent props
   var parentProps = props.parentProps || {};
@@ -26,6 +26,8 @@ let CellWrapper = (props) => {
   var selfProps = props;
 
   //styles.width = "100%";
+
+  if (selfProps.hAlign !== undefined) styles["textAlign"] = selfProps.hAlign;
 
   //apply custom background
   if (selfProps.background !== undefined) {

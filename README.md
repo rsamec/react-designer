@@ -9,7 +9,9 @@ React designer is WYSIWYG editor for **easy content creation** (legal contracts,
 
 [Live demo](http://rsamec.github.io/react-designer/)
 
-+ [Solved by Flexbox](http://rsamec.github.io/react-designer/#/5704a74691fe8fa2b926fa91)
++ [Layouting - solved by Flexbox](http://rsamec.github.io/react-designer/#/5704a74691fe8fa2b926fa91)
++ [UI Tiles](http://rsamec.github.io/react-designer/#/57357ef6d5672ba3aaf458b1)
++ [Magazine](http://rsamec.github.io/react-designer/#/5735d3ccd5672ba3aaf458b2)
 
 ## Features
 

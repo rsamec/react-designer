@@ -87,7 +87,7 @@ export default class AppContainer extends React.Component {
   saveChanges(){
 
     if (this.props.schemaId === undefined) return;
-    return;//console.log('Attempt to save changes .');
+    //return;//console.log('Attempt to save changes .');
 
     //return;
     var schema = this.schema();
@@ -139,7 +139,7 @@ export default class AppContainer extends React.Component {
     var schema = this.schema();
     var name = schema.name;
 
-    me.setState({publishOpen: true, published: false});
+    me.setState({ publishInfo: {published: false}});
     $.ajax({
       type: 'POST',
       url: SERVICE_URL + '/docs',
@@ -151,8 +151,8 @@ export default class AppContainer extends React.Component {
       dataType: 'json',
       success: function (data) {
         me.setState({
-          published: true,
           publishInfo: {
+            published: true,
             name: data.name,
             url:  BASE_SERVICE_URL + '/view/#/' + data._id
           }
@@ -173,6 +173,7 @@ export default class AppContainer extends React.Component {
         redo:this.redo.bind(this),
         clearHistory:this.clearHistory.bind(this),
         publish:this.publish.bind(this),
+        publishState:this.state.publishInfo,
         generate:this.generate.bind(this),
         canUndo:!this.state.currentStore,
         canRedo:this.state.currentStore == this.state.storeHistory.length - 1

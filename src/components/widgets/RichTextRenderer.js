@@ -5,7 +5,9 @@ import styleFont from './utils/font';
 
 const markup = {
 	'BOLD': ['<strong>', '</strong>'],
-	'ITALIC': ['<em>', '</em>']
+	'ITALIC': ['<em>', '</em>'],
+  'UNDERLINE': ['<span style="text-decoration: underline">', '</span>'],
+  'CODE': ['<span style="font-family:monospace;font-size:16px;padding:2px;background-color: rgba(0, 0, 0, 0.05)">', '</span>']
 };
 
 let RichTextRenderer = (props) => {
