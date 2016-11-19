@@ -72,7 +72,8 @@
 	margin-top: -0.15rem;
 	position: absolute;
 	right: 0;
-	top: 50%; }
+	top: 50%;
+}
 
 .InputRange-track--active {
 	background: #3f51b5; }
@@ -80,5 +81,7 @@
 .InputRange {
 	cursor: pointer;
 	height: 1rem;
-	position: relative;
-	width: 100%; }
+	/*position: relative;*/
+	width: 100%;
+  min-width: 80px;
+}

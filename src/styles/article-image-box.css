@@ -1,11 +1,11 @@
 /*
  * Caption component
  */
-h1,
-p {
-  margin: 0;
-  padding: 0 0 .5em;
-}
+/*h1,*/
+/*p {*/
+  /*margin: 0;*/
+  /*padding: 0 0 .5em;*/
+/*}*/
 .caption {
   position: relative;
   overflow: hidden;

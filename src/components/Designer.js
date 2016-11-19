@@ -3,6 +3,7 @@ import {Workplace, ObjectBrowser} from 'react-designer-core';
 import SplitPane from 'react-split-pane';
 import Dock from 'react-dock';
 import _ from 'lodash';
+import Binder from 'react-binding';
 
 import Widgets from './Widgets';
 import WidgetRenderer from './WidgetRenderer';
@@ -26,6 +27,7 @@ export default class Designer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      data: _.cloneDeep(props.state.schema.props && props.state.schema.props.defaultData || {}),
       current: {
         node: props.state.schema
       },
@@ -98,6 +100,7 @@ export default class Designer extends React.Component {
 
     var publishState = editorState.publishState || {};
 
+    var dataContext = Binder.bindToState(this,'data');
     let exportSchema, exportSchemaName;
     if (this.state.exportDlgShow) {
       exportSchema = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(schema));
@@ -108,7 +111,7 @@ export default class Designer extends React.Component {
 
         <SplitPane split="vertical" minSize={80} defaultSize="65vw">
           <div>
-            <Workplace schema={schema} current={this.state.current}
+            <Workplace schema={schema} current={this.state.current} dataContext={dataContext}
                        currentChanged={this.currentChanged.bind(this)} widgets={Widgets}
                        widgetRenderer={WidgetRenderer} snapGrid={this.state.snapGrid}/>
           </div>

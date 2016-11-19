@@ -37,7 +37,8 @@ export default class DesignView extends React.Component {
     }
 
     //load schema
-    var url = SERVICE_URL + '/docs/' + this.props.params.id;
+    var schemaId = this.props.params.id;
+    var url = SERVICE_URL + '/docs/' + schemaId;
     var me = this;
     $.ajax({
       type: 'GET',
@@ -47,7 +48,8 @@ export default class DesignView extends React.Component {
         var schema = JSON.parse(data.schemaTemplate);
         freezer = new Freezer({schema: schema});
         me.setState({
-          loaded: true
+          loaded: true,
+          schemaId:schemaId
         });
       },
       error: function (xhr) {
@@ -63,7 +65,7 @@ export default class DesignView extends React.Component {
 
   render() {
     return <Spinner loaded={this.state.loaded}>
-      <AppContainer store={ freezer } schemaId={this.props.params.id}/>
+      <AppContainer store={ freezer } schemaId={this.state.schemaId}/>
     </Spinner>
   }
 }

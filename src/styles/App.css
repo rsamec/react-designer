@@ -10,6 +10,9 @@
   resize: none;
   overflow: visible;
 }
+p {
+  margin: 0px;
+}
 .con.selected {
   border: 1px solid red;
 }
@@ -67,6 +70,9 @@
   -ms-user-select: none;
   user-select: none;
   font-size: 20px;
+}
+.tree-view_arrow:after {
+  content: '▾';
 }
 /* rotate the triangle to close it */
 .tree-view_arrow-collapsed {

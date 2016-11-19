@@ -9,7 +9,9 @@ export default (props) => {
     var styles = {
       width: props.width,
       height: props.height,
-      position: 'absolute'
+      top:props.top,
+      left:props.left,
+      position: props.position || 'absolute'
     };
 
     //apply custom background
@@ -23,7 +25,7 @@ export default (props) => {
     //border
     if (props.border !== undefined) styleBorder(styles, props.border);
   }
-  
+
   return <div>
     <div style={styles}></div>
     <div {...props}>{props.children}</div>

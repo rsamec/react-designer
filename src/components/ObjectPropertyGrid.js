@@ -23,6 +23,7 @@ const CONTAINER_EMPTY_STYLE = {
 	left: undefined,
 	width: undefined,
 	height: undefined,
+  zIndex: undefined,
 	position: 'relative'
 };
 const EMPTY_BINDING_PROPS ={

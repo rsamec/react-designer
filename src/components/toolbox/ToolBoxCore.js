@@ -71,6 +71,12 @@ const list = [
 		icon: MdAddAPhoto,
 		desc: 'ParagrphsSimple text without formating'
 	},
+  {
+    name: 'Core.TextBoxInput',
+    title:'Textbox',
+    icon: MdAddAPhoto,
+    desc: 'xx'
+  },
 	{
 		name: 'react-gmaps.Gmaps',
 		title:'Google maps',

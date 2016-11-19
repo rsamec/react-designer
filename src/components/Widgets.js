@@ -12,6 +12,7 @@ import RichText from './widgets/RichTextEditor';
 import Gmaps from './widgets/Gmaps';
 import HBar from './widgets/HBar';
 import InputRange from './widgets/InputRange';
+import JSXRenderer from './widgets/JSXRenderer';
 
 
 export default {
@@ -21,7 +22,7 @@ export default {
 
   'Core.TextContent':WidgetFactory.TextContent,
   'Core.HtmlContent': WidgetFactory.HtmlContent,
-  'Core.JsxContent': WidgetFactory.JsxContent,
+  'Core.JsxContent': JSXRenderer,
   'Core.ArticleContent': WidgetFactory.ArticleContent,
   'Core.ListItemContent': WidgetFactory.ListItemContent,
 
@@ -331,7 +332,7 @@ _.extend(WidgetFactory.TextContent,{  metaData: {
   }
 }});
 
-_.extend(WidgetFactory.JsxContent,{  metaData: {
+_.extend(JSXRenderer,{  metaData: {
   settings: {
     fields: {
       data:{type:'plainJsonEditor'},
@@ -370,6 +371,7 @@ _.extend(InputRange,{  metaData: {
     fields: {
       maxValue:{type:'number'},
       minValue:{type:'number'},
+      step:{type:'number'},
       value:{type:'number'},
       font:{type:'fontEditor'}
     }

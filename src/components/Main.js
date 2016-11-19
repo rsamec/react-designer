@@ -86,12 +86,15 @@ export default class AppContainer extends React.Component {
 
   saveChanges(){
 
+    console.log('Attempt to s .');
     if (this.props.schemaId === undefined) return;
-    //return;//console.log('Attempt to save changes .');
+    //return;
+    console.log('Attempt to save changes .');
 
     //return;
     var schema = this.schema();
     var name = schema.name;
+
 
     $.ajax({
       type: 'PUT',
@@ -103,10 +106,10 @@ export default class AppContainer extends React.Component {
       },
       dataType: 'json',
       success: function () {
-        //console.log('Save success.');
+        console.log('Save success.');
       },
       error: function () {
-        //console.log('Save failure.');
+        console.log('Save failure.');
       }
     })
   }

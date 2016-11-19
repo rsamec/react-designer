@@ -22,7 +22,7 @@ export default class WidgetRenderer extends React.Component
 
 		//apply binding
 		var props = this.props.dataBinder !== undefined? WidgetRenderer.bindProps(defaultProps,box.bindings,this.props.dataBinder,!!this.props.designer):defaultProps;
-
+    if (this.props.dataBinder!== undefined) {props.customCode = this.props.dataBinder.customCode}
 
         //apply property resolution strategy -> default style -> custom style -> local style
 		var customStyle= this.props.customStyle;
@@ -34,13 +34,15 @@ export default class WidgetRenderer extends React.Component
 		var isInlineEdit = this.props.selected && box.elementName === 'Core.RichTextContent';
 		if (isInlineEdit) props = _.extend(props,{designer:true,current:this.props.current,currentChanged:this.props.currentChanged,node:this.props.node});
 
+
+
         return  React.createElement(widget,props,props.content !== undefined ? React.DOM.div({ dangerouslySetInnerHTML: {__html: props.content } }) : null);
     }
 }
 
 WidgetRenderer.bindProps =  function(clonedProps,bindings,dataBinder,isDesignMode ){
 	var props = clonedProps;//_.cloneDeep(node.props);
-
+  //return props;
 	//go through all properties
 	for (var propName in props) {
 
